@@ -26,7 +26,7 @@ function Axct707_6XXX() {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`http://localhost:3001/api/axct707_6xxx?month=${month}&year=${year}`)
+    fetch(`http://192.168.111.19:3001/api/axct707_6xxx?month=${month}&year=${year}`)
       .then((res) => res.json())
       .then((data) => {
         setData(data);

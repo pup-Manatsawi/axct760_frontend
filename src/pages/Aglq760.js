@@ -24,7 +24,7 @@ function Aglq760() {
 
   useEffect(() => {
     setLoading(true);
-    fetch(`http://localhost:3001/api/aglq760?month=${month}&year=${year}`)
+    fetch(`http://192.168.111.19:3001/api/aglq760?month=${month}&year=${year}`)
       .then((res) => res.json())
       .then((data) => {
         setData(data);
