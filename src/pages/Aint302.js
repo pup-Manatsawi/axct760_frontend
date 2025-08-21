@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 
-function Axct707_12XX() {
+function Aint302() {
   const now = new Date();
   const [month, setMonth] = useState(String(now.getMonth() + 1));
   const [year, setYear] = useState(String(now.getFullYear()));
@@ -10,23 +10,28 @@ function Axct707_12XX() {
   const [loading, setLoading] = useState(false);
 
   const headers = [
-    'Doc No.',
-    'Reference Doc No. LN',
-    'Item Code',
-    'Item Name',
-    'Specification',
-    'Inventory Title',
-    'Inventory Description',
+    'Cost Dept Name',
+    'Cost Dept',
+    'Notes',
+    'Doc Notes',
     'Reason Code',
-    'Reason Description',
-    'QTY',
-    'Cost',
-    'Note'
+    'Reason Desc',
+    'Debit Date',
+    'Applicant',
+    'Doc No',
+    'Status Code',
+    'Application',
+    'Emp Dept',
+    'Item No',
+    'Item Name',
+    'Item Description',
+    'Unit',
+    'Qty'
   ];
 
   useEffect(() => {
     setLoading(true);
-    fetch(`http://192.168.111.19:3001/api/axct707_12xx?month=${month}&year=${year}`)
+    fetch(`http://localhost:3001/api/aint302?month=${month}&year=${year}`)
       .then((res) => res.json())
       .then((data) => {
         setData(data);
@@ -48,7 +53,7 @@ function Axct707_12XX() {
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
     const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
     const blob = new Blob([wbout], { type: 'application/octet-stream' });
-    saveAs(blob, `AXCT707_12XX_${year}_${month}.xlsx`);
+    saveAs(blob, `AINT302_${year}_${month}.xlsx`);
   };
 
   return (
@@ -73,7 +78,7 @@ function Axct707_12XX() {
 
       {/* แถวที่ 2: ชื่อรายงาน */}
       <h2 style={{ fontSize: 20, color: '#444', textAlign: 'center', marginBottom: 6 }}>
-        📝 AXCT707(12XX) REPORT 📝
+        📝 AINT302 REPORT 📝
       </h2>
 
       
@@ -182,4 +187,4 @@ function Axct707_12XX() {
   );
 }
 
-export default Axct707_12XX;
+export default Aint302;

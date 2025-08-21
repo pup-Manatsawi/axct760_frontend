@@ -116,15 +116,15 @@ function Aglq760() {
             cursor: 'pointer'
           }}
         >
-          💾 ดาวน์โหลด Excel
+          💾 Download Excel
         </button>
       </div>
 
       {/* แสดงผลข้อมูล */}
       {loading ? (
-        <p style={{ textAlign: 'center' }}>⏳ กำลังโหลดข้อมูล...</p>
+        <p style={{ textAlign: 'center' }}>⏳ กำลังโหลดข้อมูล / 正在載入資料...</p>
       ) : data.length === 0 ? (
-        <p style={{ textAlign: 'center' }}>❗ ไม่พบข้อมูล กรุณาตรวจสอบเดือนและปีอีกครั้ง</p>
+        <p style={{ textAlign: 'center' }}>❗ ไม่พบข้อมูล กรุณาตรวจสอบเดือนและปีอีกครั้ง / 未找到資料，請再次檢查月份和年份。</p>
       ) : (
         <div style={{  
           maxWidth: '100vw',
