@@ -21,7 +21,8 @@ function Axct707_12XX() {
     'Reason Description',
     'QTY',
     'Cost',
-    'Note'
+    'Note',
+    'Doc Notes'
   ];
 
   useEffect(() => {
