@@ -22,7 +22,8 @@ function Axct707_6XXX() {
     'QTY',
     'Cost',
     'Note',
-    'Doc Notes'
+    'Doc Notes',
+    'Long Notes'
   ];
 
   useEffect(() => {
