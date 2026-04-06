@@ -5,9 +5,12 @@ import { saveAs } from 'file-saver';
 function Axmr009() {
   const now = new Date();
 
-  const [day, setDay] = useState(String(now.getDate()));
-  const [month, setMonth] = useState(String(now.getMonth() + 1));
-  const [year, setYear] = useState(String(now.getFullYear()));
+const formatDate = (date) => {
+  return date.toISOString().split('T')[0]; // yyyy-mm-dd
+};
+
+const [startDate, setStartDate] = useState(formatDate(now));
+const [endDate, setEndDate] = useState(formatDate(now));
 
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -76,7 +79,7 @@ function Axmr009() {
   useEffect(() => {
     setLoading(true);
 
-    fetch(`http://192.168.111.19:3001/api/axmr009?day=${pad(day)}&month=${pad(month)}&year=${year}`)
+    fetch(`http://192.168.111.19:3001/api/axmr009?startDate=${startDate}&endDate=${endDate}`)
       .then(async (res) => {
         const text = await res.text();
 
@@ -95,7 +98,7 @@ function Axmr009() {
         setData([]);
       })
       .finally(() => setLoading(false));
-  }, [day, month, year]);
+  }, [startDate, endDate]);
 
   const exportToExcel = () => {
     if (data.length === 0) return alert('ไม่มีข้อมูลให้ดาวน์โหลด');
@@ -120,7 +123,7 @@ function Axmr009() {
 
     saveAs(
       new Blob([wbout]),
-      `AXMR009_${year}_${pad(month)}_${pad(day)}.xlsx`
+      `AXMR009_${startDate}_to_${endDate}.xlsx`
     );
   };
 
@@ -152,58 +155,43 @@ function Axmr009() {
       <hr style={{ width: '100%', maxWidth: 800, margin: '10px auto 30px', borderColor: '#ccc' }} />
 
       {/* Filter */}
-      <div style={{ display: 'flex', justifyContent: 'center', gap: 20, marginBottom: 20 }}>
-        
-        <div>
-          <label>Day:</label>
-          <input
-            type="number"
-            min="1"
-            max="31"
-            value={day}
-            onChange={(e) => setDay(e.target.value)}
-            style={{ padding: '6px 10px', marginLeft: 6 }}
-          />
-        </div>
+     <div style={{ display: 'flex', justifyContent: 'center', gap: 20, marginBottom: 20 }}>
 
-        <div>
-          <label>Month:</label>
-          <input
-            type="number"
-            min="1"
-            max="12"
-            value={month}
-            onChange={(e) => setMonth(e.target.value)}
-            style={{ padding: '6px 10px', marginLeft: 6 }}
-          />
-        </div>
+  <div>
+    <label>Start Date:</label>
+    <input
+      type="date"
+      value={startDate}
+      onChange={(e) => setStartDate(e.target.value)}
+      style={{ padding: '6px 10px', marginLeft: 6 }}
+    />
+  </div>
 
-        <div>
-          <label>Year:</label>
-          <input
-            type="number"
-            min="2000"
-            max="2100"
-            value={year}
-            onChange={(e) => setYear(e.target.value)}
-            style={{ padding: '6px 10px', marginLeft: 6 }}
-          />
-        </div>
+  <div>
+    <label>End Date:</label>
+    <input
+      type="date"
+      value={endDate}
+      onChange={(e) => setEndDate(e.target.value)}
+      style={{ padding: '6px 10px', marginLeft: 6 }}
+    />
+  </div>
 
-        <button
-          onClick={exportToExcel}
-          style={{
-            backgroundColor: '#0066cc',
-            color: 'white',
-            border: 'none',
-            padding: '8px 16px',
-            borderRadius: 4,
-            cursor: 'pointer'
-          }}
-        >
-          💾 Download Excel
-        </button>
-      </div>
+  <button
+    onClick={exportToExcel}
+    style={{
+      backgroundColor: '#0066cc',
+      color: 'white',
+      border: 'none',
+      padding: '8px 16px',
+      borderRadius: 4,
+      cursor: 'pointer'
+    }}
+  >
+    💾 Download Excel
+  </button>
+
+</div>
 
       {/* Content */}
       {loading ? (
