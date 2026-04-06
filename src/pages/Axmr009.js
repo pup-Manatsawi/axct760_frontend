@@ -9,13 +9,30 @@ const formatDate = (date) => {
   return date.toISOString().split('T')[0]; // yyyy-mm-dd
 };
 
-const [startDate, setStartDate] = useState(formatDate(now));
-const [endDate, setEndDate] = useState(formatDate(now));
+const handleStartChange = (value) => {
+  setStartDate(value);
+
+  // ถ้า start มากกว่า end → บังคับ end = start
+  if (endDate && value > endDate) {
+    setEndDate(value);
+  }
+};
+
+const handleEndChange = (value) => {
+  // ถ้า end น้อยกว่า start → บังคับให้เท่ากับ start
+  if (startDate && value < startDate) {
+    setEndDate(startDate);
+  } else {
+    setEndDate(value);
+  }
+};
 
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [startDate, setStartDate] = useState(formatDate(now));
+  const [endDate, setEndDate] = useState(formatDate(now));
 
-  const pad = (n) => n.toString().padStart(2, '0');
+  /*const pad = (n) => n.toString().padStart(2, '0');*/
 
   const headers = [
     'Shipping Notice No.',
@@ -162,7 +179,7 @@ const [endDate, setEndDate] = useState(formatDate(now));
     <input
       type="date"
       value={startDate}
-      onChange={(e) => setStartDate(e.target.value)}
+      onChange={(e) => handleStartChange(e.target.value)} 
       style={{ padding: '6px 10px', marginLeft: 6 }}
     />
   </div>
@@ -172,7 +189,7 @@ const [endDate, setEndDate] = useState(formatDate(now));
     <input
       type="date"
       value={endDate}
-      onChange={(e) => setEndDate(e.target.value)}
+      onChange={(e) => handleEndChange(e.target.value)}
       style={{ padding: '6px 10px', marginLeft: 6 }}
     />
   </div>
@@ -195,9 +212,9 @@ const [endDate, setEndDate] = useState(formatDate(now));
 
       {/* Content */}
       {loading ? (
-        <p style={{ textAlign: 'center' }}>⏳ กำลังโหลดข้อมูล...</p>
+        <p style={{ textAlign: 'center' }}>⏳ กำลังโหลดข้อมูล / 正在載入資料...</p>
       ) : data.length === 0 ? (
-        <p style={{ textAlign: 'center' }}>❗ไม่พบข้อมูล</p>
+        <p style={{ textAlign: 'center' }}>❗ไม่พบข้อมูล กรุณาตรวจสอบช่วงวันที่อีกครั้ง / 未找到資料，請再次確認日期。</p>
       ) : (
         <div style={{
           maxWidth: '100vw',
