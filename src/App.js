@@ -36,7 +36,7 @@ function AppContent() {
           <Route path="/" element={<Home />} />
 
           {/* ================== SALE ================== */}
-          {role === "SALE" && (
+          {role === "MARKETING" && (
             <>
               <Route path="/Axmr009" element={<Axmr009 />} />
 

@@ -15,7 +15,7 @@ function Navbar({ role }) {
     { path: "/Aint302", label: "AINT302" }
   ];
 
-  const menu = role === "SALE" ? menuSale : menuAcc;
+  const menu = role === "MARKETING" ? menuSale : menuAcc;
 
   return (
     <div style={styles.navbar}>
@@ -24,7 +24,7 @@ function Navbar({ role }) {
       <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
         
         <Link to="/" style={styles.logo}>
-          TSIC
+          <img src="/tsictop.png" alt="TSIC Logo" style={{ width: 80, height: 30, marginRight: 10 }} />
         </Link>
 
         {/*<Link

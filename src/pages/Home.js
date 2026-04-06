@@ -7,7 +7,7 @@ function Home() {
     localStorage.setItem('role', role);
 
     // ✅ ใช้ navigate แทน reload
-    if (role === 'SALE') {
+    if (role === 'MARKETING') {
       navigate('/Axmr009');
     } else {
       navigate('/Aglq760');
@@ -38,7 +38,7 @@ function Home() {
 
         {/* SALE */}
         <div
-          onClick={() => selectRole('SALE')}
+          onClick={() => selectRole('MARKETING')}
           style={cardStyle('#0066cc')}
         >
           💼 MARLETING
