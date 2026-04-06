@@ -41,7 +41,7 @@ function Home() {
           onClick={() => selectRole('SALE')}
           style={cardStyle('#0066cc')}
         >
-          💼 SALE
+          💼 MARLETING
           
         </div>
 
