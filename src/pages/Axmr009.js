@@ -150,7 +150,7 @@ const handleEndChange = (value) => {
     <div style={{ fontFamily: 'Arial, sans-serif', padding: 5, maxWidth: '100%', margin: 'auto' }}>
       
       {/* Header */}
-      <div
+      {/*<div
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -165,7 +165,7 @@ const handleEndChange = (value) => {
         <h1 style={{ fontSize: 24, color: '#003366', margin: 0 }}>
           THAI SHINKONG INDUSTRY CORPORATION LIMITED
         </h1>
-      </div>
+      </div>*/}
 
       <h2 style={{ fontSize: 20, color: '#444', textAlign: 'center', marginBottom: 6 }}>
         📝 AXMR009 REPORT 📝
@@ -220,7 +220,7 @@ const handleEndChange = (value) => {
       ) : (
         <div style={{
           maxWidth: '100vw',
-          maxHeight: '60vh',
+          maxHeight: '72vh',
           overflowX: 'auto',
           overflowY: 'auto',
           border: '1px solid #ccc'

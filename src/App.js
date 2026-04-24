@@ -10,8 +10,8 @@ import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
 import Aglq760 from "./pages/Aglq760";
 import Axct201 from "./pages/Axct201";
-import Axct707_12XX from "./pages/Axct707_12XX";
-import Axct707_6XXX from "./pages/Axct707_6XXX";
+import Axct70712XX from "./pages/Axct707_12XX";
+import Axct7076XXX from "./pages/Axct707_6XXX";
 import Aint302 from "./pages/Aint302";
 import Axmr009 from "./pages/Axmr009";
 
@@ -50,8 +50,8 @@ function AppContent() {
             <>
               <Route path="/Aglq760" element={<Aglq760 />} />
               <Route path="/Axct201" element={<Axct201 />} />
-              <Route path="/Axct707_12XX" element={<Axct707_12XX />} />
-              <Route path="/Axct707_6XXX" element={<Axct707_6XXX />} />
+              <Route path="/Axct707_12XX" element={<Axct70712XX />} />
+              <Route path="/Axct707_6XXX" element={<Axct7076XXX />} />
               <Route path="/Aint302" element={<Aint302 />} />
 
               {/* ❌ block AXMR009 */}
@@ -59,6 +59,16 @@ function AppContent() {
 
               {/* กันหลงหน้า */}
               <Route path="*" element={<Navigate to="/Aglq760" />} />
+            </>
+          )}
+
+          {/* ================== FACTORY ================== */}
+          {role === "FAC" && (
+            <>
+              <Route path="/Aint302" element={<Aint302 />} />
+
+              {/* กันหลงหน้า */}
+              <Route path="*" element={<Navigate to="/Aint302" />} />
             </>
           )}
 

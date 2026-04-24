@@ -25,37 +25,119 @@ function Home() {
       background: 'linear-gradient(to right, #e3f2fd, #ffffff)'
     }}>
       
-      <h1 style={{ fontSize: 32, color: '#003366' }}>
-        🏢 TSIC ERP T100 REPORT
+      <h1 style={{ fontSize: 32, color: '#003366', margin: 0 , display: 'flex', alignItems: 'center' }} >
+        <img src="/tsiclogo.png" alt="TSIC Logo" style={{ width: 80, height: 80, marginRight: 10 }} /> TSIC ERP T100 REPORT
+        
+        
       </h1>
+
+      
 
       <p style={{ marginBottom: 40 }}>
        {/* เลือกแผนก / 選部門*/}
       </p>
       
 
-      <div style={{ display: 'flex', gap: 30 }}>
+      <div style={{ display: 'flex', gap: 40 }}>
 
         {/* SALE */}
+        {/*<img src="/sales.png" alt="factory" style={{ width: 80, height: 80}} />
         <div
           onClick={() => selectRole('MARKETING')}
           style={cardStyle('#0066cc')}
         >
-          💼 MARLETING
+           MARLETING
+         
           
+          
+        </div>*/}
+        
+        <div onClick={() => selectRole('MARKETING')}
+              style={{
+                      ...cardStyle('#0066cc'),
+                      position: 'relative',
+                      width: 120,
+                      height: 15,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+              }}
+>
+          <img src="/sales.png" alt="sales"
+                style={{
+                        position: 'absolute',
+                        left: -15,   // ให้มันล้ำออกมา
+                        width: 75,
+                        height: 75
+                      }} />
+
+          <span style={{ fontWeight: 50 ,position: 'absolute', left: 70}}>
+            MARKETING
+          </span>
         </div>
+        
+        
+    
 
         {/* ACC */}
-        <div
+        {/*<div
           onClick={() => selectRole('ACC')}
           style={cardStyle('#009933')}
         >
           💰 ACC / FIN
         
+        </div>*/}
+        <div onClick={() => selectRole('ACC')}
+              style={{
+                      ...cardStyle('#009933'),
+                      position: 'relative',
+                      width: 120,
+                      height: 15,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+              }}
+>
+          <img src="/investment.png" alt="investment"
+                style={{
+                        position: 'absolute',
+                        left: -20,   // ให้มันล้ำออกมา
+                        width: 75,
+                        height: 75
+                      }} />
+
+          <span style={{ fontWeight: 50 ,position: 'absolute', left: 70}}>
+            ACC / FIN
+          </span>
         </div>
 
-      </div>
+<div onClick={() => selectRole('FAC')}
+              style={{
+                      ...cardStyle('#8A5CD6'),
+                      position: 'relative',
+                      width: 120,
+                      height: 15,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+              }}
+>
+          <img src="/factory4.png" alt="factory"
+                style={{
+                        position: 'absolute',
+                        left: -15,   // ให้มันล้ำออกมา
+                        width: 75,
+                        height: 75
+                      }} />
 
+          <span style={{ fontWeight: 50 ,position: 'absolute', left: 70}}>
+            FACTORY
+          </span>
+        </div>
+
+
+
+      </div>
     </div>
   );
 }

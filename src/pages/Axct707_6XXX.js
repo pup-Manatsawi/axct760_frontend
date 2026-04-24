@@ -56,7 +56,7 @@ function Axct707_6XXX() {
   return (
        <div style={{ fontFamily: 'Arial, sans-serif', padding: 5, maxWidth: 'auto', margin: 'auto' }}>
       {/* แถวที่ 1: โลโก้และชื่อบริษัท */}
-      <div
+      {/*<div
         style={{
           display: 'flex',
           alignItems: 'center',
@@ -71,7 +71,7 @@ function Axct707_6XXX() {
         <h1 style={{ fontSize: 24, color: '#003366', margin: 0 }}>
           THAI SHINKONG INDUSTRY CORPORATION LIMITED
         </h1>
-      </div>
+      </div> */}
 
       {/* แถวที่ 2: ชื่อรายงาน */}
       <h2 style={{ fontSize: 20, color: '#444', textAlign: 'center', marginBottom: 6 }}>
@@ -132,7 +132,7 @@ function Axct707_6XXX() {
       ) : (
         <div style={{  
           maxWidth: '100vw',
-          maxHeight: '60vh', // ปรับความสูงให้เลื่อนใน div นี้ ไม่พึ่ง body
+          maxHeight: '72vh', // ปรับความสูงให้เลื่อนใน div นี้ ไม่พึ่ง body
           overflowX: 'auto',
           overflowY: 'auto',
           border: '1px solid #ccc', // เพิ่มขอบให้ดูขอบเขตชัด

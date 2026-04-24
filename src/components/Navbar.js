@@ -15,7 +15,11 @@ function Navbar({ role }) {
     { path: "/Aint302", label: "AINT302" }
   ];
 
-  const menu = role === "MARKETING" ? menuSale : menuAcc;
+   const menuFac = [
+    { path: "/Aint302", label: "AINT302" }
+  ];
+
+  const menu = role === "MARKETING" ? menuSale : role === "ACC" ? menuAcc : menuFac;
 
   return (
     <div style={styles.navbar}>
@@ -24,7 +28,19 @@ function Navbar({ role }) {
       <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
         
         <Link to="/" style={styles.logo}>
-          <img src="/tsictop.png" alt="TSIC Logo" style={{ width: 80, height: 30, marginRight: 10 }} />
+         {/* <img src="/tsictop.png" alt="TSIC Logo" style={{ width: 80, height: 30, marginRight: 10 }} />*/}
+         <h1 
+          style={{
+                  fontSize: 24,
+                  color: '#1E40AF',
+                  margin: 0,
+                  display: 'flex',
+                  alignItems: 'center',
+                  fontStyle: 'italic',
+                  fontWeight: 700
+                }} >
+        <img src="/tsiclogo.png" alt="TSIC Logo" style={{ width: 40, height: 40, marginRight: 0 }} /> TSIC
+      </h1>
         </Link>
 
         {/*<Link
