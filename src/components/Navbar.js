@@ -1,7 +1,10 @@
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 function Navbar({ role }) {
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const site = localStorage.getItem("site") || "/";
 
   const menuSale = [
     { path: "/Axmr009", label: "AXMR009" }
@@ -15,11 +18,21 @@ function Navbar({ role }) {
     { path: "/Aint302", label: "AINT302" }
   ];
 
-   const menuFac = [
+  const menuFac = [
     { path: "/Aint302", label: "AINT302" }
   ];
 
-  const menu = role === "MARKETING" ? menuSale : role === "ACC" ? menuAcc : menuFac;
+  // ✅ กัน role null
+  let menu = [];
+  if (role === "MARKETING") menu = menuSale;
+  else if (role === "ACC") menu = menuAcc;
+  else if (role === "FAC") menu = menuFac;
+
+  // ✅ logout (กลับ Home + ล้าง role)
+  const handleHome = () => {
+    localStorage.removeItem("role");
+    navigate(site); // กลับ site เดิม เช่น /bkkt100
+  };
 
   return (
     <div style={styles.navbar}>
@@ -27,31 +40,12 @@ function Navbar({ role }) {
       {/* Logo + Home */}
       <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
         
-        <Link to="/" style={styles.logo}>
-         {/* <img src="/tsictop.png" alt="TSIC Logo" style={{ width: 80, height: 30, marginRight: 10 }} />*/}
-         <h1 
-          style={{
-                  fontSize: 24,
-                  color: '#1E40AF',
-                  margin: 0,
-                  display: 'flex',
-                  alignItems: 'center',
-                  fontStyle: 'italic',
-                  fontWeight: 700
-                }} >
-        <img src="/tsiclogo.png" alt="TSIC Logo" style={{ width: 40, height: 40, marginRight: 0 }} /> TSIC
-      </h1>
-        </Link>
-
-        {/*<Link
-          to="/"
-          style={{
-            ...styles.homeBtn,
-            ...(location.pathname === "/" ? styles.activeHome : {})
-          }}
-        >
-          🏠 Home
-        </Link>*/}
+        <div onClick={handleHome} style={styles.logo}>
+          <h1 style={styles.title}>
+            <img src="/tsiclogo.png" alt="logo" style={styles.logoImg} />
+            TSIC
+          </h1>
+        </div>
 
       </div>
 
@@ -77,12 +71,14 @@ function Navbar({ role }) {
 
       {/* Role */}
       <div style={styles.role}>
-        {role}
+        {role || "-"}
       </div>
 
     </div>
   );
 }
+
+/* ================= STYLE ================= */
 
 const styles = {
   navbar: {
@@ -96,25 +92,23 @@ const styles = {
   },
 
   logo: {
-    fontWeight: "bold",
-    fontSize: 18,
-    color: "#1e3a8a",
-    textDecoration: "none"
+    cursor: "pointer"
   },
 
-  homeBtn: {
-    textDecoration: "none",
-    padding: "6px 14px",
-    borderRadius: 8,
-    fontSize: 14,
-    background: "#f1f5f9",
-    color: "#334155",
-    transition: "0.2s"
+  title: {
+    fontSize: 24,
+    color: "#1E40AF",
+    margin: 0,
+    display: "flex",
+    alignItems: "center",
+    fontStyle: "italic",
+    fontWeight: 700
   },
 
-  activeHome: {
-    background: "#e0f2fe",
-    color: "#0284c7"
+  logoImg: {
+    width: 40,
+    height: 40,
+    marginRight: 5
   },
 
   menu: {

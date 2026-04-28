@@ -15,13 +15,24 @@ import Axct7076XXX from "./pages/Axct707_6XXX";
 import Aint302 from "./pages/Aint302";
 import Axmr009 from "./pages/Axmr009";
 
-// ✅ แยก component เพื่อใช้ useLocation
+// ================== APP CONTENT ==================
 function AppContent() {
   const role = localStorage.getItem("role");
   const location = useLocation();
 
-  // ✅ ซ่อน Navbar หน้า Home
-  const hideNavbar = location.pathname === "/";
+  // ✅ ซ่อน Navbar หน้าเลือก site / home
+  const hideNavbar =
+    location.pathname === "/" ||
+    location.pathname === "/bkkt100" ||
+    location.pathname === "/rayong";
+
+  // ✅ helper redirect ตาม role
+  const getDefaultPath = () => {
+    if (role === "MARKETING") return "/Axmr009";
+    if (role === "ACC") return "/Aglq760";
+    if (role === "FAC") return "/Aint302";
+    return "/";
+  };
 
   return (
     <>
@@ -32,20 +43,44 @@ function AppContent() {
       <div style={{ padding: 20 }}>
         <Routes>
 
-          {/* หน้า Home */}
-          <Route path="/" element={<Home />} />
+          {/* ================= ROOT ================= */}
+          <Route
+            path="/"
+            element={
+              <Navigate to={localStorage.getItem("site") || "/rayong"} />
+            }
+          />
 
-          {/* ================== SALE ================== */}
+          {/* ================= HOME (SITE) ================= */}
+          <Route
+            path="/bkkt100"
+            element={
+              role
+                ? <Navigate to={getDefaultPath()} />
+                : <Home />
+            }
+          />
+
+          <Route
+            path="/rayong"
+            element={
+              role
+                ? <Navigate to="/Aint302" />
+                : <Home />
+            }
+          />
+
+          {/* ================= ROLE BASE ================= */}
+
+          {/* MARKETING */}
           {role === "MARKETING" && (
             <>
               <Route path="/Axmr009" element={<Axmr009 />} />
-
-              {/* กันหลงหน้า */}
               <Route path="*" element={<Navigate to="/Axmr009" />} />
             </>
           )}
 
-          {/* ================== ACC ================== */}
+          {/* ACC */}
           {role === "ACC" && (
             <>
               <Route path="/Aglq760" element={<Aglq760 />} />
@@ -53,26 +88,20 @@ function AppContent() {
               <Route path="/Axct707_12XX" element={<Axct70712XX />} />
               <Route path="/Axct707_6XXX" element={<Axct7076XXX />} />
               <Route path="/Aint302" element={<Aint302 />} />
-
-              {/* ❌ block AXMR009 */}
               <Route path="/Axmr009" element={<Navigate to="/Aglq760" />} />
-
-              {/* กันหลงหน้า */}
               <Route path="*" element={<Navigate to="/Aglq760" />} />
             </>
           )}
 
-          {/* ================== FACTORY ================== */}
+          {/* FAC */}
           {role === "FAC" && (
             <>
               <Route path="/Aint302" element={<Aint302 />} />
-
-              {/* กันหลงหน้า */}
               <Route path="*" element={<Navigate to="/Aint302" />} />
             </>
           )}
 
-          {/* ================== ยังไม่เลือก role ================== */}
+          {/* ยังไม่เลือก role */}
           {!role && (
             <Route path="*" element={<Navigate to="/" />} />
           )}
@@ -83,7 +112,7 @@ function AppContent() {
   );
 }
 
-// ✅ ตัวหลัก
+// ================== MAIN APP ==================
 function App() {
   return (
     <Router>
