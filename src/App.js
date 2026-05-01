@@ -14,6 +14,7 @@ import Axct70712XX from "./pages/Axct707_12XX";
 import Axct7076XXX from "./pages/Axct707_6XXX";
 import Aint302 from "./pages/Aint302";
 import Axmr009 from "./pages/Axmr009";
+import Aist310 from "./pages/Aist310";
 
 // ================== APP CONTENT ==================
 function AppContent() {
@@ -90,6 +91,7 @@ function AppContent() {
               <Route path="/Aint302" element={<Aint302 />} />
               <Route path="/Axmr009" element={<Navigate to="/Aglq760" />} />
               <Route path="*" element={<Navigate to="/Aglq760" />} />
+              <Route path="/Aist310" element={<Aist310 />} />
             </>
           )}
 
