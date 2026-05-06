@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 
-function Axmr009() {
+function Aist310_1X() {
   const now = new Date();
 
 const formatDate = (date) => {
@@ -35,79 +35,49 @@ const handleEndChange = (value) => {
   /*const pad = (n) => n.toString().padStart(2, '0');*/
 
   const headers = [
-    'Shipping Notice No.',
-    'Shipping Notice Date',
-    'Estimated Shipping Date',
-    'Customer No.',
-    'Ordering Customer (Abbrev.)',
-    'Delivery Address',
-    'Customer Item Name',
-    'Order No.',
-    'QTY',
-    'Unit',
-    'Unit Price',
-    'Customer PO No.',
-    'LOT',
-    'Customer Item No./Spec',
-    'Name',
-    'Shipping Oder',
-    'Shipping Oder Date',
-    'Status',
-    'Salesperson',
-    'Department Name',
-    'Item Code',
-    'Item Name',
-    'Shipping Notice Applied Quantity',
-    'Actual Shipping Notice Quantity',
-    'Brief Description',
-    'Shipping Order',
-    'Invoice No.',
-    'Collection Term',
-    'Collection Desc',
-    'Trade Term',
-    'Trade Desc'
-
+    'DATE', 
+    'INV. NO.', 
+    'DESCRIPTION', 
+    'ITEM CODE', 
+    'TAX REGISTER NUMBER',
+    'BRANCH NO.', 
+    'CUSTOMER NAME', 
+    'CODE CUSTOMER', 
+    'UNIT PRICE',
+    'SALES INCOME AMOUNT', 
+    'SALES VAT(7%)', 
+    'TOTAL AMOUNT',
+    'SALES QTY(MT)', 
+    'Shipping Notice No.', 
+    'Unit', 
+    'Customer PO No.'
   ];
 
   // ✅ map object → table
   const mapRow = (row) => [
-    row.XMDGDOCNO,
-    row.XMDGDOCDT,
-    row.XMDG028,
-    row.XMDG005,
-    row.PMAAL004,
-    row.XMDG017,
-    row.PMAO009,
-    row.XMDH001,
-    row.CALC_QTY,
-    row.UNIT,
-    row.XMDH023,
-    row.XMDA033,
-    row.XMDH006_LAST6,
-    row.PMAO010,
-    row.OOFA011,
-    row.XMDKDOCNO,
-    row.XMDK001,
-    row.STATUS_DESC,
-    row.XMDG002,
-    row.OOEFL003,
-    row.XMDH006,
-    row.IMAAL003,
-    row.XMDH016,
-    row.XMDH017,
-    row.OOFB011,
-    row.ISAG002_LIST,
-    row.ISAF011_LIST,
-    row.XMDG008,
-    row.OOIBL004,
-    row.XMDG009,
-    row.OOCQL004
+    row.FORMATTED_DATE ?? '',
+    row.ISAF011 ?? '',
+    row.ISAG017 ?? '',
+    row.PMAO010 ?? '',
+    row.ISAF022 ?? '',
+    row.BRANCH_NO ?? '',
+    row.ISAF021 ?? '',
+    row.ISAF002 ?? '',
+    row.XMDH023 ?? '',
+    row.XMDH026 ?? '',
+    row.XMDH028 ?? '',
+    row.XMDH027 ?? '',
+    row.XMDH021 ?? '',
+    row.XMDL001 ?? '',
+    // ✅ FIX: SQL alias เป็น "Unit" (mixed case) — Oracle อาจคืนเป็น UNIT หรือ Unit
+    row.UNIT ?? row['Unit'] ?? '',
+    row.XMDA033 ?? ''
   ];
 
   useEffect(() => {
     setLoading(true);
 
-    fetch(`http://192.168.111.19:3001/api/axmr009?startDate=${startDate}&endDate=${endDate}`)
+    fetch(`http://192.168.111.19:3001/api/aist310_1X?startDate=${startDate}&endDate=${endDate}`)
       .then(async (res) => {
         const text = await res.text();
 
@@ -138,7 +108,7 @@ const handleEndChange = (value) => {
       headers,
       ...data.map(mapRow),
       [''],
-      ['(AXMR009)', '	Date Printed:', now.toLocaleDateString() + now.toLocaleTimeString()]
+      ['(Aist310_1X)', '	Date Printed:', now.toLocaleDateString() + now.toLocaleTimeString()]
 
     ];
 
@@ -151,7 +121,7 @@ const handleEndChange = (value) => {
 
     saveAs(
       new Blob([wbout]),
-      `AXMR009_${startDate}_to_${endDate}.xlsx`
+      `Aist310_1X_${startDate}_to_${endDate}.xlsx`
     );
   };
 
@@ -177,7 +147,7 @@ const handleEndChange = (value) => {
       </div>*/}
 
       <h2 style={{ fontSize: 20, color: '#444', textAlign: 'center', marginBottom: 6 }}>
-        📝 AXMR009 REPORT 📝
+        📝 Aist310_1X REPORT 📝
       </h2>
 
       <hr style={{ width: '100%', maxWidth: 800, margin: '10px auto 30px', borderColor: '#ccc' }} />
@@ -283,4 +253,4 @@ const handleEndChange = (value) => {
   );
 }
 
-export default Axmr009;
+export default Aist310_1X;

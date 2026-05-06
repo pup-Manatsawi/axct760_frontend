@@ -16,13 +16,14 @@ function Navbar({ role }) {
     { path: "/Axct707_12XX", label: "AXCT707-12XX" },
     { path: "/Axct707_6XXX", label: "AXCT707-6XXX" },
     { path: "/Aint302", label: "AINT302" },
-    { path: "/Aist310", label: "AIST310" }
+    { path: "/Aist310", label: "AIST310" },
+    /*{ path: "/Aist310_1X", label: "AIST310_1X" },
+    { path: "/Aist310_2X", label: "AIST310_2X" }*/
   ];
 
   const menuFac = [
     { path: "/Aint302", label: "AINT302" }
   ];
-
   // ✅ กัน role null
   let menu = [];
   if (role === "MARKETING") menu = menuSale;
