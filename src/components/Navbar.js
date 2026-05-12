@@ -16,7 +16,8 @@ function Navbar({ role }) {
     { path: "/Axct707_12XX", label: "AXCT707-12XX" },
     { path: "/Axct707_6XXX", label: "AXCT707-6XXX" },
     { path: "/Aint302", label: "AINT302" },
-    { path: "/Aist310", label: "AIST310" }
+    { path: "/Aist310", label: "AIST310" },
+    { path: "/Aapq360", label: "AAPQ360" }
      
   ];
 
