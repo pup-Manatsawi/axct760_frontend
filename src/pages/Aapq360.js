@@ -157,6 +157,7 @@ function Aapq360() {
 >
           <option value="">-- All --</option>
           <option value="IVI10001">IVICT</option>
+          <option value="SHI30001">SSFC</option>
         </select>
         </div>
 
