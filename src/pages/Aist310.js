@@ -2,105 +2,106 @@ import { useEffect, useState } from 'react';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 
-
-
 function Aist310() {
   const now = new Date();
 
-const formatDate = (date) => {
-  return date.toISOString().split('T')[0]; // yyyy-mm-dd
-};
-
-const handleStartChange = (value) => {
-  setStartDate(value);
-
-  // ถ้า start มากกว่า end → บังคับ end = start
-  if (endDate && value > endDate) {
-    setEndDate(value);
-  }
-};
-
-const handleEndChange = (value) => {
-  // ถ้า end น้อยกว่า start → บังคับให้เท่ากับ start
-  if (startDate && value < startDate) {
-    setEndDate(startDate);
-  } else {
-    setEndDate(value);
-  }
-};
+  const formatDate = (date) => {
+    return date.toISOString().split('T')[0]; // yyyy-mm-dd
+  };
 
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [startDate, setStartDate] = useState(formatDate(now));
   const [endDate, setEndDate] = useState(formatDate(now));
 
-  /*const pad = (n) => n.toString().padStart(2, '0');*/
+  // ✅ FIX compare date ให้ถูกต้อง
+  const handleStartChange = (value) => {
+    setStartDate(value);
+
+    if (endDate && new Date(value) > new Date(endDate)) {
+      setEndDate(value);
+    }
+  };
+
+  const handleEndChange = (value) => {
+    if (startDate && new Date(value) < new Date(startDate)) {
+      setEndDate(startDate);
+    } else {
+      setEndDate(value);
+    }
+  };
 
   const headers = [
-  'DATE', 'INV. NO.', 'DESCRIPTION', 'ITEM CODE', 'TAX REGISTER NUMBER',
-    'BRANCH NO.', 'CUSTOMER NAME', 'CODE CUSTOMER', 'UNIT PRICE',
-    'SALES INCOME AMOUNT', 'SALES VAT(7%)', 'TOTAL AMOUNT',
-    'SALES QTY(MT)', 'Shipping Notice No.', 'Unit', 'Customer PO No.'
+    'DATE',
+    'INV. NO.',
+    'DESCRIPTION',
+    'ITEM CODE',
+    'TAX REGISTER NUMBER',
+    'BRANCH NO.',
+    'CUSTOMER NAME',
+    'CODE CUSTOMER',
+    'UNIT PRICE',
+    'SALES INCOME AMOUNT',
+    'SALES VAT(7%)',
+    'TOTAL AMOUNT',
+    'SALES QTY(MT)',
+    'Shipping Notice No.',
+    'Unit',
+    'Customer PO No.'
   ];
 
-  // ✅ map object → table
   const mapRow = (row) => [
-    row.FORMATTED_DATE ?? '',
-    row.ISAF011 ?? '',
-    row.ISAG017 ?? '',
-    row.PMAO010 ?? '',
-    row.ISAF022 ?? '',
-    row.BRANCH_NO ?? '',
-    row.ISAF021 ?? '',
-    row.ISAF002 ?? '',
-    row.XMDH023 ?? '',
-    row.XMDH026 ?? '',
-    row.XMDH028 ?? '',
-    row.XMDH027 ?? '',
-    row.XMDH021 ?? '',
-    row.XMDL001 ?? '',
-    // ✅ FIX: SQL alias เป็น "Unit" (mixed case) — Oracle อาจคืนเป็น UNIT หรือ Unit
-    row.UNIT ?? row['Unit'] ?? '',
-    row.XMDA033 ?? ''
+    row.FORMATTED_DATE,
+    row.ISAF011,
+    row.ISAG017,
+    row.PMAO010,
+    row.ISAF022,
+    row.BRANCH_NO,
+    row.ISAF021,
+    row.ISAF002,
+    row.ISAG101,
+    row.ISAG103,
+    row.ISAG104,
+    row.ISAG105,
+    row.ISAG004,
+    row.XMDL001,
+    row.UNIT,
+    row.XMDA033
   ];
 
- useEffect(() => {
-  setLoading(true);
+  useEffect(() => {
+    setLoading(true);
 
-  fetch(`http://192.168.111.19:3001/api/aist310?startDate=${startDate}&endDate=${endDate}`)
-   .then(async (res) => {
-        const text = await res.text();
+    fetch(`http://192.168.111.19:3001/api/aist310?startDate=${startDate}&endDate=${endDate}`)
+      .then((res) => res.json())
+      .then((resData) => {
+        console.log('DATA:', resData);
+        console.log('IS ARRAY:', Array.isArray(resData));
 
-        try {
-          return JSON.parse(text);
-        } catch {
-          throw new Error(text);
+        // ✅ กัน data.map พัง
+        if (Array.isArray(resData)) {
+          setData(resData);
+        } else {
+          console.error('❌ API ไม่ได้ส่ง array:', resData);
+          setData([]);
         }
       })
-      .then((data) => {
-        console.log('DATA:', data);
-        setData(data);
+      .catch((err) => {
+        console.error('Error fetching data:', err);
+        setData([]);
       })
-    .catch((err) => {
-      console.error('Error fetching data:', err);
-      setData([]);
-    })
-    .finally(() => setLoading(false));
-
-}, [startDate, endDate]);
+      .finally(() => setLoading(false));
+  }, [startDate, endDate]);
 
   const exportToExcel = () => {
-    if (data.length === 0) return alert('ไม่มีข้อมูลให้ดาวน์โหลด');
+    if (!Array.isArray(data) || data.length === 0) {
+      return alert('ไม่มีข้อมูลให้ดาวน์โหลด');
+    }
 
     const worksheetData = [
-      ['THAI SHINKONG INDUSTRY CORPORATION LTD.'],
-      ['Shipping Notice Details'],
-      [''],
       headers,
       ...data.map(mapRow),
-      [''],
-      ['(AIST310)', '	Date Printed:', now.toLocaleDateString() + now.toLocaleTimeString()]
-
+    
     ];
 
     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
@@ -118,8 +119,6 @@ const handleEndChange = (value) => {
 
   return (
     <div style={{ fontFamily: 'Arial, sans-serif', padding: 5, maxWidth: '100%', margin: 'auto' }}>
-      
-    
 
       <h2 style={{ fontSize: 20, color: '#444', textAlign: 'center', marginBottom: 6 }}>
         📝 AIST310 REPORT 📝
@@ -128,49 +127,51 @@ const handleEndChange = (value) => {
       <hr style={{ width: '100%', maxWidth: 800, margin: '10px auto 30px', borderColor: '#ccc' }} />
 
       {/* Filter */}
-     <div style={{ display: 'flex', justifyContent: 'center', gap: 20, marginBottom: 20 }}>
+      <div style={{ display: 'flex', justifyContent: 'center', gap: 20, marginBottom: 20 }}>
 
-  <div>
-    <label>Start Date:</label>
-    <input
-      type="date"
-      value={startDate}
-      onChange={(e) => handleStartChange(e.target.value)} 
-      style={{ padding: '6px 10px', marginLeft: 6 }}
-    />
-  </div>
+        <div>
+          <label>Start Date:</label>
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => handleStartChange(e.target.value)}
+            style={{ padding: '6px 10px', marginLeft: 6 }}
+          />
+        </div>
 
-  <div>
-    <label>End Date:</label>
-    <input
-      type="date"
-      value={endDate}
-      onChange={(e) => handleEndChange(e.target.value)}
-      style={{ padding: '6px 10px', marginLeft: 6 }}
-    />
-  </div>
+        <div>
+          <label>End Date:</label>
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => handleEndChange(e.target.value)}
+            style={{ padding: '6px 10px', marginLeft: 6 }}
+          />
+        </div>
 
-  <button
-    onClick={exportToExcel}
-    style={{
-      backgroundColor: '#0066cc',
-      color: 'white',
-      border: 'none',
-      padding: '8px 16px',
-      borderRadius: 4,
-      cursor: 'pointer'
-    }}
-  >
-    💾 Download Excel
-  </button>
+        <button
+          onClick={exportToExcel}
+          style={{
+            backgroundColor: '#0066cc',
+            color: 'white',
+            border: 'none',
+            padding: '8px 16px',
+            borderRadius: 4,
+            cursor: 'pointer'
+          }}
+        >
+          💾 Download Excel
+        </button>
 
-</div>
+      </div>
 
       {/* Content */}
       {loading ? (
         <p style={{ textAlign: 'center' }}>⏳ กำลังโหลดข้อมูล / 正在載入資料...</p>
-      ) : data.length === 0 ? (
-        <p style={{ textAlign: 'center' }}>❗ไม่พบข้อมูล กรุณาตรวจสอบช่วงวันที่อีกครั้ง / 未找到資料，請再次確認日期。</p>
+      ) : !Array.isArray(data) || data.length === 0 ? (
+        <p style={{ textAlign: 'center' }}>
+          ❗ไม่พบข้อมูล หรือข้อมูลผิดพลาด กรุณาตรวจสอบช่วงวันที่ / 未找到資料或資料錯誤
+        </p>
       ) : (
         <div style={{
           maxWidth: '100vw',
@@ -202,23 +203,24 @@ const handleEndChange = (value) => {
               </tr>
             </thead>
 
-          <tbody>
-  {Array.isArray(data) ? (
-    data.map((row, idx) => (
-      <tr key={idx}>
-        {mapRow(row).map((value, i) => (
-          <td key={i}>{value}</td>
-        ))}
-      </tr>
-    ))
-  ) : (
-    <tr>
-      <td colSpan={headers.length} style={{ textAlign: 'center' }}>
-        ❌ Data format ผิด (ไม่ใช่ array)
-      </td>
-    </tr>
-  )}
-</tbody>
+            <tbody>
+              {data.map((row, idx) => (
+                <tr key={idx} style={{ backgroundColor: idx % 2 === 0 ? '#fff' : '#fafafa' }}>
+                  {mapRow(row).map((value, i) => (
+                    <td
+                      key={i}
+                      style={{
+                        border: '1px solid #ddd',
+                        padding: '8px',
+                        whiteSpace: 'nowrap'
+                      }}
+                    >
+                      {value}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
 
           </table>
         </div>
