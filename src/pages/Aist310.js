@@ -43,13 +43,13 @@ function Aist310() {
     'UNIT PRICE',
     'SALES INCOME AMOUNT',
     'SALES VAT(7%)',
-    'RATE',
-    'CURRENCY',
     'TOTAL AMOUNT',
     'SALES QTY(MT)',
     'Shipping Notice No.',
     'Unit',
-    'Customer PO No.'
+    'Customer PO No.',
+    'RATE USD',
+    'CONVERTED AMOUNT'
   ];
 
   const mapRow = (row) => [
@@ -64,13 +64,13 @@ function Aist310() {
     row.ISAG101,
     row.ISAG103,
     row.ISAG104,
-    row.ISAF101,
-    row.ISAF100,
     row.ISAG105,
     row.ISAG004,
     row.XMDL001,
     row.UNIT,
-    row.XMDA033
+    row.XMDA033,
+    row.OOAN005,
+    row.RATEXX
   ];
 
   useEffect(() => {
