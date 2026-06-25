@@ -6,7 +6,8 @@ function Aapq360() {
   const now = new Date();
 
   const formatDate = (date) => {
-    return date.toISOString().split('T')[0]; // yyyy-mm-dd
+    //return date.toISOString().split('T')[0]; // yyyy-mm-dd
+    return date.toLocaleDateString('en-CA'); // YYYY-MM-DD
   };
 
   const [data, setData] = useState([]);
