@@ -32,7 +32,7 @@ const handleEndChange = (value) => {
   const [loading, setLoading] = useState(false);
   const [startDate, setStartDate] = useState(formatDate(now));
   const [endDate, setEndDate] = useState(formatDate(now));
-  const [xmdg002, setXmdg002] = useState('');
+  const [salesType, setSalesType] = useState('');
 
   /*const pad = (n) => n.toString().padStart(2, '0');*/
 
@@ -109,7 +109,7 @@ const handleEndChange = (value) => {
   useEffect(() => {
     setLoading(true);
 
-    fetch(`http://192.168.111.19:3001/api/axmr009?startDate=${startDate}&endDate=${endDate}&xmdg002=${xmdg002}`)
+    fetch(`http://192.168.111.19:3001/api/axmr009?startDate=${startDate}&endDate=${endDate}&salesType=${salesType}`)
       .then(async (res) => {
         const text = await res.text();
 
@@ -128,7 +128,7 @@ const handleEndChange = (value) => {
         setData([]);
       })
       .finally(() => setLoading(false));
-  }, [startDate, endDate, xmdg002]);
+  }, [startDate, endDate, salesType]);
 
   const exportToExcel = () => {
     if (data.length === 0) return alert('ไม่มีข้อมูลให้ดาวน์โหลด');
@@ -153,7 +153,7 @@ const handleEndChange = (value) => {
 
     saveAs(
       new Blob([wbout]),
-      `AXMR009_${startDate}_to_${endDate}_${xmdg002}.xlsx`
+      `AXMR009_${startDate}_to_${endDate}_${salesType}.xlsx`
     );
   };
 
@@ -207,18 +207,17 @@ const handleEndChange = (value) => {
     />
   </div>
   <div>
-          <label>Sales:</label>
+          <label>Sales Type:</label>
           <select 
-              name="xmdg002"
-              value={xmdg002}
-              onChange={(e) => setXmdg002(e.target.value)}
+              name="salesType"
+              value={salesType}
+              onChange={(e) => setSalesType(e.target.value)}
                style={{ padding: '6px 10px', marginLeft: 6 }}
 >
           <option value="">-- All --</option>
-          <option value="030042">ORAPAN</option>
-          <option value="030078">APITSARA</option>
-          <option value="030047">SROPIKUL</option>
-          <option value="030063">NATTAKAN</option>
+          <option value="DOMESTIC">Domestic</option>
+          <option value="EXPORT">Export</option>
+          
         </select>
         </div>
 
