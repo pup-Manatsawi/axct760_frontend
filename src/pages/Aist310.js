@@ -50,7 +50,10 @@ function Aist310() {
     'Unit',
     'Customer PO No.',
     'RATE USD',
-    'CONVERTED AMOUNT'
+    'CONVERTED AMOUNT',
+    'ITEM NO.',
+    'Product Category',
+    'Inv. Group',
   ];
 
   const mapRow = (row) => [
@@ -71,7 +74,10 @@ function Aist310() {
     row.UNIT,
     row.XMDA033,
     row.OOAN005,
-    row.RATEXX
+    row.RATEXX,
+    row.ISAG009,
+    row.IMAA009,
+    row.IMAF051
   ];
 
   useEffect(() => {
