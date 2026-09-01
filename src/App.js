@@ -16,6 +16,7 @@ import Aint302 from "./pages/Aint302";
 import Axmr009 from "./pages/Axmr009";
 import Aist310 from "./pages/Aist310";
 import Aapq360 from "./pages/Aapq360";
+import Apmt400 from "./pages/Apmt400";
 
 // ================== APP CONTENT ==================
 function AppContent() {
@@ -33,6 +34,7 @@ function AppContent() {
     if (role === "MARKETING") return "/Axmr009";
     if (role === "ACC") return "/Aglq760";
     if (role === "FAC") return "/Aint302";
+    if (role === "PUR") return "/Apmt400";
     return "/";
   };
 
@@ -103,6 +105,14 @@ function AppContent() {
             <>
               <Route path="/Aint302" element={<Aint302 />} />
               <Route path="*" element={<Navigate to="/Aint302" />} />
+            </>
+          )}
+
+          {/* PUR */}
+          {role === "PUR" && (
+            <>
+              <Route path="/Apmt400" element={<Apmt400 />} />
+              <Route path="*" element={<Navigate to="/Apmt400" />} />
             </>
           )}
 

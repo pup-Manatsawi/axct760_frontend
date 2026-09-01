@@ -21,6 +21,10 @@ function Navbar({ role }) {
      
   ];
 
+  const menuPur = [
+    { path: "/Apmt400", label: "APMT400" }
+  ];
+
   const menuFac = [
     { path: "/Aint302", label: "AINT302" }
   ];
@@ -29,6 +33,7 @@ function Navbar({ role }) {
   if (role === "MARKETING") menu = menuSale;
   else if (role === "ACC") menu = menuAcc;
   else if (role === "FAC") menu = menuFac;
+  else if (role === "PUR") menu = menuPur;
 
   // ✅ logout (กลับ Home + ล้าง role)
   const handleHome = () => {

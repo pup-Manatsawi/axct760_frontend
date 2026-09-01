@@ -39,6 +39,8 @@ function Home() {
       navigate('/Aglq760');
     } else if (role === 'FAC') {
       navigate('/Aint302');
+    } else if (role === 'PUR') {
+      navigate('/Apmt400');
     }
   };
 
@@ -59,9 +61,14 @@ function Home() {
               <span style={textStyle}>MARKETING</span>
             </div>
 
-            <div onClick={() => selectRole('ACC')} style={menuStyle('#009933')}>
+            <div onClick={() => selectRole('ACC')} style={menuStyle('#C5A059')}>
               <img src="/investment.png" alt="investment" style={imgStyle(-20)} />
               <span style={textStyle}>ACC / FIN</span>
+            </div>
+
+            <div onClick={() => selectRole('PUR')} style={menuStyle('#009933')}>
+              <img src="/pur2.png" alt="investment" style={imgStyle(-20)} />
+              <span style={textStyle}>PURCHASE</span>
             </div>
 
             <div onClick={() => selectRole('FAC')} style={menuStyle('#8A5CD6')}>
