@@ -26,7 +26,9 @@ function AppContent() {
   // ✅ ซ่อน Navbar หน้าเลือก site / home
   const hideNavbar =
     location.pathname === "/" ||
-    location.pathname === "/bkkt100" ||
+    location.pathname === "/bkkt100acc&fin" ||
+    location.pathname === "/bkkpur" ||
+    location.pathname === "/bkksale" ||
     location.pathname === "/rayong";
 
   // ✅ helper redirect ตาม role
@@ -34,7 +36,7 @@ function AppContent() {
     if (role === "MARKETING") return "/Axmr009";
     if (role === "ACC") return "/Aglq760";
     if (role === "FAC") return "/Aint302";
-    if (role === "PUR") return "/Apmt400";
+    if (role === "PUR") return "/Apmt400";  
     return "/";
   };
 
@@ -51,27 +53,30 @@ function AppContent() {
           <Route
             path="/"
             element={
-              <Navigate to={localStorage.getItem("site") || "/rayong"} />
+              <Navigate to={localStorage.getItem("site") || "/rayong"} replace />
             }
           />
 
           {/* ================= HOME (SITE) ================= */}
           <Route
-            path="/bkkt100"
-            element={
-              role
-                ? <Navigate to={getDefaultPath()} />
-                : <Home />
-            }
+            path="/bkkt100acc&fin"
+            element={role ? <Navigate to={getDefaultPath()} replace /> : <Home />}
+          />
+
+          {/* ✅ เพิ่ม Route /bkkpur ตรงนี้ให้ครบแล้ว */}
+          <Route
+            path="/bkkpur"
+            element={role ? <Navigate to={getDefaultPath()} replace /> : <Home />}
+          />
+
+          <Route
+            path="/bkksale"
+            element={role ? <Navigate to={getDefaultPath()} replace /> : <Home />}
           />
 
           <Route
             path="/rayong"
-            element={
-              role
-                ? <Navigate to="/Aint302" />
-                : <Home />
-            }
+            element={role ? <Navigate to={getDefaultPath()} replace /> : <Home />}
           />
 
           {/* ================= ROLE BASE ================= */}
@@ -80,7 +85,7 @@ function AppContent() {
           {role === "MARKETING" && (
             <>
               <Route path="/Axmr009" element={<Axmr009 />} />
-              <Route path="*" element={<Navigate to="/Axmr009" />} />
+              <Route path="*" element={<Navigate to="/Axmr009" replace />} />
             </>
           )}
 
@@ -94,9 +99,8 @@ function AppContent() {
               <Route path="/Aint302" element={<Aint302 />} />
               <Route path="/Aist310" element={<Aist310 />} />
               <Route path="/Aapq360" element={<Aapq360 />} />
-              <Route path="/Axmr009" element={<Navigate to="/Aglq760" />} />
-              <Route path="*" element={<Navigate to="/Aglq760" />} />
-              
+              <Route path="/Axmr009" element={<Navigate to="/Aglq760" replace />} />
+              <Route path="*" element={<Navigate to="/Aglq760" replace />} />
             </>
           )}
 
@@ -104,7 +108,7 @@ function AppContent() {
           {role === "FAC" && (
             <>
               <Route path="/Aint302" element={<Aint302 />} />
-              <Route path="*" element={<Navigate to="/Aint302" />} />
+              <Route path="*" element={<Navigate to="/Aint302" replace />} />
             </>
           )}
 
@@ -112,13 +116,13 @@ function AppContent() {
           {role === "PUR" && (
             <>
               <Route path="/Apmt400" element={<Apmt400 />} />
-              <Route path="*" element={<Navigate to="/Apmt400" />} />
+              <Route path="*" element={<Navigate to="/Apmt400" replace />} />
             </>
           )}
 
           {/* ยังไม่เลือก role */}
           {!role && (
-            <Route path="*" element={<Navigate to="/" />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
           )}
 
         </Routes>
