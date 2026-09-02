@@ -14,6 +14,7 @@ function Apmt400() {
   const [loading, setLoading] = useState(false);
   const [startDate, setStartDate] = useState(formatDate(now));
   const [endDate, setEndDate] = useState(formatDate(now));
+  const [status, setStatus] = useState('');
 
   // ✅ FIX compare date ให้ถูกต้อง
   const handleStartChange = (value) => {
@@ -119,7 +120,7 @@ function Apmt400() {
   useEffect(() => {
     setLoading(true);
 
-    fetch(`http://192.168.111.19:3001/api/apmt400?startDate=${startDate}&endDate=${endDate}`)
+    fetch(`http://192.168.111.19:3001/api/apmt400?startDate=${startDate}&endDate=${endDate}&status=${status}`)
       .then((res) => res.json())
       .then((resData) => {
         console.log('DATA:', resData);
@@ -138,7 +139,7 @@ function Apmt400() {
         setData([]);
       })
       .finally(() => setLoading(false));
-  }, [startDate, endDate]);
+  }, [startDate, endDate, status]);
 
   const exportToExcel = () => {
     if (!Array.isArray(data) || data.length === 0) {
@@ -194,6 +195,22 @@ function Apmt400() {
             onChange={(e) => handleEndChange(e.target.value)}
             style={{ padding: '6px 10px', marginLeft: 6 }}
           />
+        </div>
+
+        <div>
+          <label>Status:</label>
+          <select 
+              name="status"
+              value={status}
+              onChange={(e) => setStatus(e.target.value)}
+               style={{ padding: '6px 10px', marginLeft: 6 }}
+>
+          <option value="">-- All --</option>
+          <option value="NoPo">Pending PO</option>
+          <option value="NoAp">Pending AP</option>
+          <option value="NoWriteOff">Pending Write-off</option>
+          
+        </select>
         </div>
 
         <button
