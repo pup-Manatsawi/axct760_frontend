@@ -86,7 +86,7 @@ function Apmt400() {
     row.PMDADOCNO,
     row.PMDADOCDT,
     row.TOTAL_PMDB006,
-    row.IMAAL003_LIST,
+    row.IMAAL003,
     row.PMDA022,
     row.PMDLDOCNO,
     row.PMDLDOCDT,
