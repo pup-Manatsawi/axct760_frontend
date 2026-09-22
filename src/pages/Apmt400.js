@@ -6,8 +6,7 @@ function Apmt400() {
   const now = new Date();
 
   const formatDate = (date) => {
-   // return date.toISOString().split('T')[0]; // yyyy-mm-dd
-   return date.toLocaleDateString('en-CA'); // YYYY-MM-DD
+    return date.toLocaleDateString('en-CA'); // YYYY-MM-DD
   };
 
   const [data, setData] = useState([]);
@@ -15,8 +14,8 @@ function Apmt400() {
   const [startDate, setStartDate] = useState(formatDate(now));
   const [endDate, setEndDate] = useState(formatDate(now));
   const [status, setStatus] = useState('');
+  const [colorFilter, setColorFilter] = useState('');
 
-  // ✅ FIX compare date ให้ถูกต้อง
   const handleStartChange = (value) => {
     setStartDate(value);
 
@@ -31,6 +30,52 @@ function Apmt400() {
     } else {
       setEndDate(value);
     }
+  };
+
+  // ✅ ฟังก์ชันช่วย Parse วันที่ (รองรับทั้ง YYYY-MM-DD และ DD/MM/YYYY)
+  const parseDateString = (dateStr) => {
+    if (!dateStr) return null;
+    const str = String(dateStr).trim();
+    
+    if (str.includes('/')) {
+      const parts = str.split('/');
+      if (parts.length === 3) {
+        const day = parseInt(parts[0], 10);
+        const month = parseInt(parts[1], 10) - 1;
+        const year = parseInt(parts[2], 10);
+        return new Date(year, month, day);
+      }
+    }
+    
+    const parsed = new Date(str);
+    return isNaN(parsed.getTime()) ? null : parsed;
+  };
+
+  // ✅ ฟังก์ชันคำนวณสถานะสีตามกฎ
+  const getRowColorStatus = (row) => {
+    if (row.PMDSDOCDT && String(row.PMDSDOCDT).trim() !== '') {
+      return 'none';
+    }
+
+    const expectedDate = parseDateString(row.PMDO012);
+    if (!expectedDate) return 'none';
+
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    expectedDate.setHours(0, 0, 0, 0);
+
+    const diffTime = expectedDate.getTime() - today.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 3600 * 24));
+
+    if (diffDays <= 0) {
+      return 'red';
+    }
+
+    if (diffDays >= 1 && diffDays <= 7) {
+      return 'orange';
+    }
+
+    return 'none';
   };
 
   const headers = [
@@ -51,7 +96,7 @@ function Apmt400() {
     'Currency',
     'LN',
     'Expected Delivery Date',
-    'Actual Delivery Date',
+    'Receipt Date',
     'Reconciliation Statement No.',
     'Bill No.',
     'Invoice No.',
@@ -94,8 +139,8 @@ function Apmt400() {
     row.TOTAL_PMDO033,
     row.PMDL015,
     row.PMDOSEQ,
-    row.PMDO011,
     row.PMDO012,
+    row.PMDSDOCDT,
     row.APCA018,
     row.APCADOCNO,
     row.APCA066,
@@ -127,10 +172,6 @@ function Apmt400() {
     fetch(`http://192.168.111.19:3001/api/apmt400?startDate=${startDate}&endDate=${endDate}&status=${status}`)
       .then((res) => res.json())
       .then((resData) => {
-        console.log('DATA:', resData);
-        console.log('IS ARRAY:', Array.isArray(resData));
-
-        // ✅ กัน data.map พัง
         if (Array.isArray(resData)) {
           setData(resData);
         } else {
@@ -145,15 +186,19 @@ function Apmt400() {
       .finally(() => setLoading(false));
   }, [startDate, endDate, status]);
 
+  const filteredData = data.filter((row) => {
+    if (!colorFilter) return true;
+    return getRowColorStatus(row) === colorFilter;
+  });
+
   const exportToExcel = () => {
-    if (!Array.isArray(data) || data.length === 0) {
+    if (!Array.isArray(filteredData) || filteredData.length === 0) {
       return alert('ไม่มีข้อมูลให้ดาวน์โหลด');
     }
 
     const worksheetData = [
       headers,
-      ...data.map(mapRow),
-    
+      ...filteredData.map(mapRow),
     ];
 
     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
@@ -176,10 +221,10 @@ function Apmt400() {
         📝 APMT400 REPORT 📝
       </h2>
 
-      <hr style={{ width: '100%', maxWidth: 800, margin: '10px auto 30px', borderColor: '#ccc' }} />
+      <hr style={{ width: '100%', maxWidth: 800, margin: '10px auto 15px', borderColor: '#ccc' }} />
 
-      {/* Filter */}
-      <div style={{ display: 'flex', justifyContent: 'center', gap: 20, marginBottom: 20 }}>
+      {/* Filter Controls */}
+      <div style={{ display: 'flex', justifyContent: 'center', gap: 20, marginBottom: 12, flexWrap: 'wrap', alignItems: 'center' }}>
 
         <div>
           <label>Start Date:</label>
@@ -204,17 +249,30 @@ function Apmt400() {
         <div>
           <label>Status:</label>
           <select 
-              name="status"
-              value={status}
-              onChange={(e) => setStatus(e.target.value)}
-               style={{ padding: '6px 10px', marginLeft: 6 }}
->
-          <option value="">-- All --</option>
-          <option value="NoPo">Pending PO</option>
-          <option value="NoAp">Pending AP</option>
-          <option value="NoWriteOff">Pending Write-off</option>
-          
-        </select>
+            name="status"
+            value={status}
+            onChange={(e) => setStatus(e.target.value)}
+            style={{ padding: '6px 10px', marginLeft: 6 }}
+          >
+            <option value="">-- All --</option>
+            <option value="NoPo">Pending PO</option>
+            <option value="NoAp">Pending AP</option>
+            <option value="NoWriteOff">Pending Write-off</option>
+          </select>
+        </div>
+
+        <div>
+          <label style={{ fontWeight: 'bold' }}>Color Warning:</label>
+          <select
+            value={colorFilter}
+            onChange={(e) => setColorFilter(e.target.value)}
+            style={{ padding: '6px 10px', marginLeft: 6 }}
+          >
+            <option value="">-- All Colors --</option>
+            <option value="red">🔴 ถึง/เลยกำหนดส่ง (Overdue)</option>
+            <option value="orange">🟠 ใกล้ถึงกำหนดใน 7 วัน (Near Due)</option>
+            <option value="none">⚪ ปกติ (Normal)</option>
+          </select>
         </div>
 
         <button
@@ -233,10 +291,46 @@ function Apmt400() {
 
       </div>
 
-      {/* Content */}
+      {/* ✅ กล่องคำอธิบายกฎของสี (บรรทัดเดียวแบบแนวนอน) */}
+      <div style={{ 
+        display: 'flex', 
+        justifyContent: 'center', 
+        alignItems: 'center',
+        gap: 20, 
+        marginBottom: 15, 
+        fontSize: '12px', 
+        whiteSpace: 'nowrap',
+        backgroundColor: '#f9f9f9',
+        padding: '6px 15px',
+        borderRadius: '4px',
+        border: '1px solid #eee',
+        width: 'fit-content',
+        margin: '0 auto 15px'
+      }}>
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+          <span style={{ width: 12, height: 12, backgroundColor: '#ffcccc', border: '1px solid #ff9999', display: 'inline-block', borderRadius: 2 }}></span>
+          <span><strong>สีแดง:</strong> Receipt Date ว่าง + ถึง/เลย Expected Date</span>
+        </div>
+
+        <span style={{ color: '#ccc' }}>|</span>
+
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+          <span style={{ width: 12, height: 12, backgroundColor: '#ffe5b4', border: '1px solid #ffcc80', display: 'inline-block', borderRadius: 2 }}></span>
+          <span><strong>สีส้ม:</strong> Receipt Date ว่าง + เหลือ ≤ 7 วันจะถึง Expected Date</span>
+        </div>
+
+        <span style={{ color: '#ccc' }}>|</span>
+
+        <div style={{ display: 'inline-flex', alignItems: 'center', gap: '5px' }}>
+          <span style={{ width: 12, height: 12, backgroundColor: '#ffffff', border: '1px solid #ccc', display: 'inline-block', borderRadius: 2 }}></span>
+          <span><strong>ไม่มีสี:</strong> มี Receipt Date หรือ เหลือเวลา &gt; 7 วัน</span>
+        </div>
+      </div>
+
+      {/* Content Table */}
       {loading ? (
         <p style={{ textAlign: 'center' }}>⏳ กำลังโหลดข้อมูล / 正在載入資料...</p>
-      ) : !Array.isArray(data) || data.length === 0 ? (
+      ) : !Array.isArray(filteredData) || filteredData.length === 0 ? (
         <p style={{ textAlign: 'center' }}>
           ❗ไม่พบข้อมูล หรือข้อมูลผิดพลาด กรุณาตรวจสอบช่วงวันที่ / 未找到資料或資料錯誤
         </p>
@@ -272,22 +366,33 @@ function Apmt400() {
             </thead>
 
             <tbody>
-              {data.map((row, idx) => (
-                <tr key={idx} style={{ backgroundColor: idx % 2 === 0 ? '#fff' : '#fafafa' }}>
-                  {mapRow(row).map((value, i) => (
-                    <td
-                      key={i}
-                      style={{
-                        border: '1px solid #ddd',
-                        padding: '8px',
-                        whiteSpace: 'nowrap'
-                      }}
-                    >
-                      {value}
-                    </td>
-                  ))}
-                </tr>
-              ))}
+              {filteredData.map((row, idx) => {
+                const colorStatus = getRowColorStatus(row);
+
+                let bgColor = idx % 2 === 0 ? '#fff' : '#fafafa';
+                if (colorStatus === 'red') {
+                  bgColor = '#ffcccc';
+                } else if (colorStatus === 'orange') {
+                  bgColor = '#ffe5b4';
+                }
+
+                return (
+                  <tr key={idx} style={{ backgroundColor: bgColor }}>
+                    {mapRow(row).map((value, i) => (
+                      <td
+                        key={i}
+                        style={{
+                          border: '1px solid #ddd',
+                          padding: '8px',
+                          whiteSpace: 'nowrap'
+                        }}
+                      >
+                        {value}
+                      </td>
+                    ))}
+                  </tr>
+                );
+              })}
             </tbody>
 
           </table>
