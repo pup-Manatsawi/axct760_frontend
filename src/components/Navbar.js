@@ -19,7 +19,6 @@ function Navbar({ role }) {
     { path: "/Aist310", label: "AIST310" },
     { path: "/Aapq360", label: "AAPQ360" },
     { path: "/QRCodeBox", label: "QR Code Box" }
-     
   ];
 
   const menuPur = [
@@ -29,12 +28,51 @@ function Navbar({ role }) {
   const menuFac = [
     { path: "/Aint302", label: "AINT302" }
   ];
+
   // ✅ กัน role null
   let menu = [];
   if (role === "MARKETING") menu = menuSale;
   else if (role === "ACC") menu = menuAcc;
   else if (role === "FAC") menu = menuFac;
   else if (role === "PUR") menu = menuPur;
+
+  // ✅ กำหนดชุดสีตาม Role (Dynamic Theme Colors)
+  const getThemeConfig = (currentRole) => {
+    switch (currentRole) {
+      case "MARKETING":
+        return {
+          gradient: "linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)",
+          shadow: "0 4px 10px rgba(37, 99, 235, 0.3)",
+          dotColor: "#2563eb"
+        };
+      case "ACC":
+        return {
+          gradient: "linear-gradient(135deg, #d97706 0%, #b45309 100%)",
+          shadow: "0 4px 10px rgba(217, 119, 6, 0.3)",
+          dotColor: "#d97706"
+        };
+      case "PUR":
+        return {
+          gradient: "linear-gradient(135deg, #059669 0%, #047857 100%)",
+          shadow: "0 4px 10px rgba(5, 150, 105, 0.3)",
+          dotColor: "#059669"
+        };
+      case "FAC":
+        return {
+          gradient: "linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)",
+          shadow: "0 4px 10px rgba(124, 58, 237, 0.3)",
+          dotColor: "#7c3aed"
+        };
+      default:
+        return {
+          gradient: "linear-gradient(135deg, #059669 0%, #047857 100%)",
+          shadow: "0 4px 10px rgba(5, 150, 105, 0.3)",
+          dotColor: "#059669"
+        };
+    }
+  };
+
+  const theme = getThemeConfig(role);
 
   // ✅ logout (กลับ Home + ล้าง role)
   const handleHome = () => {
@@ -47,14 +85,12 @@ function Navbar({ role }) {
       
       {/* Logo + Home */}
       <div style={{ display: "flex", alignItems: "center", gap: 20 }}>
-        
         <div onClick={handleHome} style={styles.logo}>
           <h1 style={styles.title}>
             <img src="/tsiclogo.png" alt="logo" style={styles.logoImg} />
-            TSIC
+            <span>TSIC</span>
           </h1>
         </div>
-
       </div>
 
       {/* Menu */}
@@ -68,7 +104,7 @@ function Navbar({ role }) {
               to={item.path}
               style={{
                 ...styles.link,
-                ...(active ? styles.active : {})
+                ...(active ? { background: theme.gradient, color: "#ffffff", boxShadow: theme.shadow } : {})
               }}
             >
               {item.label}
@@ -79,6 +115,7 @@ function Navbar({ role }) {
 
       {/* Role */}
       <div style={styles.role}>
+        <span style={{ ...styles.roleDot, backgroundColor: theme.dotColor }}></span>
         {role || "-"}
       </div>
 
@@ -93,57 +130,74 @@ const styles = {
     display: "flex",
     alignItems: "center",
     justifyContent: "space-between",
-    padding: "12px 30px",
+    padding: "14px 32px",
     background: "#ffffff",
-    borderBottom: "1px solid #e5e7eb",
-    boxShadow: "0 2px 6px rgba(0,0,0,0.05)"
+    borderBottom: "1px solid #e2e8f0",
+    boxShadow: "0 1px 3px 0 rgba(0, 0, 0, 0.05)",
+    position: "sticky",
+    top: 0,
+    zIndex: 1000,
+    boxSizing: "border-box"
   },
 
   logo: {
-    cursor: "pointer"
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center"
   },
 
   title: {
-    fontSize: 24,
-    color: "#1E40AF",
+    fontSize: "20px",
+    color: "#0f172a",
     margin: 0,
     display: "flex",
     alignItems: "center",
-    fontStyle: "italic",
-    fontWeight: 700
+    gap: "10px",
+    fontWeight: "800",
+    letterSpacing: "-0.3px"
   },
 
   logoImg: {
-    width: 40,
-    height: 40,
-    marginRight: 5
+    width: "36px",
+    height: "36px",
+    objectFit: "contain"
   },
 
   menu: {
     display: "flex",
-    gap: 20
+    gap: "10px",
+    alignItems: "center",
+    flexWrap: "wrap"
   },
 
   link: {
     textDecoration: "none",
     padding: "8px 16px",
-    borderRadius: 8,
-    color: "#374151",
-    fontWeight: 500,
-    transition: "0.25s"
-  },
-
-  active: {
-    background: "#e0f2fe",
-    color: "#0284c7"
+    borderRadius: "8px",
+    color: "#475569",
+    fontWeight: "600",
+    fontSize: "13px",
+    transition: "all 0.2s ease-in-out",
+    backgroundColor: "transparent"
   },
 
   role: {
-    fontSize: 14,
-    padding: "6px 12px",
-    borderRadius: 20,
+    fontSize: "13px",
+    fontWeight: "600",
+    padding: "6px 14px",
+    borderRadius: "20px",
     background: "#f1f5f9",
-    color: "#475569"
+    color: "#334155",
+    border: "1px solid #e2e8f0",
+    display: "flex",
+    alignItems: "center",
+    gap: "8px"
+  },
+
+  roleDot: {
+    width: "8px",
+    height: "8px",
+    borderRadius: "50%"
   }
 };
 

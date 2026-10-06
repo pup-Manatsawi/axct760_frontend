@@ -30,8 +30,13 @@ function Axct707_12XX() {
     setLoading(true);
     fetch(`http://192.168.111.19:3001/api/axct707_12xx?month=${month}&year=${year}`)
       .then((res) => res.json())
-      .then((data) => {
-        setData(data);
+      .then((resData) => {
+        if (Array.isArray(resData)) {
+          setData(resData);
+        } else {
+          console.error('❌ API ไม่ได้ส่ง array:', resData);
+          setData([]);
+        }
         setLoading(false);
       })
       .catch((err) => {
@@ -42,7 +47,9 @@ function Axct707_12XX() {
   }, [month, year]);
 
   const exportToExcel = () => {
-    if (data.length === 0) return alert('ไม่มีข้อมูลให้ดาวน์โหลด');
+    if (!Array.isArray(data) || data.length === 0) {
+      return alert('ไม่มีข้อมูลให้ดาวน์โหลด');
+    }
 
     const worksheetData = [headers, ...data];
     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
@@ -54,132 +61,268 @@ function Axct707_12XX() {
   };
 
   return (
-       <div style={{ fontFamily: 'Arial, sans-serif', padding: 5, maxWidth: 'auto', margin: 'auto' }}>
-      {/* แถวที่ 1: โลโก้และชื่อบริษัท */}
-     {/* <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 1,
-          flexWrap: 'wrap',
-          justifyContent: 'center',
-          textAlign: 'center',
-          marginBottom: 6
-        }}
-      >
-        <img src="/tsic-logo.png" alt="TSIC Logo" style={{ width: 100, height: 100 }} />
-        <h1 style={{ fontSize: 24, color: '#003366', margin: 0 }}>
-          THAI SHINKONG INDUSTRY CORPORATION LIMITED
-        </h1>
-      </div> /*}
+    <div style={{
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+      padding: '32px 24px',
+      maxWidth: '1940px',
+      margin: '0 auto',
+      backgroundColor: '#f8fafc',
+      minHeight: '100vh',
+      boxSizing: 'border-box'
+    }}>
+      {/* Header Section */}
+      <div style={{ 
+        marginBottom: '28px', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '16px',
+        backgroundColor: '#ffffff',
+        padding: '24px 32px',
+        borderRadius: '16px',
+        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.05)',
+        border: '1px solid #e2e8f0'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div style={{
+            width: '48px',
+            height: '48px',
+            borderRadius: '12px',
+            background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)', // Indigo Theme
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#ffffff',
+            boxShadow: '0 4px 10px rgba(99, 102, 241, 0.3)'
+          }}>
+            {/* Modern Financial Document SVG Icon */}
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+          </div>
+          <div>
+            <h2 style={{
+              fontSize: '22px',
+              fontWeight: '700',
+              color: '#0f172a',
+              margin: '0 0 4px 0',
+              letterSpacing: '-0.3px'
+            }}>
+              AXCT707(12XX) REPORT
+            </h2>
+            <p style={{ color: '#64748b', fontSize: '13px', margin: 0, fontWeight: '400' }}>
+              ระบบรายงานบัญชีและสินค้าคงคลัง 12XX (Inventory & Financial Report)
+            </p>
+          </div>
+        </div>
 
-      {/* แถวที่ 2: ชื่อรายงาน */}
-      <h2 style={{ fontSize: 20, color: '#444', textAlign: 'center', marginBottom: 6 }}>
-        📝 AXCT707(12XX) REPORT 📝
-      </h2>
+        <div style={{
+          fontSize: '13px',
+          color: '#475569',
+          backgroundColor: '#f1f5f9',
+          padding: '8px 16px',
+          borderRadius: '20px',
+          fontWeight: '500',
+          border: '1px solid #e2e8f0'
+        }}>
+          รายการทั้งหมด: <strong style={{ color: '#0f172a' }}>{data.length}</strong> รายการ
+        </div>
+      </div>
 
-      
-
-      {/* แถวที่ 3: เส้นคั่นล่าง */}
-      <hr style={{ width: '100%', maxWidth: 800, margin: '10px auto 30px', borderColor: '#ccc' }} />
-
-      {/* ฟิลเตอร์และปุ่มดาวน์โหลด */}
-      <div style={{ display: 'flex', justifyContent: 'center', gap: 20, marginBottom: 20 }}>
-        <div>
-          <label>Month:</label>
+      {/* Filter Card */}
+      <div style={{
+        backgroundColor: '#ffffff',
+        padding: '24px',
+        borderRadius: '16px',
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)',
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'flex-end',
+        gap: '20px',
+        marginBottom: '24px',
+        border: '1px solid #e2e8f0'
+      }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <label style={{ fontSize: '13px', fontWeight: '600', color: '#334155' }}>Month</label>
           <input
             type="number"
             min="1"
             max="12"
             value={month}
             onChange={(e) => setMonth(e.target.value)}
-            style={{ padding: '6px 10px', marginLeft: 6 }}
+            style={{
+              padding: '10px 14px',
+              borderRadius: '8px',
+              border: '1px solid #cbd5e1',
+              fontSize: '14px',
+              outline: 'none',
+              backgroundColor: '#f8fafc',
+              color: '#0f172a',
+              fontWeight: '500',
+              width: '100px',
+              transition: 'all 0.2s'
+            }}
           />
         </div>
 
-        <div>
-          <label>Year:</label>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <label style={{ fontSize: '13px', fontWeight: '600', color: '#334155' }}>Year</label>
           <input
             type="number"
             min="2000"
             max="2100"
             value={year}
             onChange={(e) => setYear(e.target.value)}
-            style={{ padding: '6px 10px', marginLeft: 6 }}
+            style={{
+              padding: '10px 14px',
+              borderRadius: '8px',
+              border: '1px solid #cbd5e1',
+              fontSize: '14px',
+              outline: 'none',
+              backgroundColor: '#f8fafc',
+              color: '#0f172a',
+              fontWeight: '500',
+              width: '120px'
+            }}
           />
         </div>
 
-        <button
-          onClick={exportToExcel}
-          style={{
-            backgroundColor: '#0066cc',
-            color: 'white',
-            border: 'none',
-            padding: '8px 16px',
-            borderRadius: 4,
-            cursor: 'pointer'
-          }}
-        >
-          💾 Download Excel
-        </button>
+        <div style={{ marginLeft: 'auto' }}>
+          <button
+            onClick={exportToExcel}
+            style={{
+              background: 'linear-gradient(135deg, #6366f1 0%, #4f46e5 100%)', // Indigo Gradient
+              color: 'white',
+              border: 'none',
+              padding: '11px 22px',
+              borderRadius: '10px',
+              fontSize: '14px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '10px',
+              boxShadow: '0 4px 12px rgba(99, 102, 241, 0.35)',
+              transition: 'all 0.2s ease-in-out'
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 6px 16px rgba(99, 102, 241, 0.45)';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(99, 102, 241, 0.35)';
+            }}
+            onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.97)'}
+            onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
+          >
+            {/* Modern Download Excel SVG Icon */}
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              width="18" 
+              height="18" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2.2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Export Excel
+          </button>
+        </div>
       </div>
 
-      {/* แสดงผลข้อมูล */}
-      {loading ? (
-        <p style={{ textAlign: 'center' }}>⏳ กำลังโหลดข้อมูล / 正在載入資料...</p>
-      ) : data.length === 0 ? (
-        <p style={{ textAlign: 'center' }}>❗ ไม่พบข้อมูล กรุณาตรวจสอบเดือนและปีอีกครั้ง / 未找到資料，請再次檢查月份和年份。</p>
-      ) : (
-        <div style={{  
-          maxWidth: '100vw',
-          maxHeight: '73vh', // ปรับความสูงให้เลื่อนใน div นี้ ไม่พึ่ง body
-          overflowX: 'auto',
-          overflowY: 'auto',
-          border: '1px solid #ccc', // เพิ่มขอบให้ดูขอบเขตชัด
-        }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 800 }}>
-            <thead>
-              <tr style={{ backgroundColor: '#f0f0f0' }}>
-                {headers.map((h, i) => (
-                  <th
-                    key={i}
-                    style={{
-                       position: 'sticky', // 👈 ทำให้หัวตารางติดอยู่ด้านบน
-                      top: 0,
-                      backgroundColor: '#f0f0f0', // จำเป็น เพื่อให้หัวตารางมองเห็นเมื่อเลื่อน
-                      border: '1px solid #ddd',
-                      padding: '8px',
-                      textAlign: 'left',
-                      whiteSpace: 'nowrap',
-                      zIndex: 1 // ช่วยให้แสดงทับข้อมูลได้กรณีมีเนื้อหาซ้อนกัน
-                    }}
-                  >
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-            <tbody>
-              {data.map((row, idx) => (
-                <tr key={idx} style={{ backgroundColor: idx % 2 === 0 ? '#fff' : '#fafafa' }}>
-                  {row.map((value, i) => (
-                    <td
+      {/* Content Section */}
+      <div style={{
+        backgroundColor: '#ffffff',
+        borderRadius: '16px',
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)',
+        border: '1px solid #e2e8f0',
+        overflow: 'hidden'
+      }}>
+        {loading ? (
+          <div style={{ padding: '80px 0', textAlign: 'center', color: '#64748b', fontSize: '15px', fontWeight: '500' }}>
+            ⏳ กำลังโหลดข้อมูล / 正在載入資料...
+          </div>
+        ) : !Array.isArray(data) || data.length === 0 ? (
+          <div style={{ padding: '80px 0', textAlign: 'center', color: '#64748b', fontSize: '15px', fontWeight: '500' }}>
+            ❗ ไม่พบข้อมูล กรุณาตรวจสอบเดือนและปีอีกครั้ง / 未找到資料，請再次檢查月份和年份。
+          </div>
+        ) : (
+          <div style={{
+            maxHeight: '66vh',
+            overflowX: 'auto',
+            overflowY: 'auto'
+          }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 800, textAlign: 'left' }}>
+              <thead>
+                <tr style={{ backgroundColor: '#f8fafc' }}>
+                  {headers.map((h, i) => (
+                    <th
                       key={i}
                       style={{
-                        border: '1px solid #ddd',
-                        padding: '8px',
-                        whiteSpace: 'nowrap'
+                        position: 'sticky',
+                        top: 0,
+                        backgroundColor: '#f8fafc',
+                        color: '#475569',
+                        borderBottom: '2px solid #e2e8f0',
+                        borderRight: '1px solid #f1f5f9',
+                        padding: '14px 16px',
+                        fontSize: '12px',
+                        fontWeight: '700',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px',
+                        whiteSpace: 'nowrap',
+                        zIndex: 2
                       }}
                     >
-                      {value}
-                    </td>
+                      {h}
+                    </th>
                   ))}
                 </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+              </thead>
+              <tbody>
+                {data.map((row, idx) => (
+                  <tr
+                    key={idx}
+                    style={{
+                      backgroundColor: idx % 2 === 0 ? '#ffffff' : '#fcfcfc',
+                      transition: 'background-color 0.15s'
+                    }}
+                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
+                    onMouseOut={(e) => e.currentTarget.style.backgroundColor = idx % 2 === 0 ? '#ffffff' : '#fcfcfc'}
+                  >
+                    {row.map((value, i) => (
+                      <td
+                        key={i}
+                        style={{
+                          borderBottom: '1px solid #f1f5f9',
+                          borderRight: '1px solid #f8fafc',
+                          padding: '12px 16px',
+                          fontSize: '13px',
+                          color: '#334155',
+                          whiteSpace: 'nowrap'
+                        }}
+                      >
+                        {value}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

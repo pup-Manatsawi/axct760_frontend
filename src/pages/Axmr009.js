@@ -5,36 +5,30 @@ import { saveAs } from 'file-saver';
 function Axmr009() {
   const now = new Date();
 
-const formatDate = (date) => {
-  //return date.toISOString().split('T')[0]; // yyyy-mm-dd
-  return date.toLocaleDateString('en-CA'); // YYYY-MM-DD
-};
+  const formatDate = (date) => {
+    return date.toLocaleDateString('en-CA'); // YYYY-MM-DD
+  };
 
-const handleStartChange = (value) => {
-  setStartDate(value);
-
-  // ถ้า start มากกว่า end → บังคับ end = start
-  if (endDate && value > endDate) {
-    setEndDate(value);
-  }
-};
-
-const handleEndChange = (value) => {
-  // ถ้า end น้อยกว่า start → บังคับให้เท่ากับ start
-  if (startDate && value < startDate) {
-    setEndDate(startDate);
-  } else {
-    setEndDate(value);
-  }
-};
-
-  const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
   const [startDate, setStartDate] = useState(formatDate(now));
   const [endDate, setEndDate] = useState(formatDate(now));
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [salesType, setSalesType] = useState('');
 
-  /*const pad = (n) => n.toString().padStart(2, '0');*/
+  const handleStartChange = (value) => {
+    setStartDate(value);
+    if (endDate && value > endDate) {
+      setEndDate(value);
+    }
+  };
+
+  const handleEndChange = (value) => {
+    if (startDate && value < startDate) {
+      setEndDate(startDate);
+    } else {
+      setEndDate(value);
+    }
+  };
 
   const headers = [
     'Shipping Notice No.',
@@ -68,10 +62,8 @@ const handleEndChange = (value) => {
     'Collection Desc',
     'Trade Term',
     'Trade Desc'
-
   ];
 
-  // ✅ map object → table
   const mapRow = (row) => [
     row.XMDGDOCNO,
     row.XMDGDOCDT,
@@ -112,16 +104,19 @@ const handleEndChange = (value) => {
     fetch(`http://192.168.111.19:3001/api/axmr009?startDate=${startDate}&endDate=${endDate}&salesType=${salesType}`)
       .then(async (res) => {
         const text = await res.text();
-
         try {
           return JSON.parse(text);
         } catch {
           throw new Error(text);
         }
       })
-      .then((data) => {
-        console.log('DATA:', data);
-        setData(data);
+      .then((resData) => {
+        if (Array.isArray(resData)) {
+          setData(resData);
+        } else {
+          console.error('❌ API ไม่ได้ส่ง array:', resData);
+          setData([]);
+        }
       })
       .catch((err) => {
         console.error('Error fetching data:', err);
@@ -131,7 +126,9 @@ const handleEndChange = (value) => {
   }, [startDate, endDate, salesType]);
 
   const exportToExcel = () => {
-    if (data.length === 0) return alert('ไม่มีข้อมูลให้ดาวน์โหลด');
+    if (!Array.isArray(data) || data.length === 0) {
+      return alert('ไม่มีข้อมูลให้ดาวน์โหลด');
+    }
 
     const worksheetData = [
       ['THAI SHINKONG INDUSTRY CORPORATION LTD.'],
@@ -140,8 +137,7 @@ const handleEndChange = (value) => {
       headers,
       ...data.map(mapRow),
       [''],
-      ['(AXMR009)', '	Date Printed:', now.toLocaleDateString() + now.toLocaleTimeString()]
-
+      ['(AXMR009)', ' Date Printed:', now.toLocaleDateString() + ' ' + now.toLocaleTimeString()]
     ];
 
     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
@@ -153,148 +149,297 @@ const handleEndChange = (value) => {
 
     saveAs(
       new Blob([wbout]),
-      `AXMR009_${startDate}_to_${endDate}_${salesType}.xlsx`
+      `AXMR009_${startDate}_to_${endDate}_${salesType || 'ALL'}.xlsx`
     );
   };
 
   return (
-    <div style={{ fontFamily: 'Arial, sans-serif', padding: 5, maxWidth: '100%', margin: 'auto' }}>
-      
-      {/* Header */}
-      {/*<div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: 10,
-          flexWrap: 'wrap',
-          justifyContent: 'center',
-          textAlign: 'center',
-          marginBottom: 6
-        }}
-      >
-        <img src="/tsic-logo.png" alt="TSIC Logo" style={{ width: 100, height: 100 }} />
-        <h1 style={{ fontSize: 24, color: '#003366', margin: 0 }}>
-          THAI SHINKONG INDUSTRY CORPORATION LIMITED
-        </h1>
-      </div>*/}
-
-      <h2 style={{ fontSize: 20, color: '#444', textAlign: 'center', marginBottom: 6 }}>
-        📝 AXMR009 REPORT 📝
-      </h2>
-
-      <hr style={{ width: '100%', maxWidth: 800, margin: '10px auto 30px', borderColor: '#ccc' }} />
-
-      {/* Filter */}
-     <div style={{ display: 'flex', justifyContent: 'center', gap: 20, marginBottom: 20 }}>
-
-  <div>
-    <label>Start Date:</label>
-    <input
-      type="date"
-      value={startDate}
-      onChange={(e) => handleStartChange(e.target.value)} 
-      style={{ padding: '6px 10px', marginLeft: 6 }}
-    />
-  </div>
-
-  <div>
-    <label>End Date:</label>
-    <input
-      type="date"
-      value={endDate}
-      onChange={(e) => handleEndChange(e.target.value)}
-      style={{ padding: '6px 10px', marginLeft: 6 }}
-    />
-  </div>
-  <div>
-          <label>Sales Type:</label>
-          <select 
-              name="salesType"
-              value={salesType}
-              onChange={(e) => setSalesType(e.target.value)}
-               style={{ padding: '6px 10px', marginLeft: 6 }}
->
-          <option value="">-- All --</option>
-          <option value="DOMESTIC">Domestic</option>
-          <option value="EXPORT">Export</option>
-          
-        </select>
+    <div style={{
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+      padding: '32px 24px',
+      maxWidth: '1940px',
+      margin: '0 auto',
+      backgroundColor: '#f8fafc',
+      minHeight: '100vh',
+      boxSizing: 'border-box'
+    }}>
+      {/* Header Section */}
+      <div style={{ 
+        marginBottom: '28px', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '16px',
+        backgroundColor: '#ffffff',
+        padding: '24px 32px',
+        borderRadius: '16px',
+        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.05)',
+        border: '1px solid #e2e8f0'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div style={{
+            width: '48px',
+            height: '48px',
+            borderRadius: '12px',
+            background: 'linear-gradient(135deg, #059669 0%, #047857 100%)', // Emerald Theme
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#ffffff',
+            boxShadow: '0 4px 10px rgba(5, 150, 105, 0.3)'
+          }}>
+            {/* Modern Shipping Notice SVG Icon */}
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="1" y="3" width="15" height="13"></rect>
+              <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+              <circle cx="5.5" cy="18.5" r="2.5"></circle>
+              <circle cx="18.5" cy="18.5" r="2.5"></circle>
+            </svg>
+          </div>
+          <div>
+            <h2 style={{
+              fontSize: '22px',
+              fontWeight: '700',
+              color: '#0f172a',
+              margin: '0 0 4px 0',
+              letterSpacing: '-0.3px'
+            }}>
+              AXMR009 REPORT
+            </h2>
+            <p style={{ color: '#64748b', fontSize: '13px', margin: 0, fontWeight: '400' }}>
+              ระบบรายงานใบส่งสินค้า / Shipping Notice Details
+            </p>
+          </div>
         </div>
 
-  <button
-    onClick={exportToExcel}
-    style={{
-      backgroundColor: '#0066cc',
-      color: 'white',
-      border: 'none',
-      padding: '8px 16px',
-      borderRadius: 4,
-      cursor: 'pointer'
-    }}
-  >
-    💾 Download Excel
-  </button>
-
-</div>
-
-      {/* Content */}
-      {loading ? (
-        <p style={{ textAlign: 'center' }}>⏳ กำลังโหลดข้อมูล / 正在載入資料...</p>
-      ) : data.length === 0 ? (
-        <p style={{ textAlign: 'center' }}>❗ไม่พบข้อมูล กรุณาตรวจสอบช่วงวันที่อีกครั้ง / 未找到資料，請再次確認日期。</p>
-      ) : (
         <div style={{
-          maxWidth: '100vw',
-          maxHeight: '72vh',
-          overflowX: 'auto',
-          overflowY: 'auto',
-          border: '1px solid #ccc'
+          fontSize: '13px',
+          color: '#475569',
+          backgroundColor: '#f1f5f9',
+          padding: '8px 16px',
+          borderRadius: '20px',
+          fontWeight: '500',
+          border: '1px solid #e2e8f0'
         }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 800 }}>
-            <thead>
-              <tr style={{ backgroundColor: '#f0f0f0' }}>
-                {headers.map((h, i) => (
-                  <th
-                    key={i}
-                    style={{
-                      position: 'sticky',
-                      top: 0,
-                      backgroundColor: '#f0f0f0',
-                      border: '1px solid #ddd',
-                      padding: '8px',
-                      textAlign: 'left',
-                      whiteSpace: 'nowrap',
-                      zIndex: 1
-                    }}
-                  >
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
+          รายการทั้งหมด: <strong style={{ color: '#0f172a' }}>{data.length}</strong> รายการ
+        </div>
+      </div>
 
-            <tbody>
-              {data.map((row, idx) => (
-                <tr key={idx} style={{ backgroundColor: idx % 2 === 0 ? '#fff' : '#fafafa' }}>
-                  {mapRow(row).map((value, i) => (
-                    <td
+      {/* Filter Card */}
+      <div style={{
+        backgroundColor: '#ffffff',
+        padding: '24px',
+        borderRadius: '16px',
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)',
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'flex-end',
+        gap: '20px',
+        marginBottom: '24px',
+        border: '1px solid #e2e8f0'
+      }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <label style={{ fontSize: '13px', fontWeight: '600', color: '#334155' }}>Start Date</label>
+          <input
+            type="date"
+            value={startDate}
+            onChange={(e) => handleStartChange(e.target.value)}
+            style={{
+              padding: '10px 14px',
+              borderRadius: '8px',
+              border: '1px solid #cbd5e1',
+              fontSize: '14px',
+              outline: 'none',
+              backgroundColor: '#f8fafc',
+              color: '#0f172a',
+              fontWeight: '500'
+            }}
+          />
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <label style={{ fontSize: '13px', fontWeight: '600', color: '#334155' }}>End Date</label>
+          <input
+            type="date"
+            value={endDate}
+            onChange={(e) => handleEndChange(e.target.value)}
+            style={{
+              padding: '10px 14px',
+              borderRadius: '8px',
+              border: '1px solid #cbd5e1',
+              fontSize: '14px',
+              outline: 'none',
+              backgroundColor: '#f8fafc',
+              color: '#0f172a',
+              fontWeight: '500'
+            }}
+          />
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <label style={{ fontSize: '13px', fontWeight: '600', color: '#334155' }}>Sales Type</label>
+          <select 
+            name="salesType"
+            value={salesType}
+            onChange={(e) => setSalesType(e.target.value)}
+            style={{
+              padding: '10px 14px',
+              borderRadius: '8px',
+              border: '1px solid #cbd5e1',
+              fontSize: '14px',
+              outline: 'none',
+              backgroundColor: '#f8fafc',
+              color: '#0f172a',
+              fontWeight: '500'
+            }}
+          >
+            <option value="">-- All --</option>
+            <option value="DOMESTIC">Domestic</option>
+            <option value="EXPORT">Export</option>
+          </select>
+        </div>
+
+        <div style={{ marginLeft: 'auto' }}>
+          <button
+            onClick={exportToExcel}
+            style={{
+              background: 'linear-gradient(135deg, #059669 0%, #047857 100%)', // Emerald Gradient
+              color: 'white',
+              border: 'none',
+              padding: '11px 22px',
+              borderRadius: '10px',
+              fontSize: '14px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '10px',
+              boxShadow: '0 4px 12px rgba(5, 150, 105, 0.35)',
+              transition: 'all 0.2s ease-in-out'
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 6px 16px rgba(5, 150, 105, 0.45)';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(5, 150, 105, 0.35)';
+            }}
+            onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.97)'}
+            onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
+          >
+            {/* Modern Download Excel SVG Icon */}
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              width="18" 
+              height="18" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2.2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Export Excel
+          </button>
+        </div>
+      </div>
+
+      {/* Content Section */}
+      <div style={{
+        backgroundColor: '#ffffff',
+        borderRadius: '16px',
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)',
+        border: '1px solid #e2e8f0',
+        overflow: 'hidden'
+      }}>
+        {loading ? (
+          <div style={{ padding: '80px 0', textAlign: 'center', color: '#64748b', fontSize: '15px', fontWeight: '500' }}>
+            ⏳ กำลังโหลดข้อมูล / 正在載入資料...
+          </div>
+        ) : !Array.isArray(data) || data.length === 0 ? (
+          <div style={{ padding: '80px 0', textAlign: 'center', color: '#64748b', fontSize: '15px', fontWeight: '500' }}>
+            ❗ ไม่พบข้อมูล กรุณาตรวจสอบช่วงวันที่อีกครั้ง / 未找到資料，請再次確認日期。
+          </div>
+        ) : (
+          <div style={{
+            maxHeight: '66vh',
+            overflowX: 'auto',
+            overflowY: 'auto'
+          }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 800, textAlign: 'left' }}>
+              <thead>
+                <tr style={{ backgroundColor: '#f8fafc' }}>
+                  {headers.map((h, i) => (
+                    <th
                       key={i}
                       style={{
-                        border: '1px solid #ddd',
-                        padding: '8px',
-                        whiteSpace: 'nowrap'
+                        position: 'sticky',
+                        top: 0,
+                        backgroundColor: '#f8fafc',
+                        color: '#475569',
+                        borderBottom: '2px solid #e2e8f0',
+                        borderRight: '1px solid #f1f5f9',
+                        padding: '14px 16px',
+                        fontSize: '12px',
+                        fontWeight: '700',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px',
+                        whiteSpace: 'nowrap',
+                        zIndex: 2
                       }}
                     >
-                      {value}
-                    </td>
+                      {h}
+                    </th>
                   ))}
                 </tr>
-              ))}
-            </tbody>
+              </thead>
+              <tbody>
+                {data.map((row, idx) => {
+                  const bgColor = idx % 2 === 0 ? '#ffffff' : '#fcfcfc';
 
-          </table>
-        </div>
-      )}
+                  return (
+                    <tr
+                      key={idx}
+                      style={{
+                        backgroundColor: bgColor,
+                        transition: 'background-color 0.15s'
+                      }}
+                      onMouseOver={(e) => {
+                        e.currentTarget.style.backgroundColor = '#f1f5f9';
+                      }}
+                      onMouseOut={(e) => {
+                        e.currentTarget.style.backgroundColor = bgColor;
+                      }}
+                    >
+                      {mapRow(row).map((value, i) => (
+                        <td
+                          key={i}
+                          style={{
+                            borderBottom: '1px solid #f1f5f9',
+                            borderRight: '1px solid #f8fafc',
+                            padding: '12px 16px',
+                            fontSize: '13px',
+                            color: '#334155',
+                            whiteSpace: 'nowrap'
+                          }}
+                        >
+                          {value}
+                        </td>
+                      ))}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

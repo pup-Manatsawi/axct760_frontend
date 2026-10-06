@@ -6,7 +6,6 @@ function Aapq360() {
   const now = new Date();
 
   const formatDate = (date) => {
-    //return date.toISOString().split('T')[0]; // yyyy-mm-dd
     return date.toLocaleDateString('en-CA'); // YYYY-MM-DD
   };
 
@@ -16,10 +15,8 @@ function Aapq360() {
   const [endDate, setEndDate] = useState(formatDate(now));
   const [apca004, setApca004] = useState('');
 
-  // ✅ FIX compare date ให้ถูกต้อง
   const handleStartChange = (value) => {
     setStartDate(value);
-
     if (endDate && new Date(value) > new Date(endDate)) {
       setEndDate(value);
     }
@@ -75,10 +72,6 @@ function Aapq360() {
     fetch(`http://192.168.111.19:3001/api/aapq360?startDate=${startDate}&endDate=${endDate}&apca004=${apca004}`)
       .then((res) => res.json())
       .then((resData) => {
-        console.log('DATA:', resData);
-        console.log('IS ARRAY:', Array.isArray(resData));
-
-        // ✅ กัน data.map พัง
         if (Array.isArray(resData)) {
           setData(resData);
         } else {
@@ -98,146 +91,301 @@ function Aapq360() {
       return alert('ไม่มีข้อมูลให้ดาวน์โหลด');
     }
 
-    const worksheetData = [
-      headers,
-      ...data.map(mapRow),
-    
-    ];
-
+    const worksheetData = [headers, ...data.map(mapRow)];
     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
     const workbook = XLSX.utils.book_new();
 
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
-
     const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
 
     saveAs(
       new Blob([wbout]),
-      `AAPQ360_${startDate}_to_${endDate}_(${apca004}).xlsx`
+      `AAPQ360_${startDate}_to_${endDate}_(${apca004 || 'All'}).xlsx`
     );
   };
 
   return (
-    <div style={{ fontFamily: 'Arial, sans-serif', padding: 5, maxWidth: '100%', margin: 'auto' }}>
+    <div style={{
+      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
+      padding: '32px 24px',
+      maxWidth: '1940px',
+      margin: '0 auto',
+      backgroundColor: '#f8fafc',
+      minHeight: '100vh',
+      boxSizing: 'border-box'
+    }}>
+      {/* Header Section with Modern Icon & Gradient Accent */}
+      <div style={{ 
+        marginBottom: '28px', 
+        display: 'flex', 
+        alignItems: 'center', 
+        justifyContent: 'space-between',
+        flexWrap: 'wrap',
+        gap: '16px',
+        backgroundColor: '#ffffff',
+        padding: '24px 32px',
+        borderRadius: '16px',
+        boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.05)',
+        border: '1px solid #e2e8f0'
+      }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+          <div style={{
+            width: '48px',
+            height: '48px',
+            borderRadius: '12px',
+            background: 'linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#ffffff',
+            boxShadow: '0 4px 10px rgba(59, 130, 246, 0.3)'
+          }}>
+            {/* Modern Document Report SVG Icon */}
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
+          </div>
+          <div>
+            <h2 style={{
+              fontSize: '22px',
+              fontWeight: '700',
+              color: '#0f172a',
+              margin: '0 0 4px 0',
+              letterSpacing: '-0.3px'
+            }}>
+              AAPQ360 REPORT
+            </h2>
+            <p style={{ color: '#64748b', fontSize: '13px', margin: 0, fontWeight: '400' }}>
+              ระบบรายงานข้อมูลบัญชีเจ้าหนี้และการจัดการคลังสินค้า (Accounts Payable Report)
+            </p>
+          </div>
+        </div>
 
-      <h2 style={{ fontSize: 20, color: '#444', textAlign: 'center', marginBottom: 6 }}>
-        📝 AAPQ360 REPORT 📝
-      </h2>
+        <div style={{
+          fontSize: '13px',
+          color: '#475569',
+          backgroundColor: '#f1f5f9',
+          padding: '8px 16px',
+          borderRadius: '20px',
+          fontWeight: '500',
+          border: '1px solid #e2e8f0'
+        }}>
+          รายการทั้งหมด: <strong style={{ color: '#0f172a' }}>{data.length}</strong> รายการ
+        </div>
+      </div>
 
-      <hr style={{ width: '100%', maxWidth: 800, margin: '10px auto 30px', borderColor: '#ccc' }} />
-
-      {/* Filter */}
-      <div style={{ display: 'flex', justifyContent: 'center', gap: 20, marginBottom: 20 }}>
-
-        <div>
-          <label>Start Date:</label>
+      {/* Filter Card */}
+      <div style={{
+        backgroundColor: '#ffffff',
+        padding: '24px',
+        borderRadius: '16px',
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)',
+        display: 'flex',
+        flexWrap: 'wrap',
+        alignItems: 'flex-end',
+        gap: '20px',
+        marginBottom: '24px',
+        border: '1px solid #e2e8f0'
+      }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <label style={{ fontSize: '13px', fontWeight: '600', color: '#334155' }}>Start Date</label>
           <input
             type="date"
             value={startDate}
             onChange={(e) => handleStartChange(e.target.value)}
-            style={{ padding: '6px 10px', marginLeft: 6 }}
+            style={{
+              padding: '10px 14px',
+              borderRadius: '8px',
+              border: '1px solid #cbd5e1',
+              fontSize: '14px',
+              outline: 'none',
+              backgroundColor: '#f8fafc',
+              color: '#0f172a',
+              fontWeight: '500',
+              transition: 'all 0.2s'
+            }}
           />
         </div>
 
-        <div>
-          <label>End Date:</label>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <label style={{ fontSize: '13px', fontWeight: '600', color: '#334155' }}>End Date</label>
           <input
             type="date"
             value={endDate}
             onChange={(e) => handleEndChange(e.target.value)}
-            style={{ padding: '6px 10px', marginLeft: 6 }}
+            style={{
+              padding: '10px 14px',
+              borderRadius: '8px',
+              border: '1px solid #cbd5e1',
+              fontSize: '14px',
+              outline: 'none',
+              backgroundColor: '#f8fafc',
+              color: '#0f172a',
+              fontWeight: '500'
+            }}
           />
         </div>
-        <div>
-          <label>Vender:</label>
-          <select 
-              name="apca004"
-              value={apca004}
-              onChange={(e) => setApca004(e.target.value)}
-               style={{ padding: '6px 10px', marginLeft: 6 }}
->
-          <option value="">-- All --</option>
-          <option value="IVI10001">IVICT</option>
-          <option value="SHI30001">SSFC</option>
-        </select>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+          <label style={{ fontSize: '13px', fontWeight: '600', color: '#334155' }}>Vendor</label>
+          <select
+            name="apca004"
+            value={apca004}
+            onChange={(e) => setApca004(e.target.value)}
+            style={{
+              padding: '10px 14px',
+              borderRadius: '8px',
+              border: '1px solid #cbd5e1',
+              fontSize: '14px',
+              outline: 'none',
+              backgroundColor: '#f8fafc',
+              color: '#0f172a',
+              fontWeight: '500',
+              minWidth: '160px',
+              cursor: 'pointer'
+            }}
+          >
+            <option value="">-- All Vendors --</option>
+            <option value="IVI10001">IVICT</option>
+            <option value="SHI30001">SSFC</option>
+          </select>
         </div>
 
-        <button
-          onClick={exportToExcel}
-          style={{
-            backgroundColor: '#0066cc',
-            color: 'white',
-            border: 'none',
-            padding: '8px 16px',
-            borderRadius: 4,
-            cursor: 'pointer'
-          }}
-        >
-          💾 Download Excel
-        </button>
-
+        <div style={{ marginLeft: 'auto' }}>
+          <button
+            onClick={exportToExcel}
+            style={{
+              background: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
+              color: 'white',
+              border: 'none',
+              padding: '11px 22px',
+              borderRadius: '10px',
+              fontSize: '14px',
+              fontWeight: '600',
+              cursor: 'pointer',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '10px',
+              boxShadow: '0 4px 12px rgba(16, 185, 129, 0.35)',
+              transition: 'all 0.2s ease-in-out'
+            }}
+            onMouseOver={(e) => {
+              e.currentTarget.style.transform = 'translateY(-2px)';
+              e.currentTarget.style.boxShadow = '0 6px 16px rgba(16, 185, 129, 0.45)';
+            }}
+            onMouseOut={(e) => {
+              e.currentTarget.style.transform = 'translateY(0)';
+              e.currentTarget.style.boxShadow = '0 4px 12px rgba(16, 185, 129, 0.35)';
+            }}
+            onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.97)'}
+            onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
+          >
+            {/* Modern Download Excel SVG Icon */}
+            <svg 
+              xmlns="http://www.w3.org/2000/svg" 
+              width="18" 
+              height="18" 
+              viewBox="0 0 24 24" 
+              fill="none" 
+              stroke="currentColor" 
+              strokeWidth="2.2" 
+              strokeLinecap="round" 
+              strokeLinejoin="round"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Export Excel
+          </button>
+        </div>
       </div>
 
-      {/* Content */}
-      {loading ? (
-        <p style={{ textAlign: 'center' }}>⏳ กำลังโหลดข้อมูล / 正在載入資料...</p>
-      ) : !Array.isArray(data) || data.length === 0 ? (
-        <p style={{ textAlign: 'center' }}>
-          ❗ไม่พบข้อมูล หรือข้อมูลผิดพลาด กรุณาตรวจสอบช่วงวันที่ / 未找到資料或資料錯誤
-        </p>
-      ) : (
-        <div style={{
-          maxWidth: '100vw',
-          maxHeight: '72vh',
-          overflowX: 'auto',
-          overflowY: 'auto',
-          border: '1px solid #ccc'
-        }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 800 }}>
-            <thead>
-              <tr style={{ backgroundColor: '#f0f0f0' }}>
-                {headers.map((h, i) => (
-                  <th
-                    key={i}
-                    style={{
-                      position: 'sticky',
-                      top: 0,
-                      backgroundColor: '#f0f0f0',
-                      border: '1px solid #ddd',
-                      padding: '8px',
-                      textAlign: 'left',
-                      whiteSpace: 'nowrap',
-                      zIndex: 1
-                    }}
-                  >
-                    {h}
-                  </th>
-                ))}
-              </tr>
-            </thead>
-
-            <tbody>
-              {data.map((row, idx) => (
-                <tr key={idx} style={{ backgroundColor: idx % 2 === 0 ? '#fff' : '#fafafa' }}>
-                  {mapRow(row).map((value, i) => (
-                    <td
+      {/* Content Section */}
+      <div style={{
+        backgroundColor: '#ffffff',
+        borderRadius: '16px',
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)',
+        border: '1px solid #e2e8f0',
+        overflow: 'hidden'
+      }}>
+        {loading ? (
+          <div style={{ padding: '80px 0', textAlign: 'center', color: '#64748b', fontSize: '15px', fontWeight: '500' }}>
+            ⏳ กำลังโหลดข้อมูล / 正在載入資料...
+          </div>
+        ) : !Array.isArray(data) || data.length === 0 ? (
+          <div style={{ padding: '80px 0', textAlign: 'center', color: '#64748b', fontSize: '15px', fontWeight: '500' }}>
+            ❗ ไม่พบข้อมูล หรือข้อมูลผิดพลาด กรุณาตรวจสอบช่วงวันที่ / 未找到資料或資料錯誤
+          </div>
+        ) : (
+          <div style={{
+            maxHeight: '66vh',
+            overflowX: 'auto',
+            overflowY: 'auto'
+          }}>
+            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 800, textAlign: 'left' }}>
+              <thead>
+                <tr style={{ backgroundColor: '#f8fafc' }}>
+                  {headers.map((h, i) => (
+                    <th
                       key={i}
                       style={{
-                        border: '1px solid #ddd',
-                        padding: '8px',
-                        whiteSpace: 'nowrap'
+                        position: 'sticky',
+                        top: 0,
+                        backgroundColor: '#f8fafc',
+                        color: '#475569',
+                        borderBottom: '2px solid #e2e8f0',
+                        borderRight: '1px solid #f1f5f9',
+                        padding: '14px 16px',
+                        fontSize: '12px',
+                        fontWeight: '700',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px',
+                        whiteSpace: 'nowrap',
+                        zIndex: 2
                       }}
                     >
-                      {value}
-                    </td>
+                      {h}
+                    </th>
                   ))}
                 </tr>
-              ))}
-            </tbody>
-
-          </table>
-        </div>
-      )}
+              </thead>
+              <tbody>
+                {data.map((row, idx) => (
+                  <tr
+                    key={idx}
+                    style={{
+                      backgroundColor: idx % 2 === 0 ? '#ffffff' : '#fcfcfc',
+                      transition: 'background-color 0.15s'
+                    }}
+                    onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
+                    onMouseOut={(e) => e.currentTarget.style.backgroundColor = idx % 2 === 0 ? '#ffffff' : '#fcfcfc'}
+                  >
+                    {mapRow(row).map((value, i) => (
+                      <td
+                        key={i}
+                        style={{
+                          borderBottom: '1px solid #f1f5f9',
+                          borderRight: '1px solid #f8fafc',
+                          padding: '12px 16px',
+                          fontSize: '13px',
+                          color: '#334155',
+                          whiteSpace: 'nowrap'
+                        }}
+                      >
+                        {value}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
