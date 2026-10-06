@@ -17,6 +17,7 @@ import Axmr009 from "./pages/Axmr009";
 import Aist310 from "./pages/Aist310";
 import Aapq360 from "./pages/Aapq360";
 import Apmt400 from "./pages/Apmt400";
+import QRCodeBox from "./pages/QRCodeBox"; // ใช้ตัวนี้ตัวเดียว
 
 // ================== APP CONTENT ==================
 function AppContent() {
@@ -63,7 +64,6 @@ function AppContent() {
             element={role ? <Navigate to={getDefaultPath()} replace /> : <Home />}
           />
 
-          {/* ✅ เพิ่ม Route /bkkpur ตรงนี้ให้ครบแล้ว */}
           <Route
             path="/bkkpur"
             element={role ? <Navigate to={getDefaultPath()} replace /> : <Home />}
@@ -99,6 +99,7 @@ function AppContent() {
               <Route path="/Aint302" element={<Aint302 />} />
               <Route path="/Aist310" element={<Aist310 />} />
               <Route path="/Aapq360" element={<Aapq360 />} />
+              <Route path="/QRCodeBox" element={<QRCodeBox />} /> {/* 👈 หน้า QR Code กล่องเอกสาร */}
               <Route path="/Axmr009" element={<Navigate to="/Aglq760" replace />} />
               <Route path="*" element={<Navigate to="/Aglq760" replace />} />
             </>
