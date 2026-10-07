@@ -510,7 +510,7 @@ Expire Date: ${formData.expireDate || '-'}`;
 
                 <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, overflow: 'hidden' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
-                    <img src="tsiclogo.png" alt="Logo" style={{ height: '32px', objectFit: 'contain' }} />
+                    <img src="tsiclogo.png" alt="Logo" style={{ height: '52px', objectFit: 'contain' }} />
                     <div style={{ fontSize: '26px', fontWeight: '900', color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>THAI SHINKONG CO., LTD.</div>
                   </div>
 
@@ -553,7 +553,7 @@ Expire Date: ${formData.expireDate || '-'}`;
 
           <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, overflow: 'hidden' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
-              <img src="tsiclogo.png" alt="Logo" style={{ height: '32px', objectFit: 'contain' }} />
+              <img src="tsiclogo.png" alt="Logo" style={{ height: '52px', objectFit: 'contain' }} />
               <div style={{ fontSize: '26px', fontWeight: '900', color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>THAI SHINKONG CO., LTD.</div>
             </div>
 
