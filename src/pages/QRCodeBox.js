@@ -10,6 +10,8 @@ const translations = {
     subtitle: 'ระบบสร้างป้าย QR Code สำหรับติดกล่องเก็บเอกสาร',
     newEntry: '📝 สร้างรายการใหม่',
     editEntry: 'กำลังแก้ไขข้อมูล ID:',
+    viewingMode: '👁️ โหมดดูข้อมูลป้าย (ล็อคการแก้ไข)',
+    cancelView: '✖️ กลับสู่โหมดสร้างปกติ',
     cancelEdit: 'ยกเลิกแก้ไข',
     boxName: 'ชื่อกล่อง / รหัสกล่อง',
     boxNamePlaceholder: 'เช่น กล่องบัญชี 2025 - เล่ม 1',
@@ -21,12 +23,12 @@ const translations = {
     creatorPlaceholder: 'ชื่อผู้บันทึก',
     date: 'วันที่จัดเก็บ',
     expireDate: 'วันสิ้นสุดเก็บเอกสาร (+10 ปี)',
-    saveNew: '💾 บันทึกข้อมูลลง Server (Save Data)',
+    saveNew: '💾 บันทึกข้อมูล',
     saveUpdate: '💾 บันทึกการแก้ไข (Update)',
-    previewTitle: '✨ Box Label Preview',
+    previewTitle: '✨ ตัวอย่างหน้าจอ',
     scanMe: 'SCAN ME',
     downloadPdf: '📥 Download PDF',
-    reportTitle: '📊 รายงานประวัติการบันทึกกล่องเอกสาร (Server Database)',
+    reportTitle: '📊 รายงานประวัติการบันทึกกล่องเอกสาร',
     exportExcel: '📊 Export to Excel',
     filterYear: 'เลือกดูตามปี:',
     allYears: 'ทั้งหมด (All Years)',
@@ -55,6 +57,8 @@ const translations = {
     subtitle: 'QR Code Label Generator System for Document Storage Boxes',
     newEntry: '📝 Create New Entry',
     editEntry: 'Editing Entry ID:',
+    viewingMode: '👁️ Viewing Label Mode (Locked)',
+    cancelView: '✖️ Back to Create Mode',
     cancelEdit: 'Cancel Edit',
     boxName: 'Box Name / Box ID',
     boxNamePlaceholder: 'e.g., ACC Box 2025 - Vol. 1',
@@ -66,12 +70,12 @@ const translations = {
     creatorPlaceholder: 'Recorder name',
     date: 'Storage Date',
     expireDate: 'Expire Date (+10 Years)',
-    saveNew: '💾 Save Data to Server',
+    saveNew: '💾 Save Data',
     saveUpdate: '💾 Save Update',
     previewTitle: '✨ Box Label Preview',
     scanMe: 'SCAN ME',
     downloadPdf: '📥 Download PDF',
-    reportTitle: '📊 Document Box History Report (Server Database)',
+    reportTitle: '📊 Document Box History Report',
     exportExcel: '📊 Export to Excel',
     filterYear: 'Filter by Year:',
     allYears: 'All Years',
@@ -100,6 +104,8 @@ const translations = {
     subtitle: '文件檔案盒 QR Code 標籤生成系統',
     newEntry: '📝 建立新記錄',
     editEntry: '正在編輯記錄 ID:',
+    viewingMode: '👁️ 檢視標籤模式 (唯讀)',
+    cancelView: '✖️ 返回建立模式',
     cancelEdit: '取消編輯',
     boxName: '箱號 / 箱子名稱',
     boxNamePlaceholder: '例如：會計箱 2025 - 第 1 冊',
@@ -111,12 +117,12 @@ const translations = {
     creatorPlaceholder: '記錄人姓名',
     date: '存放日期',
     expireDate: '保存到期日 (+10年)',
-    saveNew: '💾 儲存資料至伺服器',
+    saveNew: '💾 儲存資料',
     saveUpdate: '💾 儲存更新',
     previewTitle: '✨ 標籤預覽',
     scanMe: '掃描我',
     downloadPdf: '📥 下載 PDF',
-    reportTitle: '📊 文件箱歷史記錄報告 (伺服器資料庫)',
+    reportTitle: '📊 文件箱歷史記錄報告',
     exportExcel: '📊 匯出 Excel',
     filterYear: '依年份篩選：',
     allYears: '全部年份',
@@ -126,7 +132,7 @@ const translations = {
     colDate: '存放日期',
     colExpire: '到期日',
     colActions: '操作',
-    print: '🖨️ 列印',
+    print: '🖨️ 編輯',
     edit: '✏️ 編輯',
     delete: '🗑️ 刪除',
     noData: '系統中找不到歷史記錄',
@@ -143,7 +149,7 @@ const translations = {
 };
 
 export default function QRCodeBox() {
-  const [lang, setLang] = useState('TH'); // ค่าเริ่มต้นภาษาไทย
+  const [lang, setLang] = useState('TH');
   const t = translations[lang];
 
   const calculateExpireDate = (dateString) => {
@@ -172,12 +178,14 @@ export default function QRCodeBox() {
 
   const [history, setHistory] = useState([]);
   const [editingId, setEditingId] = useState(null);
+  const [isViewOnly, setIsViewOnly] = useState(false);
   const [selectedYear, setSelectedYear] = useState('ALL');
   
   const [hoverSubmit, setHoverSubmit] = useState(false);
   const [hoverPdf, setHoverPdf] = useState(false);
   const [hoverExcel, setHoverExcel] = useState(false);
-  const qrRef = useRef(null);
+  
+  const pdfRef = useRef(null);
 
   const fetchHistory = async () => {
     try {
@@ -194,6 +202,7 @@ export default function QRCodeBox() {
   }, []);
 
   const handleChange = (e) => {
+    if (isViewOnly) return;
     const { name, value } = e.target;
     setTouched({ ...touched, [name]: true });
     if (name === 'date') {
@@ -220,6 +229,8 @@ Expire Date: ${formData.expireDate || '-'}`;
 
   const handleSaveToHistory = async (e) => {
     e.preventDefault();
+    if (isViewOnly) return;
+
     setTouched({ boxName: true, category: true, creator: true });
 
     if (!formData.boxName) return alert(t.alertBoxName);
@@ -273,6 +284,7 @@ Expire Date: ${formData.expireDate || '-'}`;
 
   const handleEditClick = (item) => {
     setEditingId(item.id);
+    setIsViewOnly(false);
     setFormData({
       boxName: item.boxName || '',
       category: item.category || '',
@@ -286,6 +298,8 @@ Expire Date: ${formData.expireDate || '-'}`;
   };
 
   const handlePrintQRClick = (item) => {
+    setEditingId(null);
+    setIsViewOnly(true);
     setFormData({
       boxName: item.boxName || '',
       category: item.category || '',
@@ -298,13 +312,13 @@ Expire Date: ${formData.expireDate || '-'}`;
   };
 
   const downloadPDF = async () => {
-    const element = qrRef.current;
+    const element = pdfRef.current;
     if (!element) return;
     try {
       const canvas = await html2canvas(element, { scale: 3, useCORS: true });
       const imgData = canvas.toDataURL('image/png');
       const pdf = new jsPDF('l', 'mm', 'a4');
-      const imgWidth = 210; 
+      const imgWidth = 285; 
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
       const x = (297 - imgWidth) / 2;
       const y = (210 - imgHeight) / 2;
@@ -351,15 +365,14 @@ Expire Date: ${formData.expireDate || '-'}`;
     return item.date && item.date.startsWith(selectedYear);
   });
 
-  // เงื่อนไขเช็ค Error สำหรับช่องที่บังคับ
   const isBoxNameError = touched.boxName && !formData.boxName;
   const isCategoryError = touched.category && !formData.category;
   const isCreatorError = touched.creator && !formData.creator;
 
   return (
-    <div style={{ fontFamily: "'Inter', 'Segoe UI', Arial, sans-serif", padding: '20px', maxWidth: '1100px', margin: 'auto', color: '#1e293b' }}>
+    <div style={{ fontFamily: "'Inter', 'Segoe UI', Arial, sans-serif", padding: '20px', maxWidth: '1300px', margin: 'auto', color: '#1e293b' }}>
       
-      {/* ส่วนเลือกภาษา (Language Switcher) */}
+      {/* ส่วนเลือกภาษา */}
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '15px', gap: '8px' }}>
         <button onClick={() => setLang('TH')} style={{ padding: '5px 10px', borderRadius: '6px', border: lang === 'TH' ? '2px solid #2563eb' : '1px solid #cbd5e1', background: lang === 'TH' ? '#eff6ff' : '#fff', fontWeight: 'bold', cursor: 'pointer' }}>ไทย</button>
         <button onClick={() => setLang('EN')} style={{ padding: '5px 10px', borderRadius: '6px', border: lang === 'EN' ? '2px solid #2563eb' : '1px solid #cbd5e1', background: lang === 'EN' ? '#eff6ff' : '#fff', fontWeight: 'bold', cursor: 'pointer' }}>EN</button>
@@ -377,17 +390,17 @@ Expire Date: ${formData.expireDate || '-'}`;
       </div>
 
       {/* คอนเทนเนอร์หลัก (Grid 2 ฝั่ง) */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '25px', background: '#ffffff', padding: '30px', borderRadius: '20px', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.05)', border: '1px solid #f1f5f9' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '25px', background: '#ffffff', padding: '30px', borderRadius: '20px', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.05)', border: '1px solid #f1f5f9' }}>
         
         {/* ฝั่งซ้าย: ฟอร์มกรอกข้อมูล */}
         <form onSubmit={handleSaveToHistory} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '14px', fontWeight: '700', color: editingId ? '#d97706' : '#16a34a' }}>
-              {editingId ? `${t.editEntry} ${editingId}` : t.newEntry}
+            <span style={{ fontSize: '14px', fontWeight: '700', color: isViewOnly ? '#2563eb' : (editingId ? '#d97706' : '#16a34a') }}>
+              {isViewOnly ? t.viewingMode : (editingId ? `${t.editEntry} ${editingId}` : t.newEntry)}
             </span>
-            {editingId && (
-              <button type="button" onClick={() => { setEditingId(null); setFormData({ boxName: '', category: '', description: '', creator: '', date: todayStr, expireDate: calculateExpireDate(todayStr) }); setTouched({ boxName: false, category: false, creator: false }); }} style={{ background: '#cbd5e1', border: 'none', padding: '4px 8px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px' }}>
-                {t.cancelEdit}
+            {(editingId || isViewOnly) && (
+              <button type="button" onClick={() => { setEditingId(null); setIsViewOnly(false); setFormData({ boxName: '', category: '', description: '', creator: '', date: todayStr, expireDate: calculateExpireDate(todayStr) }); setTouched({ boxName: false, category: false, creator: false }); }} style={{ background: '#cbd5e1', border: 'none', padding: '4px 8px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px' }}>
+                {isViewOnly ? t.cancelView : t.cancelEdit}
               </button>
             )}
           </div>
@@ -403,11 +416,13 @@ Expire Date: ${formData.expireDate || '-'}`;
               maxLength={40} 
               value={formData.boxName} 
               onChange={handleChange} 
+              readOnly={isViewOnly}
               placeholder={t.boxNamePlaceholder} 
               style={{
                 ...inputStyle,
                 borderColor: isBoxNameError ? '#dc2626' : '#cbd5e1',
-                backgroundColor: isBoxNameError ? '#fef2f2' : '#f8fafc'
+                backgroundColor: isViewOnly ? '#e2e8f0' : (isBoxNameError ? '#fef2f2' : '#f8fafc'),
+                cursor: isViewOnly ? 'not-allowed' : 'text'
               }} 
             />
             {isBoxNameError && <span style={{ fontSize: '11px', color: '#dc2626', marginTop: '3px', display: 'block' }}>* จำเป็นต้องกรอกข้อมูลนี้</span>}
@@ -424,11 +439,13 @@ Expire Date: ${formData.expireDate || '-'}`;
               maxLength={15} 
               value={formData.category} 
               onChange={handleChange} 
+              readOnly={isViewOnly}
               placeholder={t.categoryPlaceholder} 
               style={{
                 ...inputStyle,
                 borderColor: isCategoryError ? '#dc2626' : '#cbd5e1',
-                backgroundColor: isCategoryError ? '#fef2f2' : '#f8fafc'
+                backgroundColor: isViewOnly ? '#e2e8f0' : (isCategoryError ? '#fef2f2' : '#f8fafc'),
+                cursor: isViewOnly ? 'not-allowed' : 'text'
               }} 
             />
             {isCategoryError && <span style={{ fontSize: '11px', color: '#dc2626', marginTop: '3px', display: 'block' }}>* จำเป็นต้องกรอกข้อมูลนี้</span>}
@@ -436,7 +453,7 @@ Expire Date: ${formData.expireDate || '-'}`;
 
           <div>
             <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: '700', color: '#334155' }}>{t.description}</label>
-            <textarea name="description" maxLength={100} value={formData.description} onChange={handleChange} rows="3" placeholder={t.descriptionPlaceholder} style={{ ...inputStyle, resize: 'vertical' }} />
+            <textarea name="description" maxLength={300} value={formData.description} onChange={handleChange} readOnly={isViewOnly} rows="4" placeholder={t.descriptionPlaceholder} style={{ ...inputStyle, resize: 'vertical', backgroundColor: isViewOnly ? '#e2e8f0' : '#f8fafc', cursor: isViewOnly ? 'not-allowed' : 'text' }} />
           </div>
 
           <div style={{ display: 'flex', gap: '12px' }}>
@@ -450,67 +467,113 @@ Expire Date: ${formData.expireDate || '-'}`;
                 maxLength={25} 
                 value={formData.creator} 
                 onChange={handleChange} 
+                readOnly={isViewOnly}
                 placeholder={t.creatorPlaceholder} 
                 style={{
                   ...inputStyle,
                   borderColor: isCreatorError ? '#dc2626' : '#cbd5e1',
-                  backgroundColor: isCreatorError ? '#fef2f2' : '#f8fafc'
+                  backgroundColor: isViewOnly ? '#e2e8f0' : (isCreatorError ? '#fef2f2' : '#f8fafc'),
+                  cursor: isViewOnly ? 'not-allowed' : 'text'
                 }} 
               />
               {isCreatorError && <span style={{ fontSize: '11px', color: '#dc2626', marginTop: '3px', display: 'block' }}>* จำเป็น</span>}
             </div>
             <div style={{ flex: 1 }}>
               <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: '700', color: '#334155' }}>{t.date}</label>
-              <input type="date" name="date" value={formData.date} onChange={handleChange} style={inputStyle} />
+              <input type="date" name="date" value={formData.date} onChange={handleChange} readOnly={isViewOnly} style={{ ...inputStyle, backgroundColor: isViewOnly ? '#e2e8f0' : '#f8fafc', cursor: isViewOnly ? 'not-allowed' : 'text' }} />
             </div>
           </div>
 
           <div>
             <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: '700', color: '#e11d48' }}>{t.expireDate}</label>
-            <input type="date" name="expireDate" value={formData.expireDate} onChange={handleChange} style={{ ...inputStyle, background: '#fff1f2', borderColor: '#fecdd3', color: '#9f1239' }} />
+            <input type="date" name="expireDate" value={formData.expireDate} onChange={handleChange} readOnly={isViewOnly} style={{ ...inputStyle, background: isViewOnly ? '#e2e8f0' : '#fff1f2', borderColor: '#fecdd3', color: '#9f1239', cursor: isViewOnly ? 'not-allowed' : 'text' }} />
           </div>
 
-          <button type="submit" onMouseEnter={() => setHoverSubmit(true)} onMouseLeave={() => setHoverSubmit(false)} style={{ background: hoverSubmit ? (editingId ? '#b45309' : '#15803d') : (editingId ? '#d97706' : '#16a34a'), color: 'white', border: 'none', padding: '12px', borderRadius: '10px', cursor: 'pointer', fontWeight: '700', fontSize: '14px', transition: 'all 0.2s ease', marginTop: '4px' }}>
-            {editingId ? t.saveUpdate : t.saveNew}
-          </button>
+          {!isViewOnly && (
+            <button type="submit" onMouseEnter={() => setHoverSubmit(true)} onMouseLeave={() => setHoverSubmit(false)} style={{ background: hoverSubmit ? (editingId ? '#b45309' : '#15803d') : (editingId ? '#d97706' : '#16a34a'), color: 'white', border: 'none', padding: '12px', borderRadius: '10px', cursor: 'pointer', fontWeight: '700', fontSize: '14px', transition: 'all 0.2s ease', marginTop: '4px' }}>
+              {editingId ? t.saveUpdate : t.saveNew}
+            </button>
+          )}
         </form>
 
-        {/* ฝั่งขวา: พรีวิวป้าย QR Code */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f8fafc', padding: '24px', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
-          <div style={{ fontSize: '14px', fontWeight: '700', marginBottom: '16px', color: '#475569' }}>{t.previewTitle}</div>
+        {/* ฝั่งขวา: พรีวิวป้าย QR Code ในหน้าจอ */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f8fafc', padding: '20px', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+          <div style={{ fontSize: '13px', fontWeight: '700', marginBottom: '12px', color: '#475569' }}>{t.previewTitle}</div>
           
-          <div ref={qrRef} style={{ background: '#ffffff', padding: '28px', borderRadius: '14px', border: '3px solid #0f172a', display: 'flex', alignItems: 'center', gap: '24px', width: '540px', boxSizing: 'border-box', boxShadow: '0 6px 12px -2px rgba(0,0,0,0.08)' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
-              <QRCodeSVG value={getQRCodeString()} size={150} level={"H"} includeMargin={true} />
-              <span style={{ fontSize: '10px', color: '#475569', marginTop: '6px', fontWeight: '800', letterSpacing: '0.5px' }}>{t.scanMe}</span>
-            </div>
+          <div style={{ width: '100%', maxWidth: '470px', height: '240px', overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', position: 'relative' }}>
+            <div style={{ transform: 'scale(0.5125)', transformOrigin: 'top center', position: 'absolute', top: 0, width: '900px' }}>
+              <div style={{ background: '#ffffff', padding: '50px', borderRadius: '24px', border: '3px solid #0f172a', display: 'flex', alignItems: 'center', gap: '50px', width: '900px', boxSizing: 'border-box' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
+                  <QRCodeSVG value={getQRCodeString()} size={280} level={"H"} includeMargin={true} />
+                  <span style={{ fontSize: '16px', color: '#475569', marginTop: '14px', fontWeight: '900', letterSpacing: '2px' }}>{t.scanMe}</span>
+                </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, overflow: 'hidden' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '6px', whiteSpace: 'nowrap' }}>
-                <div style={{ fontSize: '12px', fontWeight: '800', color: '#2563eb', textTransform: 'uppercase', letterSpacing: '0.5px' }}>THAI SHINKONG CO., LTD.</div>
-              </div>
-              <div style={{ fontSize: '12px', fontWeight: '700', background: '#f1f5f9', color: '#334155', padding: '3px 10px', borderRadius: '6px', marginTop: '2px', display: 'inline-block', width: 'fit-content' }}>
-                {formData.category || 'CATEGORY'}
-              </div>
-              <div style={{ fontSize: '17px', fontWeight: '800', color: '#0f172a', marginTop: '8px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-                {formData.boxName || 'BOX NAME'}
-              </div>
-              <div style={{ fontSize: '11px', color: '#64748b', marginTop: '4px', height: '32px', overflow: 'hidden', lineHeight: '1.4' }}>
-                {formData.description || 'Description details...'}
-              </div>
-              <div style={{ fontSize: '10px', color: '#334155', marginTop: '10px', borderTop: '1px solid #e2e8f0', paddingTop: '8px', display: 'flex', flexDirection: 'column', gap: '3px' }}>
-                <div><b>Creator:</b> {formData.creator || '-'}</div>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <span><b>Storage Date:</b> {formData.date}</span>
-                  <span style={{ color: '#e11d48' }}><b>Expire:</b> {formData.expireDate}</span>
+                <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, overflow: 'hidden' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
+                    <img src="tsiclogo.png" alt="Logo" style={{ height: '32px', objectFit: 'contain' }} />
+                    <div style={{ fontSize: '26px', fontWeight: '900', color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>THAI SHINKONG CO., LTD.</div>
+                  </div>
+
+                  <div style={{ fontSize: '20px', fontWeight: '800', background: '#f1f5f9', color: '#1e293b', padding: '8px 18px', borderRadius: '8px', marginBottom: '16px', display: 'inline-block', width: 'fit-content', border: '2px solid #cbd5e1' }}>
+                    {formData.category || 'CATEGORY'}
+                  </div>
+                  <div style={{ fontSize: '34px', fontWeight: '900', color: '#0f172a', marginBottom: '16px', wordBreak: 'break-word', overflowWrap: 'break-word', lineHeight: '1.2' }}>
+                    {formData.boxName || 'BOX NAME'}
+                  </div>
+                  <div style={{ fontSize: '18px', fontWeight: '600', color: '#334155', marginBottom: '24px', maxHeight: '130px', overflow: 'hidden', lineHeight: '1.5' }}>
+                    {formData.description || 'Description details...'}
+                  </div>
+                  <div style={{ fontSize: '17px', color: '#0f172a', borderTop: '2px solid #0f172a', paddingTop: '16px', display: 'flex', flexDirection: 'column', gap: '10px', fontWeight: '800' }}>
+                    <div><b>Creator:</b> {formData.creator || '-'}</div>
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                      <span><b>Storage Date:</b> {formData.date}</span>
+                      <span style={{ color: '#e11d48' }}><b>Expire Date:</b> {formData.expireDate}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
           </div>
 
-          <button onClick={downloadPDF} onMouseEnter={() => setHoverPdf(true)} onMouseLeave={() => setHoverPdf(false)} style={{ background: hoverPdf ? '#1d4ed8' : '#2563eb', color: 'white', border: 'none', padding: '12px 20px', borderRadius: '10px', cursor: 'pointer', marginTop: '20px', width: '100%', maxWidth: '300px', fontWeight: '700', fontSize: '14px', boxShadow: '0 4px 12px rgba(37,99,235,0.25)', transition: 'all 0.2s ease', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+          <button onClick={downloadPDF} onMouseEnter={() => setHoverPdf(true)} onMouseLeave={() => setHoverPdf(false)} style={{ background: hoverPdf ? '#1d4ed8' : '#2563eb', color: 'white', border: 'none', padding: '12px 20px', borderRadius: '10px', cursor: 'pointer', marginTop: '16px', width: '100%', maxWidth: '280px', fontWeight: '700', fontSize: '13px', boxShadow: '0 4px 12px rgba(37,99,235,0.25)', transition: 'all 0.2s ease', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
             {t.downloadPdf}
           </button>
+        </div>
+      </div>
+
+      {/* ========================================= */}
+      {/* ส่วนซ่อนสำหรับสร้าง PDF (ตัวหนังสือใหญ่สะใจเต็ม A4) */}
+      {/* ========================================= */}
+      <div style={{ position: 'absolute', left: '-9999px', top: '-9999px' }}>
+        <div ref={pdfRef} style={{ background: '#ffffff', padding: '50px', borderRadius: '24px', border: '3px solid #0f172a', display: 'flex', alignItems: 'center', gap: '50px', width: '900px', boxSizing: 'border-box' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
+            <QRCodeSVG value={getQRCodeString()} size={280} level={"H"} includeMargin={true} />
+            <span style={{ fontSize: '16px', color: '#475569', marginTop: '14px', fontWeight: '900', letterSpacing: '2px' }}>{t.scanMe}</span>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, overflow: 'hidden' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
+              <img src="tsiclogo.png" alt="Logo" style={{ height: '32px', objectFit: 'contain' }} />
+              <div style={{ fontSize: '26px', fontWeight: '900', color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>THAI SHINKONG CO., LTD.</div>
+            </div>
+
+            <div style={{ fontSize: '20px', fontWeight: '800', background: '#f1f5f9', color: '#1e293b', padding: '8px 18px', borderRadius: '8px', marginBottom: '16px', display: 'inline-block', width: 'fit-content', border: '2px solid #cbd5e1' }}>
+              {formData.category || 'CATEGORY'}
+            </div>
+            <div style={{ fontSize: '34px', fontWeight: '900', color: '#0f172a', marginBottom: '16px', wordBreak: 'break-word', overflowWrap: 'break-word', lineHeight: '1.2' }}>
+              {formData.boxName || 'BOX NAME'}
+            </div>
+            <div style={{ fontSize: '18px', fontWeight: '600', color: '#334155', marginBottom: '24px', maxHeight: '130px', overflow: 'hidden', lineHeight: '1.5' }}>
+              {formData.description || 'Description details...'}
+            </div>
+            <div style={{ fontSize: '17px', color: '#0f172a', borderTop: '2px solid #0f172a', paddingTop: '16px', display: 'flex', flexDirection: 'column', gap: '10px', fontWeight: '800' }}>
+              <div><b>Creator:</b> {formData.creator || '-'}</div>
+              <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                <span><b>Storage Date:</b> {formData.date}</span>
+                <span style={{ color: '#e11d48' }}><b>Expire Date:</b> {formData.expireDate}</span>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
 
