@@ -68,7 +68,7 @@ function Home() {
             <>
               <div 
                 onClick={() => selectRole('MARKETING')} 
-                style={menuCardStyle('linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)', 'rgba(37, 99, 235, 0.35)')}
+                style={menuCardStyle('linear-gradient(185deg, #2563eb 0%, #1d4ed8 100%)', 'rgba(37, 99, 235, 0.35)')}
                 onMouseOver={handleMouseOver}
                 onMouseOut={handleMouseOut}
               >
@@ -81,7 +81,7 @@ function Home() {
 
               <div 
                 onClick={() => selectRole('ACC')} 
-                style={menuCardStyle('linear-gradient(135deg, #d97706 0%, #b45309 100%)', 'rgba(217, 119, 6, 0.35)')}
+                style={menuCardStyle('linear-gradient(185deg, #d97706 0%, #b45309 100%)', 'rgba(217, 119, 6, 0.35)')}
                 onMouseOver={handleMouseOver}
                 onMouseOut={handleMouseOut}
               >
@@ -94,7 +94,7 @@ function Home() {
 
               <div 
                 onClick={() => selectRole('PUR')} 
-                style={menuCardStyle('linear-gradient(135deg, #059669 0%, #047857 100%)', 'rgba(5, 150, 105, 0.35)')}
+                style={menuCardStyle('linear-gradient(185deg, #059669 0%, #047857 100%)', 'rgba(5, 150, 105, 0.35)')}
                 onMouseOver={handleMouseOver}
                 onMouseOut={handleMouseOut}
               >
@@ -107,7 +107,7 @@ function Home() {
 
               <div 
                 onClick={() => selectRole('FAC')} 
-                style={menuCardStyle('linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)', 'rgba(124, 58, 237, 0.35)')}
+                style={menuCardStyle('linear-gradient(185deg, #7c3aed 0%, #6d28d9 100%)', 'rgba(124, 58, 237, 0.35)')}
                 onMouseOver={handleMouseOver}
                 onMouseOut={handleMouseOut}
               >
@@ -124,7 +124,7 @@ function Home() {
           {isPur && (
             <div 
               onClick={() => selectRole('PUR')} 
-              style={menuCardStyle('linear-gradient(135deg, #059669 0%, #047857 100%)', 'rgba(5, 150, 105, 0.35)')}
+              style={menuCardStyle('linear-gradient(185deg, #059669 0%, #047857 100%)', 'rgba(5, 150, 105, 0.35)')}
               onMouseOver={handleMouseOver}
               onMouseOut={handleMouseOut}
             >
@@ -140,7 +140,7 @@ function Home() {
           {isSale && (
             <div 
               onClick={() => selectRole('MARKETING')} 
-              style={menuCardStyle('linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)', 'rgba(37, 99, 235, 0.35)')}
+              style={menuCardStyle('linear-gradient(185deg, #2563eb 0%, #1d4ed8 100%)', 'rgba(37, 99, 235, 0.35)')}
               onMouseOver={handleMouseOver}
               onMouseOut={handleMouseOut}
             >
@@ -156,7 +156,7 @@ function Home() {
           {isRayong && (
             <div 
               onClick={() => selectRole('FAC')} 
-              style={menuCardStyle('linear-gradient(135deg, #7c3aed 0%, #6d28d9 100%)', 'rgba(124, 58, 237, 0.35)')}
+              style={menuCardStyle('linear-gradient(185deg, #7c3aed 0%, #6d28d9 100%)', 'rgba(124, 58, 237, 0.35)')}
               onMouseOver={handleMouseOver}
               onMouseOut={handleMouseOut}
             >
