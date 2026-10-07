@@ -370,7 +370,7 @@ Expire Date: ${formData.expireDate || '-'}`;
   const isCreatorError = touched.creator && !formData.creator;
 
   return (
-    <div style={{ fontFamily: "'Inter', 'Segoe UI', Arial, sans-serif", padding: '20px', maxWidth: '1300px', margin: 'auto', color: '#1e293b' }}>
+    <div style={{ fontFamily: "'Inter', 'Segoe UI', Arial, sans-serif", padding: '20px', maxWidth: '1500px', margin: 'auto', color: '#1e293b' }}>
       
       {/* ส่วนเลือกภาษา */}
       <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '15px', gap: '8px' }}>
@@ -520,9 +520,9 @@ Expire Date: ${formData.expireDate || '-'}`;
                   <div style={{ fontSize: '34px', fontWeight: '900', color: '#0f172a', marginBottom: '16px', wordBreak: 'break-word', overflowWrap: 'break-word', lineHeight: '1.2' }}>
                     {formData.boxName || 'BOX NAME'}
                   </div>
-                  <div style={{ fontSize: '18px', fontWeight: '600', color: '#334155', marginBottom: '24px', maxHeight: '130px', overflow: 'hidden', lineHeight: '1.5' }}>
+                  {/*<div style={{ fontSize: '18px', fontWeight: '600', color: '#334155', marginBottom: '24px', maxHeight: '130px', overflow: 'hidden', lineHeight: '1.5' }}>
                     {formData.description || 'Description details...'}
-                  </div>
+                  </div>*/}
                   <div style={{ fontSize: '17px', color: '#0f172a', borderTop: '2px solid #0f172a', paddingTop: '16px', display: 'flex', flexDirection: 'column', gap: '10px', fontWeight: '800' }}>
                     <div><b>Creator:</b> {formData.creator || '-'}</div>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -563,9 +563,9 @@ Expire Date: ${formData.expireDate || '-'}`;
             <div style={{ fontSize: '34px', fontWeight: '900', color: '#0f172a', marginBottom: '16px', wordBreak: 'break-word', overflowWrap: 'break-word', lineHeight: '1.2' }}>
               {formData.boxName || 'BOX NAME'}
             </div>
-            <div style={{ fontSize: '18px', fontWeight: '600', color: '#334155', marginBottom: '24px', maxHeight: '130px', overflow: 'hidden', lineHeight: '1.5' }}>
+           {/* <div style={{ fontSize: '18px', fontWeight: '600', color: '#334155', marginBottom: '24px', maxHeight: '130px', overflow: 'hidden', lineHeight: '1.5' }}>
               {formData.description || 'Description details...'}
-            </div>
+            </div>*/}
             <div style={{ fontSize: '17px', color: '#0f172a', borderTop: '2px solid #0f172a', paddingTop: '16px', display: 'flex', flexDirection: 'column', gap: '10px', fontWeight: '800' }}>
               <div><b>Creator:</b> {formData.creator || '-'}</div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
