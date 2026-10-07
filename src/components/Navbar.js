@@ -147,13 +147,13 @@ const styles = {
   },
 
   title: {
-    fontSize: "20px",
-    color: "#0f172a",
+    fontSize: "25px",
+    color: "#2563eb",
     margin: 0,
     display: "flex",
     alignItems: "center",
-    gap: "10px",
-    fontWeight: "800",
+    gap: "3px",
+    fontWeight: "700",
     letterSpacing: "-0.3px"
   },
 

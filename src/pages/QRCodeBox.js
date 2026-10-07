@@ -186,6 +186,31 @@ export default function QRCodeBox() {
   const [hoverExcel, setHoverExcel] = useState(false);
   
   const pdfRef = useRef(null);
+  const previewWrapperRef = useRef(null);
+  const [previewScale, setPreviewScale] = useState(0.48);
+  const [previewHeight, setPreviewHeight] = useState(240);
+
+  // ระบบ Auto-Resize คำนวณสเกลพรีวิวตามขนาดหน้าจอจริงของเครื่องผู้ใช้
+  useEffect(() => {
+    const updatePreviewSize = () => {
+      if (previewWrapperRef.current) {
+        const containerWidth = previewWrapperRef.current.clientWidth;
+        const baseWidth = 900; // ความกว้างฐานต้นฉบับ
+        const baseHeight = 480; // ความสูงฐานต้นฉบับ
+        const scale = containerWidth / baseWidth;
+        setPreviewScale(scale);
+        setPreviewHeight(baseHeight * scale);
+      }
+    };
+
+    updatePreviewSize();
+    const observer = new ResizeObserver(updatePreviewSize);
+    if (previewWrapperRef.current) {
+      observer.observe(previewWrapperRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   const fetchHistory = async () => {
     try {
@@ -496,12 +521,12 @@ Expire Date: ${formData.expireDate || '-'}`;
           )}
         </form>
 
-        {/* ฝั่งขวา: พรีวิวป้าย QR Code ในหน้าจอ */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f8fafc', padding: '20px', borderRadius: '16px', border: '1px solid #e2e8f0' }}>
+       {/* ฝั่งขวา: พรีวิวป้าย QR Code ในหน้าจอ */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f8fafc', padding: '20px', borderRadius: '16px', border: '1px solid #e2e8f0', width: '100%', boxSizing: 'border-box' }}>
           <div style={{ fontSize: '13px', fontWeight: '700', marginBottom: '12px', color: '#475569' }}>{t.previewTitle}</div>
           
-          <div style={{ width: '100%', maxWidth: '470px', height: '240px', overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', position: 'relative' }}>
-            <div style={{ transform: 'scale(0.5125)', transformOrigin: 'top center', position: 'absolute', top: 0, width: '900px' }}>
+          <div ref={previewWrapperRef} style={{ width: '100%', height: `${previewHeight}px`, overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', position: 'relative' }}>
+            <div style={{ transform: `scale(${previewScale})`, transformOrigin: 'top center', position: 'absolute', top: '10px', width: '900px' }}>
               <div style={{ background: '#ffffff', padding: '50px', borderRadius: '24px', border: '3px solid #0f172a', display: 'flex', alignItems: 'center', gap: '50px', width: '900px', boxSizing: 'border-box' }}>
                 <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
                   <QRCodeSVG value={getQRCodeString()} size={280} level={"H"} includeMargin={true} />
@@ -511,7 +536,7 @@ Expire Date: ${formData.expireDate || '-'}`;
                 <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, overflow: 'hidden' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
                     <img src="tsiclogo.png" alt="Logo" style={{ height: '52px', objectFit: 'contain' }} />
-                    <div style={{ fontSize: '26px', fontWeight: '900', color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>THAI SHINKONG CO., LTD.</div>
+                    <div style={{ fontSize: '30px', fontWeight: '750', color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px'}}>TSIC</div>
                   </div>
 
                   <div style={{ fontSize: '20px', fontWeight: '800', background: '#f1f5f9', color: '#1e293b', padding: '8px 18px', borderRadius: '8px', marginBottom: '16px', display: 'inline-block', width: 'fit-content', border: '2px solid #cbd5e1' }}>
@@ -520,9 +545,6 @@ Expire Date: ${formData.expireDate || '-'}`;
                   <div style={{ fontSize: '34px', fontWeight: '900', color: '#0f172a', marginBottom: '16px', wordBreak: 'break-word', overflowWrap: 'break-word', lineHeight: '1.2' }}>
                     {formData.boxName || 'BOX NAME'}
                   </div>
-                  {/*<div style={{ fontSize: '18px', fontWeight: '600', color: '#334155', marginBottom: '24px', maxHeight: '130px', overflow: 'hidden', lineHeight: '1.5' }}>
-                    {formData.description || 'Description details...'}
-                  </div>*/}
                   <div style={{ fontSize: '17px', color: '#0f172a', borderTop: '2px solid #0f172a', paddingTop: '16px', display: 'flex', flexDirection: 'column', gap: '10px', fontWeight: '800' }}>
                     <div><b>Creator:</b> {formData.creator || '-'}</div>
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -554,7 +576,7 @@ Expire Date: ${formData.expireDate || '-'}`;
           <div style={{ display: 'flex', flexDirection: 'column', flexGrow: 1, overflow: 'hidden' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
               <img src="tsiclogo.png" alt="Logo" style={{ height: '52px', objectFit: 'contain' }} />
-              <div style={{ fontSize: '26px', fontWeight: '900', color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>THAI SHINKONG CO., LTD.</div>
+              <div style={{ fontSize: '30px', fontWeight: '750', color: '#2563eb', textTransform: 'uppercase', letterSpacing: '1px' }}>TSIC</div>
             </div>
 
             <div style={{ fontSize: '20px', fontWeight: '800', background: '#f1f5f9', color: '#1e293b', padding: '8px 18px', borderRadius: '8px', marginBottom: '16px', display: 'inline-block', width: 'fit-content', border: '2px solid #cbd5e1' }}>
