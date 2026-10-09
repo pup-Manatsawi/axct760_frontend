@@ -16,6 +16,10 @@ function Apmt400() {
   const [status, setStatus] = useState('');
   const [colorFilter, setColorFilter] = useState('');
 
+  // 🔹 State สำหรับ Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [rowsPerPage] = useState(100); // แสดงหน้าละ 100 รายการ
+
   const handleStartChange = (value) => {
     setStartDate(value);
 
@@ -77,6 +81,10 @@ function Apmt400() {
 
     return 'none';
   };
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [startDate, endDate, status, colorFilter]);
 
   const headers = [
     'Supplier Code',
@@ -195,6 +203,11 @@ function Apmt400() {
     return getRowColorStatus(row) === colorFilter;
   });
 
+  const indexOfLastRow = currentPage * rowsPerPage;
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+  const currentRows = Array.isArray(filteredData) ? filteredData.slice(indexOfFirstRow, indexOfLastRow) : [];
+  const totalPages = Math.ceil((filteredData?.length || 0) / rowsPerPage);
+
   const exportToExcel = () => {
     if (!Array.isArray(filteredData) || filteredData.length === 0) {
       return alert('ไม่มีข้อมูลให้ดาวน์โหลด');
@@ -202,7 +215,7 @@ function Apmt400() {
 
     const worksheetData = [
       headers,
-      ...filteredData.map(mapRow),
+      ...filteredData.map(mapRow), // ใช้ filteredData เพื่อให้ดาวน์โหลดข้อมูลทั้งหมดที่กรองได้
     ];
 
     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
@@ -247,14 +260,13 @@ function Apmt400() {
             width: '48px',
             height: '48px',
             borderRadius: '12px',
-            background: 'linear-gradient(135deg, #059669 0%, #047857 100%)', // Emerald Theme
+            background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             color: '#ffffff',
             boxShadow: '0 4px 10px rgba(5, 150, 105, 0.3)'
           }}>
-            {/* Modern Procurement Report SVG Icon */}
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
               <polyline points="14 2 14 8 20 8"></polyline>
@@ -393,7 +405,7 @@ function Apmt400() {
           <button
             onClick={exportToExcel}
             style={{
-              background: 'linear-gradient(135deg, #059669 0%, #047857 100%)', // Emerald Gradient
+              background: 'linear-gradient(135deg, #059669 0%, #047857 100%)',
               color: 'white',
               border: 'none',
               padding: '11px 22px',
@@ -418,7 +430,6 @@ function Apmt400() {
             onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.97)'}
             onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
           >
-            {/* Modern Download Excel SVG Icon */}
             <svg 
               xmlns="http://www.w3.org/2000/svg" 
               width="18" 
@@ -505,7 +516,7 @@ function Apmt400() {
               <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>正在載入資料，請稍候...</p>
             </div>
           </div>
-        ) : !Array.isArray(data) || data.length === 0 ? (
+        ) : !Array.isArray(filteredData) || filteredData.length === 0 ? (
           <div style={{ padding: '80px 20px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '14px' }}>
             <div style={{
               width: '56px',
@@ -529,91 +540,146 @@ function Apmt400() {
               <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>未找到資料，請再次檢查月份和年份。</p>
             </div>
           </div>
-        )  : (
-          <div style={{
-            maxHeight: '66vh',
-            overflowX: 'auto',
-            overflowY: 'auto'
-          }}>
-            <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 800, textAlign: 'left' }}>
-              <thead>
-                <tr style={{ backgroundColor: '#f8fafc' }}>
-                  {headers.map((h, i) => (
-                    <th
-                      key={i}
-                      style={{
-                        position: 'sticky',
-                        top: 0,
-                        backgroundColor: '#f8fafc',
-                        color: '#475569',
-                        borderBottom: '2px solid #e2e8f0',
-                        borderRight: '1px solid #f1f5f9',
-                        padding: '14px 16px',
-                        fontSize: '12px',
-                        fontWeight: '700',
-                        textTransform: 'uppercase',
-                        letterSpacing: '0.5px',
-                        whiteSpace: 'nowrap',
-                        zIndex: 2
-                      }}
-                    >
-                      {h}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {filteredData.map((row, idx) => {
-                  const colorStatus = getRowColorStatus(row);
+        ) : (
+          <>
+            <div style={{
+              maxHeight: '66vh',
+              overflowX: 'auto',
+              overflowY: 'auto'
+            }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 800, textAlign: 'left' }}>
+                <thead>
+                  <tr style={{ backgroundColor: '#f8fafc' }}>
+                    {headers.map((h, i) => (
+                      <th
+                        key={i}
+                        style={{
+                          position: 'sticky',
+                          top: 0,
+                          backgroundColor: '#f8fafc',
+                          color: '#475569',
+                          borderBottom: '2px solid #e2e8f0',
+                          borderRight: '1px solid #f1f5f9',
+                          padding: '14px 16px',
+                          fontSize: '12px',
+                          fontWeight: '700',
+                          textTransform: 'uppercase',
+                          letterSpacing: '0.5px',
+                          whiteSpace: 'nowrap',
+                          zIndex: 2
+                        }}
+                      >
+                        {h}
+                      </th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {/* 🔹 แก้ไข: เปลี่ยนจาก filteredData เป็น currentRows เพื่อให้แสดงผลทีละหน้าตาม Pagination */}
+                  {currentRows.map((row, idx) => {
+                    const colorStatus = getRowColorStatus(row);
 
-                  let bgColor = idx % 2 === 0 ? '#ffffff' : '#fcfcfc';
-                  if (colorStatus === 'red') {
-                    bgColor = '#fee2e2';
-                  } else if (colorStatus === 'orange') {
-                    bgColor = '#fef3c7';
-                  }
+                    let bgColor = idx % 2 === 0 ? '#ffffff' : '#fcfcfc';
+                    if (colorStatus === 'red') {
+                      bgColor = '#fee2e2';
+                    } else if (colorStatus === 'orange') {
+                      bgColor = '#fef3c7';
+                    }
 
-                  return (
-                    <tr
-                      key={idx}
-                      style={{
-                        backgroundColor: bgColor,
-                        transition: 'background-color 0.15s'
-                      }}
-                      onMouseOver={(e) => {
-                        if (colorStatus === 'red') {
-                          e.currentTarget.style.backgroundColor = '#fecaca';
-                        } else if (colorStatus === 'orange') {
-                          e.currentTarget.style.backgroundColor = '#fde68a';
-                        } else {
-                          e.currentTarget.style.backgroundColor = '#f1f5f9';
-                        }
-                      }}
-                      onMouseOut={(e) => {
-                        e.currentTarget.style.backgroundColor = bgColor;
-                      }}
-                    >
-                      {mapRow(row).map((value, i) => (
-                        <td
-                          key={i}
-                          style={{
-                            borderBottom: '1px solid #f1f5f9',
-                            borderRight: '1px solid #f8fafc',
-                            padding: '12px 16px',
-                            fontSize: '13px',
-                            color: '#334155',
-                            whiteSpace: 'nowrap'
-                          }}
-                        >
-                          {value}
-                        </td>
-                      ))}
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
+                    return (
+                      <tr
+                        key={idx}
+                        style={{
+                          backgroundColor: bgColor,
+                          transition: 'background-color 0.15s'
+                        }}
+                        onMouseOver={(e) => {
+                          if (colorStatus === 'red') {
+                            e.currentTarget.style.backgroundColor = '#fecaca';
+                          } else if (colorStatus === 'orange') {
+                            e.currentTarget.style.backgroundColor = '#fde68a';
+                          } else {
+                            e.currentTarget.style.backgroundColor = '#f1f5f9';
+                          }
+                        }}
+                        onMouseOut={(e) => {
+                          e.currentTarget.style.backgroundColor = bgColor;
+                        }}
+                      >
+                        {mapRow(row).map((value, i) => (
+                          <td
+                            key={i}
+                            style={{
+                              borderBottom: '1px solid #f1f5f9',
+                              borderRight: '1px solid #f8fafc',
+                              padding: '12px 16px',
+                              fontSize: '13px',
+                              color: '#334155',
+                              whiteSpace: 'nowrap'
+                            }}
+                          >
+                            {value}
+                          </td>
+                        ))}
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Pagination Footer */}
+            {totalPages > 1 && (
+              <div style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '16px 24px',
+                borderTop: '1px solid #e2e8f0',
+                backgroundColor: '#ffffff',
+                flexWrap: 'wrap',
+                gap: '12px'
+              }}>
+                <div style={{ fontSize: '13px', color: '#64748b' }}>
+                  Page <strong style={{ color: '#0f172a' }}>{currentPage}</strong> of <strong style={{ color: '#0f172a' }}>{totalPages}</strong> (Showing {rowsPerPage} rows per page)
+                </div>
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  <button
+                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                    disabled={currentPage === 1}
+                    style={{
+                      padding: '8px 16px',
+                      borderRadius: '8px',
+                      border: '1px solid #cbd5e1',
+                      backgroundColor: currentPage === 1 ? '#f1f5f9' : '#ffffff',
+                      color: currentPage === 1 ? '#94a3b8' : '#334155',
+                      fontSize: '13px',
+                      fontWeight: '600',
+                      cursor: currentPage === 1 ? 'not-allowed' : 'pointer'
+                    }}
+                  >
+                    Previous
+                  </button>
+                  <button
+                    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                    disabled={currentPage === totalPages}
+                    style={{
+                      padding: '8px 16px',
+                      borderRadius: '8px',
+                      border: '1px solid #cbd5e1',
+                      backgroundColor: currentPage === totalPages ? '#f1f5f9' : '#ffffff',
+                      color: currentPage === totalPages ? '#94a3b8' : '#334155',
+                      fontSize: '13px',
+                      fontWeight: '600',
+                      cursor: currentPage === totalPages ? 'not-allowed' : 'pointer'
+                    }}
+                  >
+                    Next
+                  </button>
+                </div>
+              </div>
+            )}
+          </>
         )}
       </div>
     </div>

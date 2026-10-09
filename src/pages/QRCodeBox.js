@@ -31,6 +31,9 @@ const translations = {
     reportTitle: '📊 รายงานประวัติการบันทึกกล่องเอกสาร',
     exportExcel: '📊 Export to Excel',
     filterYear: 'เลือกดูตามปี:',
+    filterCategory: 'หมวดหมู่:',
+    allCategories: 'ทุกหมวดหมู่ (All Categories)',
+    searchPlaceholder: '🔍 ค้นหาชื่อกล่อง, ผู้จัดทำ...',
     allYears: 'ทั้งหมด (All Years)',
     colBox: 'รหัส / ชื่อกล่อง',
     colCategory: 'หมวดหมู่',
@@ -50,7 +53,10 @@ const translations = {
     successUpdate: 'อัปเดตข้อมูลสำเร็จ!',
     errorConn: 'ไม่สามารถเชื่อมต่อกับ Server ได้',
     errorPdf: 'เกิดข้อผิดพลาดในการสร้าง PDF',
-    errorExcel: 'ไม่มีข้อมูลสำหรับส่งออกรายงาน'
+    errorExcel: 'ไม่มีข้อมูลสำหรับส่งออกรายงาน',
+    showing: 'แสดง',
+    ofTotal: 'จากทั้งหมด',
+    items: 'รายการ'
   },
   EN: {
     title: '📦 THAISHINKONG QR CODE GENERATOR',
@@ -78,6 +84,9 @@ const translations = {
     reportTitle: '📊 Document Box History Report',
     exportExcel: '📊 Export to Excel',
     filterYear: 'Filter by Year:',
+    filterCategory: 'Category:',
+    allCategories: 'All Categories',
+    searchPlaceholder: '🔍 Search box name, creator...',
     allYears: 'All Years',
     colBox: 'Box Name / ID',
     colCategory: 'Category',
@@ -97,7 +106,10 @@ const translations = {
     successUpdate: 'Data updated successfully!',
     errorConn: 'Unable to connect to the server',
     errorPdf: 'Error generating PDF',
-    errorExcel: 'No data available for export'
+    errorExcel: 'No data available for export',
+    showing: 'Showing',
+    ofTotal: 'of total',
+    items: 'items'
   },
   TW: {
     title: '📦 泰新興 QR CODE 生成器',
@@ -125,6 +137,9 @@ const translations = {
     reportTitle: '📊 文件箱歷史記錄報告',
     exportExcel: '📊 匯出 Excel',
     filterYear: '依年份篩選：',
+    filterCategory: '類別：',
+    allCategories: '全部類別',
+    searchPlaceholder: '🔍 搜尋箱號、製作者...',
     allYears: '全部年份',
     colBox: '箱號 / 名稱',
     colCategory: '類別',
@@ -144,7 +159,10 @@ const translations = {
     successUpdate: '資料更新成功！',
     errorConn: '無法連接到伺服器',
     errorPdf: '生成 PDF 時發生錯誤',
-    errorExcel: '沒有可匯出的資料'
+    errorExcel: '沒有可匯出的資料',
+    showing: '顯示',
+    ofTotal: '共',
+    items: '筆記錄'
   }
 };
 
@@ -181,6 +199,11 @@ export default function QRCodeBox() {
   const [isViewOnly, setIsViewOnly] = useState(false);
   const [selectedYear, setSelectedYear] = useState('ALL');
   
+  const [selectedCategory, setSelectedCategory] = useState('ALL');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 100;
+  
   const [hoverSubmit, setHoverSubmit] = useState(false);
   const [hoverPdf, setHoverPdf] = useState(false);
   const [hoverExcel, setHoverExcel] = useState(false);
@@ -190,13 +213,12 @@ export default function QRCodeBox() {
   const [previewScale, setPreviewScale] = useState(0.48);
   const [previewHeight, setPreviewHeight] = useState(240);
 
-  // ระบบ Auto-Resize คำนวณสเกลพรีวิวตามขนาดหน้าจอจริงของเครื่องผู้ใช้
   useEffect(() => {
     const updatePreviewSize = () => {
       if (previewWrapperRef.current) {
         const containerWidth = previewWrapperRef.current.clientWidth;
-        const baseWidth = 900; // ความกว้างฐานต้นฉบับ
-        const baseHeight = 480; // ความสูงฐานต้นฉบับ
+        const baseWidth = 900; 
+        const baseHeight = 480; 
         const scale = containerWidth / baseWidth;
         setPreviewScale(scale);
         setPreviewHeight(baseHeight * scale);
@@ -225,6 +247,10 @@ export default function QRCodeBox() {
   useEffect(() => {
     fetchHistory();
   }, []);
+
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedYear, selectedCategory, searchTerm]);
 
   const handleChange = (e) => {
     if (isViewOnly) return;
@@ -384,11 +410,25 @@ Expire Date: ${formData.expireDate || '-'}`;
   };
 
   const availableYears = ['ALL', ...new Set(history.map(item => item.date ? item.date.substring(0, 4) : ''))].filter(Boolean);
+  const availableCategories = ['ALL', ...new Set(history.map(item => item.category ? item.category.trim() : ''))].filter(Boolean);
 
   const filteredHistory = history.filter(item => {
-    if (selectedYear === 'ALL') return true;
-    return item.date && item.date.startsWith(selectedYear);
+    const matchYear = selectedYear === 'ALL' || (item.date && item.date.startsWith(selectedYear));
+    const matchCategory = selectedCategory === 'ALL' || (item.category && item.category.trim() === selectedCategory);
+    
+    const term = searchTerm.toLowerCase();
+    const matchSearch = !searchTerm || 
+      (item.boxName && item.boxName.toLowerCase().includes(term)) ||
+      (item.creator && item.creator.toLowerCase().includes(term)) ||
+      (item.description && item.description.toLowerCase().includes(term));
+
+    return matchYear && matchCategory && matchSearch;
   });
+
+  const totalPages = Math.ceil(filteredHistory.length / rowsPerPage) || 1;
+  const indexOfLastRow = currentPage * rowsPerPage;
+  const indexOfFirstRow = indexOfLastRow - rowsPerPage;
+  const currentRows = filteredHistory.slice(indexOfFirstRow, indexOfLastRow);
 
   const isBoxNameError = touched.boxName && !formData.boxName;
   const isCategoryError = touched.category && !formData.category;
@@ -430,7 +470,6 @@ Expire Date: ${formData.expireDate || '-'}`;
             )}
           </div>
 
-          {/* ชื่อกล่อง */}
           <div>
             <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: '700', color: isBoxNameError ? '#dc2626' : '#334155' }}>
               {t.boxName} <span style={{ color: '#dc2626' }}>*</span>
@@ -453,7 +492,6 @@ Expire Date: ${formData.expireDate || '-'}`;
             {isBoxNameError && <span style={{ fontSize: '11px', color: '#dc2626', marginTop: '3px', display: 'block' }}>* จำเป็นต้องกรอกข้อมูลนี้</span>}
           </div>
 
-          {/* หมวดหมู่ */}
           <div>
             <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: '700', color: isCategoryError ? '#dc2626' : '#334155' }}>
               {t.category} <span style={{ color: '#dc2626' }}>*</span>
@@ -521,7 +559,7 @@ Expire Date: ${formData.expireDate || '-'}`;
           )}
         </form>
 
-       {/* ฝั่งขวา: พรีวิวป้าย QR Code ในหน้าจอ */}
+        {/* ฝั่งขวา: พรีวิวป้าย QR Code ในหน้าจอ */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f8fafc', padding: '20px', borderRadius: '16px', border: '1px solid #e2e8f0', width: '100%', boxSizing: 'border-box' }}>
           <div style={{ fontSize: '13px', fontWeight: '700', marginBottom: '12px', color: '#475569' }}>{t.previewTitle}</div>
           
@@ -563,9 +601,7 @@ Expire Date: ${formData.expireDate || '-'}`;
         </div>
       </div>
 
-      {/* ========================================= */}
-      {/* ส่วนซ่อนสำหรับสร้าง PDF (ตัวหนังสือใหญ่สะใจเต็ม A4) */}
-      {/* ========================================= */}
+      {/* ส่วนซ่อนสำหรับสร้าง PDF */}
       <div style={{ position: 'absolute', left: '-9999px', top: '-9999px' }}>
         <div ref={pdfRef} style={{ background: '#ffffff', padding: '50px', borderRadius: '24px', border: '3px solid #0f172a', display: 'flex', alignItems: 'center', gap: '50px', width: '900px', boxSizing: 'border-box' }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
@@ -585,9 +621,6 @@ Expire Date: ${formData.expireDate || '-'}`;
             <div style={{ fontSize: '34px', fontWeight: '900', color: '#0f172a', marginBottom: '16px', wordBreak: 'break-word', overflowWrap: 'break-word', lineHeight: '1.2' }}>
               {formData.boxName || 'BOX NAME'}
             </div>
-           {/* <div style={{ fontSize: '18px', fontWeight: '600', color: '#334155', marginBottom: '24px', maxHeight: '130px', overflow: 'hidden', lineHeight: '1.5' }}>
-              {formData.description || 'Description details...'}
-            </div>*/}
             <div style={{ fontSize: '17px', color: '#0f172a', borderTop: '2px solid #0f172a', paddingTop: '16px', display: 'flex', flexDirection: 'column', gap: '10px', fontWeight: '800' }}>
               <div><b>Creator:</b> {formData.creator || '-'}</div>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -602,11 +635,58 @@ Expire Date: ${formData.expireDate || '-'}`;
       {/* ส่วนตารางรายงานประวัติ (Report Table) */}
       <div style={{ marginTop: '40px', background: '#ffffff', padding: '30px', borderRadius: '20px', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.05)', border: '1px solid #f1f5f9' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '15px' }}>
-          <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '800', color: '#0f172a' }}>
-            {t.reportTitle}
-          </h3>
           
-          <div style={{ display: 'flex', alignItems: 'center', gap: '15px', flexWrap: 'wrap' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+            <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '800', color: '#0f172a' }}>
+              {t.reportTitle}
+            </h3>
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              background: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)',
+              border: '1px solid #bfdbfe',
+              color: '#1d4ed8',
+              padding: '5px 12px',
+              borderRadius: '20px',
+              fontSize: '13px',
+              fontWeight: '700',
+              boxShadow: '0 2px 5px rgba(37,99,235,0.08)'
+            }}>
+              <span>📦</span>
+              {/* 🌟 แก้ไขให้ใช้ตัวแปรภาษา t.items ตรงนี้แล้วครับ */}
+              <span>{filteredHistory.length} {t.items}</span>
+            </div>
+          </div>
+          
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
+            
+            <input 
+              type="text" 
+              value={searchTerm} 
+              onChange={(e) => setSearchTerm(e.target.value)} 
+              placeholder={t.searchPlaceholder}
+              style={{ padding: '7px 14px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#f8fafc', fontSize: '13px', outline: 'none', width: '220px' }}
+            />
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <label style={{ fontSize: '13px', fontWeight: '700', color: '#475569' }}>{t.filterCategory}</label>
+              <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#f8fafc', fontWeight: '600', fontSize: '13px' }}>
+                {availableCategories.map(cat => (
+                  <option key={cat} value={cat}>{cat === 'ALL' ? t.allCategories : cat}</option>
+                ))}
+              </select>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <label style={{ fontSize: '13px', fontWeight: '700', color: '#475569' }}>{t.filterYear}</label>
+              <select value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)} style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#f8fafc', fontWeight: '600', fontSize: '13px' }}>
+                {availableYears.map(year => (
+                  <option key={year} value={year}>{year === 'ALL' ? t.allYears : year}</option>
+                ))}
+              </select>
+            </div>
+
             <button 
               onClick={exportToExcel}
               onMouseEnter={() => setHoverExcel(true)}
@@ -615,7 +695,7 @@ Expire Date: ${formData.expireDate || '-'}`;
                 background: hoverExcel ? '#15803d' : '#16a34a',
                 color: 'white',
                 border: 'none',
-                padding: '8px 14px',
+                padding: '7px 14px',
                 borderRadius: '8px',
                 cursor: 'pointer',
                 fontWeight: '700',
@@ -629,15 +709,6 @@ Expire Date: ${formData.expireDate || '-'}`;
             >
               {t.exportExcel}
             </button>
-
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <label style={{ fontSize: '13px', fontWeight: '700', color: '#475569' }}>{t.filterYear}</label>
-              <select value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)} style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#f8fafc', fontWeight: '600' }}>
-                {availableYears.map(year => (
-                  <option key={year} value={year}>{year === 'ALL' ? t.allYears : year}</option>
-                ))}
-              </select>
-            </div>
           </div>
         </div>
 
@@ -654,14 +725,14 @@ Expire Date: ${formData.expireDate || '-'}`;
               </tr>
             </thead>
             <tbody>
-              {filteredHistory.length === 0 ? (
+              {currentRows.length === 0 ? (
                 <tr>
                   <td colSpan="6" style={{ textAlign: 'center', padding: '30px', color: '#94a3b8' }}>
                     {t.noData}
                   </td>
                 </tr>
               ) : (
-                filteredHistory.map((item) => (
+                currentRows.map((item) => (
                   <tr key={item.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
                     <td style={{ padding: '12px', fontWeight: '700', color: '#0f172a' }}>{item.boxName}</td>
                     <td style={{ padding: '12px' }}>
@@ -691,6 +762,99 @@ Expire Date: ${formData.expireDate || '-'}`;
             </tbody>
           </table>
         </div>
+
+        {/* Pagination Footer */}
+        {totalPages > 1 && (
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', paddingTop: '15px', borderTop: '1px solid #e2e8f0', flexWrap: 'wrap', gap: '15px' }}>
+            
+            <div style={{ 
+              display: 'inline-flex', 
+              alignItems: 'center', 
+              gap: '6px', 
+              background: '#f8fafc', 
+              border: '1px solid #e2e8f0', 
+              padding: '6px 14px', 
+              borderRadius: '10px', 
+              fontSize: '13px', 
+              color: '#475569',
+              fontWeight: '600' 
+            }}>
+              <span>📑</span>
+              <span>{t.showing}</span>
+              <strong style={{ color: '#0f172a' }}>{indexOfFirstRow + 1}</strong>
+              <span>-</span>
+              <strong style={{ color: '#0f172a' }}>{Math.min(indexOfLastRow, filteredHistory.length)}</strong>
+              <span>{t.ofTotal}</span>
+              <strong style={{ color: '#2563eb' }}>{filteredHistory.length}</strong>
+              <span>{t.items}</span>
+            </div>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+              <button 
+                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                disabled={currentPage === 1}
+                style={{
+                  padding: '7px 14px',
+                  borderRadius: '10px',
+                  border: '1px solid #cbd5e1',
+                  background: currentPage === 1 ? '#f1f5f9' : '#ffffff',
+                  color: currentPage === 1 ? '#94a3b8' : '#334155',
+                  fontWeight: '700',
+                  fontSize: '13px',
+                  cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.02)',
+                  transition: 'all 0.2s'
+                }}
+              >
+                ◀ Prev
+              </button>
+
+              <div style={{ display: 'flex', gap: '4px', overflowX: 'auto', maxWidth: '320px', padding: '2px' }}>
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map(num => (
+                  <button
+                    key={num}
+                    onClick={() => setCurrentPage(num)}
+                    style={{
+                      width: '34px',
+                      height: '34px',
+                      borderRadius: '10px',
+                      border: currentPage === num ? 'none' : '1px solid #e2e8f0',
+                      background: currentPage === num ? 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)' : '#ffffff',
+                      color: currentPage === num ? '#ffffff' : '#475569',
+                      fontWeight: '700',
+                      fontSize: '13px',
+                      cursor: 'pointer',
+                      boxShadow: currentPage === num ? '0 4px 10px rgba(37,99,235,0.3)' : 'none',
+                      transition: 'all 0.2s'
+                    }}
+                  >
+                    {num}
+                  </button>
+                ))}
+              </div>
+
+              <button 
+                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                disabled={currentPage === totalPages}
+                style={{
+                  padding: '7px 14px',
+                  borderRadius: '10px',
+                  border: '1px solid #cbd5e1',
+                  background: currentPage === totalPages ? '#f1f5f9' : '#ffffff',
+                  color: currentPage === totalPages ? '#94a3b8' : '#334155',
+                  fontWeight: '700',
+                  fontSize: '13px',
+                  cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                  boxShadow: '0 1px 2px rgba(0,0,0,0.02)',
+                  transition: 'all 0.2s'
+                }}
+              >
+                Next ▶
+              </button>
+            </div>
+          </div>
+        )}
+
       </div>
 
     </div>
