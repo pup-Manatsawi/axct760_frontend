@@ -202,7 +202,7 @@ export default function QRCodeBox() {
   const [selectedCategory, setSelectedCategory] = useState('ALL');
   const [searchTerm, setSearchTerm] = useState('');
   const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 100;
+  const rowsPerPage = 50;
   
   const [hoverSubmit, setHoverSubmit] = useState(false);
   const [hoverPdf, setHoverPdf] = useState(false);
