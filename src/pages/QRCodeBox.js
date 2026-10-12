@@ -213,6 +213,11 @@ export default function QRCodeBox() {
   const [previewScale, setPreviewScale] = useState(0.48);
   const [previewHeight, setPreviewHeight] = useState(240);
 
+  // 🌟 ฟังก์ชันเปิดหน้าคู่มือในแท็บใหม่
+  const handleOpenManual = () => {
+    window.open('/Manual', '_blank');
+  };
+
   useEffect(() => {
     const updatePreviewSize = () => {
       if (previewWrapperRef.current) {
@@ -437,12 +442,108 @@ Expire Date: ${formData.expireDate || '-'}`;
   return (
     <div style={{ fontFamily: "'Inter', 'Segoe UI', Arial, sans-serif", padding: '20px', maxWidth: '1500px', margin: 'auto', color: '#1e293b' }}>
       
-      {/* ส่วนเลือกภาษา */}
-      <div style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '15px', gap: '8px' }}>
-        <button onClick={() => setLang('TH')} style={{ padding: '5px 10px', borderRadius: '6px', border: lang === 'TH' ? '2px solid #2563eb' : '1px solid #cbd5e1', background: lang === 'TH' ? '#eff6ff' : '#fff', fontWeight: 'bold', cursor: 'pointer' }}>ไทย</button>
-        <button onClick={() => setLang('EN')} style={{ padding: '5px 10px', borderRadius: '6px', border: lang === 'EN' ? '2px solid #2563eb' : '1px solid #cbd5e1', background: lang === 'EN' ? '#eff6ff' : '#fff', fontWeight: 'bold', cursor: 'pointer' }}>EN</button>
-        <button onClick={() => setLang('TW')} style={{ padding: '5px 10px', borderRadius: '6px', border: lang === 'TW' ? '2px solid #2563eb' : '1px solid #cbd5e1', background: lang === 'TW' ? '#eff6ff' : '#fff', fontWeight: 'bold', cursor: 'pointer' }}>中文</button>
-      </div>
+     {/* 🌟 แถบเมนูล้ำสมัยสไตล์ Ultra-Modern Glassmorphism */}
+    <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '22px', gap: '12px' }}>
+  
+        {/* กลุ่มปุ่มเลือกภาษา (Glass Segmented Control) */}
+          <div style={{
+                        display: 'flex',
+                        background: 'rgba(255, 255, 255, 0.75)',
+                        backdropFilter: 'blur(12px)',
+                        WebkitBackdropFilter: 'blur(12px)',
+                        padding: '4px',
+                        borderRadius: '12px',
+                        border: '1px solid rgba(226, 232, 240, 0.8)',
+                        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.8)'
+                      }}>
+              <button 
+                onClick={() => setLang('TH')} 
+                style={{
+                        padding: '6px 14px',
+                        borderRadius: '9px',
+                        border: 'none',
+                        background: lang === 'TH' ? 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)' : 'transparent',
+                        color: lang === 'TH' ? '#ffffff' : '#64748b',
+                        fontWeight: lang === 'TH' ? '700' : '500',
+                        fontSize: '12px',
+                        cursor: 'pointer',
+                        boxShadow: lang === 'TH' ? '0 4px 12px rgba(37, 99, 235, 0.25)' : 'none',
+                        transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
+                        }}
+                > ไทย
+              </button>
+
+              <button 
+                onClick={() => setLang('EN')} 
+                style={{
+                        padding: '6px 14px',
+                        borderRadius: '9px',
+                        border: 'none',
+                        background: lang === 'EN' ? 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)' : 'transparent',
+                        color: lang === 'EN' ? '#ffffff' : '#64748b',
+                        fontWeight: lang === 'EN' ? '700' : '500',
+                        fontSize: '12px',
+                        cursor: 'pointer',
+                        boxShadow: lang === 'EN' ? '0 4px 12px rgba(37, 99, 235, 0.25)' : 'none',
+                        transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
+                      }}
+                > EN
+              </button>
+
+              <button 
+                onClick={() => setLang('TW')} 
+                style={{
+                        padding: '6px 14px',
+                        borderRadius: '9px',
+                        border: 'none',
+                        background: lang === 'TW' ? 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)' : 'transparent',
+                        color: lang === 'TW' ? '#ffffff' : '#64748b',
+                        fontWeight: lang === 'TW' ? '700' : '500',
+                        fontSize: '12px',
+                        cursor: 'pointer',
+                        boxShadow: lang === 'TW' ? '0 4px 12px rgba(37, 99, 235, 0.25)' : 'none',
+                        transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
+                      }}
+                > 中文
+              </button>
+            </div>
+
+            {/* ปุ่มคู่มือดีไซน์พิเศษ (Glow Soft Button + ไอคอนหนังสือมีมิติ) */}
+      <button 
+          onClick={handleOpenManual}
+          title="คู่มือการใช้งาน / User Manual"
+          style={{
+                  background: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)',
+                  border: '1px solid #bfdbfe',
+                  padding: '7px 16px',
+                  borderRadius: '12px',
+                  cursor: 'pointer',
+                  fontSize: '12px',
+                  fontWeight: '750',
+                  color: '#1d4ed8',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '7px',
+                  boxShadow: '0 4px 15px rgba(37, 99, 235, 0.08)',
+                  transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+                  letterSpacing: '0.2px'
+                }}
+        onMouseEnter={(e) => {
+                              e.currentTarget.style.background = 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)';
+                              e.currentTarget.style.transform = 'translateY(-2px)';
+                              e.currentTarget.style.boxShadow = '0 6px 20px rgba(37, 99, 235, 0.18)';
+                            }}
+        onMouseLeave={(e) => {
+                              e.currentTarget.style.background = 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)';
+                              e.currentTarget.style.transform = 'translateY(0)';
+                              e.currentTarget.style.boxShadow = '0 4px 15px rgba(37, 99, 235, 0.08)';
+                            }}
+        >
+        <span style={{ fontSize: '14px', filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.1))' }}>📖</span>
+        <span>Manual</span>
+      </button>
+
+    </div>
 
       {/* หัวข้อหน้า */}
       <div style={{ textAlign: 'center', marginBottom: '25px' }}>
@@ -654,7 +755,6 @@ Expire Date: ${formData.expireDate || '-'}`;
               boxShadow: '0 2px 5px rgba(37,99,235,0.08)'
             }}>
               <span>📦</span>
-              {/* 🌟 แก้ไขให้ใช้ตัวแปรภาษา t.items ตรงนี้แล้วครับ */}
               <span>{filteredHistory.length} {t.items}</span>
             </div>
           </div>

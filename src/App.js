@@ -18,6 +18,7 @@ import Aist310 from "./pages/Aist310";
 import Aapq360 from "./pages/Aapq360";
 import Apmt400 from "./pages/Apmt400";
 import QRCodeBox from "./pages/QRCodeBox"; // ใช้ตัวนี้ตัวเดียว
+import Manual from "./pages/manual";
 
 // ================== APP CONTENT ==================
 function AppContent() {
@@ -80,6 +81,7 @@ function AppContent() {
           />
 
           {/* ================= ROLE BASE ================= */}
+      
 
           {/* MARKETING */}
           {role === "MARKETING" && (
@@ -100,6 +102,9 @@ function AppContent() {
               <Route path="/Aist310" element={<Aist310 />} />
               <Route path="/Aapq360" element={<Aapq360 />} />
               <Route path="/QRCodeBox" element={<QRCodeBox />} /> {/* 👈 หน้า QR Code กล่องเอกสาร */}
+              {/* 🌟 เพิ่มเส้นทางนี้เพื่อให้เปิดหน้าคู่มือได้ */}
+              <Route path="/Manual" element={<Manual />} />
+
               <Route path="/Axmr009" element={<Navigate to="/Aglq760" replace />} />
               <Route path="*" element={<Navigate to="/Aglq760" replace />} />
             </>
