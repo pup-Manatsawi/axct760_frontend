@@ -18,6 +18,7 @@ import Aist310 from "./pages/Aist310";
 import Aapq360 from "./pages/Aapq360";
 import Axcq513 from "./pages/Axcq513";
 import Apmt400 from "./pages/Apmt400";
+import Axmq140 from "./pages/Axmq140";
 import QRCodeBox from "./pages/QRCodeBox"; // ใช้ตัวนี้ตัวเดียว
 import Manual from "./pages/manual";
 
@@ -88,6 +89,7 @@ function AppContent() {
           {role === "MARKETING" && (
             <>
               <Route path="/Axmr009" element={<Axmr009 />} />
+              <Route path="/Axmq140" element={<Axmq140 />} />
               <Route path="*" element={<Navigate to="/Axmr009" replace />} />
             </>
           )}

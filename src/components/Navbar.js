@@ -7,7 +7,8 @@ function Navbar({ role }) {
   const site = localStorage.getItem("site") || "/";
 
   const menuSale = [
-    { path: "/Axmr009", label: "AXMR009" }
+    { path: "/Axmr009", label: "AXMR009" },
+    { path: "/Axmq140", label: "AXMQ140" }
   ];
 
   const menuAcc = [
