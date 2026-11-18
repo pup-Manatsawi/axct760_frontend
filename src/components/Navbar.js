@@ -17,6 +17,7 @@ function Navbar({ role }) {
     { path: "/Axct707_6XXX", label: "AXCT707-6XXX" },
     { path: "/Aint302", label: "AINT302" },
     { path: "/Aist310", label: "AIST310" },
+    { path: "/Axcq513", label: "AXCQ513" },
     { path: "/Aapq360", label: "AAPQ360" },
     { path: "/QRCodeBox", label: "QR Code Box" }
   ];
