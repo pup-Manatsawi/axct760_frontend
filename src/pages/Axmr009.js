@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useMemo } from 'react';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 
@@ -15,9 +15,9 @@ function Axmr009() {
   const [loading, setLoading] = useState(false);
   const [salesType, setSalesType] = useState('');
 
-  // 🔹 เพิ่ม State สำหรับ Pagination ที่ขาดหายไป
+  // 🔹 State สำหรับ Pagination
   const [currentPage, setCurrentPage] = useState(1);
-  const [rowsPerPage] = useState(100); // กำหนดแสดงหน้าละ 100 รายการ
+  const [rowsPerPage] = useState(100);
 
   const handleStartChange = (value) => {
     setStartDate(value);
@@ -34,7 +34,7 @@ function Axmr009() {
     }
   };
 
-  // เมื่อเปลี่ยน Filter (startDate, endDate, salesType) ให้รีเซ็ตกลับไปหน้า 1 เสมอ
+  // เมื่อเปลี่ยน Filter ให้รีเซ็ตกลับไปหน้า 1 เสมอ
   useEffect(() => {
     setCurrentPage(1);
   }, [startDate, endDate, salesType]);
@@ -53,6 +53,8 @@ function Axmr009() {
     'Unit Price',
     'Customer PO No.',
     'LOT',
+    'Collection Term',
+    'Collection Desc',
     'Customer Item No./Spec',
     'Name',
     'Shipping Order',
@@ -69,8 +71,6 @@ function Axmr009() {
     'Invoice No.',
     'Doc Date',
     'Invoice Date',
-    'Collection Term',
-    'Collection Desc',
     'Trade Term',
     'Trade Desc'
   ];
@@ -84,11 +84,13 @@ function Axmr009() {
     row.XMDG017,
     row.PMAO009,
     row.XMDH001,
-    row.CALC_QTY,
+    row.CALC_QTY !== null && row.CALC_QTY !== undefined ? Number(row.CALC_QTY) : '',
     row.UNIT,
-    row.XMDH023,
+    row.XMDH023 !== null && row.XMDH023 !== undefined ? Number(row.XMDH023) : '',
     row.XMDA033,
     row.XMDH006_LAST6,
+    row.XMDG008,
+    row.OOIBL004,
     row.PMAO010,
     row.OOFA011,
     row.XMDKDOCNO,
@@ -98,15 +100,13 @@ function Axmr009() {
     row.OOEFL003,
     row.XMDH006,
     row.IMAAL003,
-    row.XMDH016,
-    row.XMDH017,
+    row.XMDH016 !== null && row.XMDH016 !== undefined ? Number(row.XMDH016) : '',
+    row.XMDH017 !== null && row.XMDH017 !== undefined ? Number(row.XMDH017) : '',
     row.OOFB011,
     row.ISAG002_LIST,
     row.ISAF011_LIST,
     row.ISAFDOCDT_LIST,
     row.ISAF014_LIST,
-    row.XMDG008,
-    row.OOIBL004,
     row.XMDG009,
     row.OOCQL004
   ];
@@ -140,27 +140,138 @@ function Axmr009() {
 
   const indexOfLastRow = currentPage * rowsPerPage;
   const indexOfFirstRow = indexOfLastRow - rowsPerPage;
-  const currentRows = Array.isArray(data) ? data.slice(indexOfFirstRow, indexOfLastRow) : [];
+  const currentRows = useMemo(() => {
+    return Array.isArray(data) ? data.slice(indexOfFirstRow, indexOfLastRow) : [];
+  }, [data, indexOfFirstRow, indexOfLastRow]);
+
   const totalPages = Math.ceil((data?.length || 0) / rowsPerPage);
 
+  // 🌟 คำนวณผลรวม QTY ทั้งหมด (Grand Total)
+  const totalAllQty = useMemo(() => {
+    if (!Array.isArray(data)) return 0;
+    return data.reduce((sum, row) => sum + (Number(row.CALC_QTY) || 0), 0);
+  }, [data]);
+
+  // 🌟 คำนวณราคาเฉลี่ยถ่วงน้ำหนัก AVG (SUMPRODUCT / SUM / 1000)
+  const weightedAvgPrice = useMemo(() => {
+    if (!Array.isArray(data) || data.length === 0) return 0;
+
+    const totalAmount = data.reduce((sum, row) => {
+      const qty = Number(row.CALC_QTY) || 0;
+      const price = Number(row.XMDH023) || 0;
+      return sum + (qty * price);
+    }, 0);
+
+    const totalQty = data.reduce((sum, row) => sum + (Number(row.CALC_QTY) || 0), 0);
+
+    if (totalQty === 0) return 0;
+
+    return (totalAmount / totalQty) / 1000;
+  }, [data]);
+
+  // 🌟 ฟังก์ชันดาวน์โหลด Excel พร้อมจัดตารางสวยงามอัตโนมัติ
   const exportToExcel = () => {
     if (!Array.isArray(data) || data.length === 0) {
       return alert('ไม่มีข้อมูลให้ดาวน์โหลด');
     }
+
+    const mappedRows = data.map(mapRow);
+
+    // 1. แถว SUM (มี Date Printed อยู่ฝั่งซ้าย + SUM และผลรวม QTY อยู่ตรงช่อง)
+    const excelSumRow = Array(headers.length).fill('');
+    excelSumRow[0] = '(AXMR009)';
+    excelSumRow[1] = 'Date Printed:';
+    excelSumRow[2] = now.toLocaleDateString() + ' ' + now.toLocaleTimeString();
+    excelSumRow[7] = 'SUM';
+    excelSumRow[8] = Number(totalAllQty.toFixed(2));
+
+    // 2. แถว AVG (AVG อยู่ใต้ SUM และผลรวมเฉลี่ยอยู่ใต้ผลรวม SUM ในช่อง QTY พอดี)
+    const excelAvgRow = Array(headers.length).fill('');
+    excelAvgRow[7] = 'AVG';
+    excelAvgRow[8] = Number(weightedAvgPrice.toFixed(2));
 
     const worksheetData = [
       ['THAI SHINKONG INDUSTRY CORPORATION LTD.'],
       ['Shipping Notice Details'],
       [''],
       headers,
-      ...data.map(mapRow),
-      [''],
-      ['(AXMR009)', ' Date Printed:', now.toLocaleDateString() + ' ' + now.toLocaleTimeString()]
+      ...mappedRows,
+      [''],        // เว้น 1 บรรทัดว่าง
+      excelSumRow, // แถว SUM + Date Printed
+      excelAvgRow  // แถว AVG ใต้ SUM
     ];
 
     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
-    const workbook = XLSX.utils.book_new();
 
+    // ✨ 1. ตั้งค่า AutoFilter ที่แถวหัวตาราง (Row 4 -> index 3)
+    const lastColLetter = XLSX.utils.encode_col(headers.length - 1);
+    worksheet['!autofilter'] = { ref: `A4:${lastColLetter}${4 + mappedRows.length}` };
+
+    // ✨ 2. รวมเซลล์ (Merge Cells) สำหรับชื่อบริษัทและชื่อรายงานด้านบนให้สวยงาม
+    worksheet['!merges'] = [
+      { s: { r: 0, c: 0 }, e: { r: 0, c: 4 } }, // THAI SHINKONG INDUSTRY CORPORATION LTD.
+      { s: { r: 1, c: 0 }, e: { r: 1, c: 4 } }  // Shipping Notice Details
+    ];
+
+    // ✨ 3. จัดรูปแบบตัวเลข (Number Format #,##0.00) สำหรับคอลัมน์ตัวเลข และแถว SUM / AVG
+    const numericCols = [8, 10, 24, 25]; // QTY, Unit Price, Applied Qty, Actual Qty
+    const startDataRow = 4; // แถวข้อมูลเริ่มที่ index 4 (บรรทัดที่ 5 ใน Excel)
+    const endDataRow = startDataRow + mappedRows.length - 1;
+    const sumRowIdx = endDataRow + 2;
+    const avgRowIdx = endDataRow + 3;
+
+    for (let r = startDataRow; r <= endDataRow; r++) {
+      numericCols.forEach((c) => {
+        const cellAddress = XLSX.utils.encode_cell({ r, c });
+        const cell = worksheet[cellAddress];
+        if (cell && typeof cell.v === 'number') {
+          cell.z = '#,##0.00';
+        }
+      });
+    }
+
+    // ฟอร์แมตตัวเลขให้ช่องผลรวม SUM และ AVG
+    const sumCell = worksheet[XLSX.utils.encode_cell({ r: sumRowIdx, c: 8 })];
+    if (sumCell) sumCell.z = '#,##0.00';
+
+    const avgCell = worksheet[XLSX.utils.encode_cell({ r: avgRowIdx, c: 8 })];
+    if (avgCell) avgCell.z = '#,##0.00';
+
+    // ✨ 4. คำนวณความกว้างคอลัมน์อัตโนมัติ (Auto-fit Column Widths) ไม่ให้ตัวหนังสือโดนตัด
+    worksheet['!cols'] = headers.map((header, colIdx) => {
+      let maxLen = String(header).length;
+
+      mappedRows.forEach((row) => {
+        const val = row[colIdx];
+        if (val !== null && val !== undefined) {
+          const strLen = typeof val === 'number'
+            ? val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }).length
+            : String(val).length;
+          if (strLen > maxLen) maxLen = strLen;
+        }
+      });
+
+      // เผื่อความกว้างสำหรับแถว SUM / Date Printed
+      if (colIdx === 2 && excelSumRow[2].length > maxLen) {
+        maxLen = excelSumRow[2].length;
+      }
+      if (colIdx === 8) {
+        maxLen = Math.max(maxLen, 14);
+      }
+
+      return { wch: Math.min(Math.max(maxLen + 4, 12), 45) };
+    });
+
+    // ✨ 5. กำหนดความสูงของแถว (Row Heights) ให้ดูโปร่งอ่านง่าย
+    const rowsConfig = [];
+    rowsConfig[0] = { hpt: 24 }; // ชื่อบริษัท
+    rowsConfig[1] = { hpt: 20 }; // ชื่อรายงาน
+    rowsConfig[3] = { hpt: 26 }; // หัวตาราง
+    rowsConfig[sumRowIdx] = { hpt: 22 }; // แถว SUM
+    rowsConfig[avgRowIdx] = { hpt: 22 }; // แถว AVG
+    worksheet['!rows'] = rowsConfig;
+
+    const workbook = XLSX.utils.book_new();
     XLSX.utils.book_append_sheet(workbook, worksheet, 'Data');
 
     const wbout = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
@@ -181,7 +292,7 @@ function Axmr009() {
       color: 'var(--text-color)',         
       minHeight: '100vh',
       boxSizing: 'border-box',
-      transition: 'background-color 0.15s ease, color 0.15s ease' /* 🌟 [แก้ไข] ปรับจาก all 0.3s หน่วง CPU เป็นระบุตัวแปรพื้นหลังเบาๆ */
+      transition: 'background-color 0.15s ease, color 0.15s ease'
     }}>
       {/* Header Section */}
       <div style={{ 
@@ -196,7 +307,7 @@ function Axmr009() {
         borderRadius: '16px',
         boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.05)',
         border: '1px solid var(--border-color)', 
-        transition: 'background-color 0.15s ease, border-color 0.15s ease' /* 🌟 [แก้ไข] */
+        transition: 'background-color 0.15s ease, border-color 0.15s ease'
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <div style={{
@@ -226,7 +337,7 @@ function Axmr009() {
               letterSpacing: '-0.3px'
             }}>
               AXMR009 REPORT
-            </h2>
+            </h2> 
             <p style={{ color: 'var(--text-color)', opacity: 0.7, fontSize: '13px', margin: 0, fontWeight: '400' }}> 
               ระบบรายงานใบส่งสินค้า / Shipping Notice Details
             </p>
@@ -241,7 +352,7 @@ function Axmr009() {
           borderRadius: '20px',
           fontWeight: '500',
           border: '1px solid var(--border-color)', 
-          transition: 'background-color 0.15s ease, border-color 0.15s ease' /* 🌟 [แก้ไข] */
+          transition: 'background-color 0.15s ease, border-color 0.15s ease'
         }}>
           รายการทั้งหมด: <strong style={{ color: 'var(--text-color)' }}>{data.length}</strong> รายการ 
         </div>
@@ -259,7 +370,7 @@ function Axmr009() {
         gap: '20px',
         marginBottom: '24px',
         border: '1px solid var(--border-color)', 
-        transition: 'background-color 0.15s ease, border-color 0.15s ease' /* 🌟 [แก้ไข] */
+        transition: 'background-color 0.15s ease, border-color 0.15s ease'
       }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           <label style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-color)' }}>Start Date</label> 
@@ -381,7 +492,7 @@ function Axmr009() {
         boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)',
         border: '1px solid var(--border-color)', 
         overflow: 'hidden',
-        transition: 'background-color 0.15s ease, border-color 0.15s ease' /* 🌟 [แก้ไข] */
+        transition: 'background-color 0.15s ease, border-color 0.15s ease'
       }}>
         {loading ? (
           <div style={{ padding: '80px 20px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px' }}>
@@ -469,7 +580,7 @@ function Axmr009() {
 
                     return (
                       <tr
-                        key={idx}
+                        key={row.XMDGDOCNO ? `${row.XMDGDOCNO}_${idx}` : idx}
                         style={{
                           backgroundColor: rowBgColor,
                           transition: 'background-color 0.15s ease'
@@ -481,26 +592,153 @@ function Axmr009() {
                           e.currentTarget.style.backgroundColor = rowBgColor;
                         }}
                       >
-                        {mapRow(row).map((value, i) => (
-                          <td
-                            key={i}
-                            style={{
-                              borderBottom: '1px solid var(--border-color)', 
-                              borderRight: '1px solid var(--border-color)',  
-                              padding: '12px 16px',
-                              fontSize: '13px',
-                              color: 'var(--text-color)',                    
-                              whiteSpace: 'nowrap'
-                              /* 🌟 [แก้ไขด่วน] ลบ transition: 'all 0.3s ease' ออกไปเรียบร้อยแล้ว เพื่อให้การแสดงผลและเปลี่ยนสีตารางใบส่งสินค้าทำงานได้ลื่นเร็วปรี๊ดครับ */
-                            }}
-                          >
-                            {value !== null && value !== undefined ? String(value) : ''}
-                          </td>
-                        ))}
+                        {mapRow(row).map((value, i) => {
+                          const isNumericCol = [8, 10, 24, 25].includes(i);
+                          const displayVal = isNumericCol && typeof value === 'number'
+                            ? value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                            : (value !== null && value !== undefined ? String(value) : '');
+
+                          return (
+                            <td
+                              key={i}
+                              style={{
+                                borderBottom: '1px solid var(--border-color)',
+                                borderRight: '1px solid var(--border-color)',
+                                padding: '12px 16px',
+                                fontSize: '13px',
+                                color: 'var(--text-color)',
+                                whiteSpace: 'nowrap',
+                                textAlign: isNumericCol ? 'right' : 'left',
+                                fontVariantNumeric: isNumericCol ? 'tabular-nums' : 'normal'
+                              }}
+                            >
+                              {displayVal}
+                            </td>
+                          );
+                        })}
                       </tr>
                     );
                   })}
                 </tbody>
+
+                                  {/* 🌟 Footer ดีไซน์ทึบ 100% (Solid Colors) ปิดรูโหว่และแก้ปัญหามองทะลุด้านหลังหายขาด */}
+                <tfoot>
+                  {/* แถวที่ 1: SUM QTY (ลอยประทับอยู่เหนือแถว AVG พอดีเป๊ะ) */}
+                  <tr>
+                    <td colSpan={8} style={{
+                      position: 'sticky',
+                      bottom: '41px', // ตรึงให้อยู่เหนือความสูงของแถว AVG ด้านล่างพอดี
+                      zIndex: 11,
+                      backgroundColor: '#f8fafc', // 🌟 ปรับเป็นสีทึบ Slate 50
+                      padding: '10px 16px',
+                      textAlign: 'right',
+                      borderTop: '2px solid #10b981',
+                      borderRight: '1px solid var(--border-color)',
+                      boxShadow: 'inset 0 1px 0 rgba(255,255,255,0.8), 0 -3px 6px rgba(0,0,0,0.02)'
+                    }}>
+                      <span style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '4px 12px',
+                        borderRadius: '999px',
+                        fontSize: '12px',
+                        fontWeight: '700',
+                        letterSpacing: '0.4px',
+                        color: '#047857',
+                        backgroundColor: '#e6f4ea', // 🌟 ปรับพื้นหลังป้ายกำกับเป็นสีเขียวทึบ
+                        border: '1px solid #10b981'
+                      }}>
+                        <span>∑</span> SUM QTY :
+                      </span>
+                    </td>
+                    <td style={{
+                      position: 'sticky',
+                      bottom: '41px',
+                      zIndex: 11,
+                      backgroundColor: '#e6f4ea', // 🌟 ปรับช่องตัวเลขเป็นสีเขียวพาสเทลทึบ 100%
+                      padding: '10px 16px',
+                      fontSize: '14px',
+                      fontWeight: '800',
+                      color: '#0f9d58', // 🌟 สีฟอนต์เขียวเข้มทึบ
+                      textAlign: 'right',
+                      whiteSpace: 'nowrap',
+                      fontVariantNumeric: 'tabular-nums',
+                      borderTop: '2px solid #10b981',
+                      borderRight: '1px solid var(--border-color)'
+                    }}>
+                      {totalAllQty.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </td>
+                    <td colSpan={headers.length - 9} style={{
+                      position: 'sticky',
+                      bottom: '41px',
+                      zIndex: 11,
+                      padding: '10px 16px',
+                      borderTop: '2px solid var(--border-color)',
+                      backgroundColor: '#f8fafc', // 🌟 ฝั่งขวาที่เหลือถมสีทึบเพื่อบล็อคตารางเลื่อนทะลุ
+                      borderRight: '1px solid var(--border-color)'
+                    }}></td>
+                  </tr>
+
+                  {/* แถวที่ 2: AVG (ลอยชิดติดขอบล่างสุด bottom: 0) */}
+                  <tr>
+                    <td colSpan={8} style={{
+                      position: 'sticky',
+                      bottom: 0,
+                      zIndex: 11,
+                      backgroundColor: '#f8fafc', // 🌟 ปรับเป็นสีทึบ Slate 50
+                      padding: '10px 16px',
+                      textAlign: 'right',
+                      borderTop: '1px dashed var(--border-color)',
+                      borderRight: '1px solid var(--border-color)',
+                      boxShadow: '0 -4px 10px rgba(0, 0, 0, 0.04)'
+                    }}>
+                      <span style={{
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        padding: '4px 12px',
+                        borderRadius: '999px',
+                        fontSize: '12px',
+                        fontWeight: '700',
+                        letterSpacing: '0.4px',
+                        color: '#1d4ed8',
+                        backgroundColor: '#e8f0fe', // 🌟 ปรับพื้นหลังป้ายกำกับเป็นสีฟ้าทึบ
+                        border: '1px solid #2563eb'
+                      }}>
+                        <span>Ø</span> AVG :
+                      </span>
+                    </td>
+                    <td style={{
+                      position: 'sticky',
+                      bottom: 0,
+                      zIndex: 11,
+                      backgroundColor: '#e8f0fe', // 🌟 ปรับช่องตัวเลขเป็นสีฟ้าพาสเทลทึบ 100%
+                      padding: '10px 16px',
+                      fontSize: '14px',
+                      fontWeight: '800',
+                      color: '#1a73e8', // 🌟 สีฟอนต์น้ำเงินทึบ
+                      textAlign: 'right',
+                      whiteSpace: 'nowrap',
+                      fontVariantNumeric: 'tabular-nums',
+                      borderTop: '1px dashed rgba(37, 99, 235, 0.3)',
+                      borderRight: '1px solid var(--border-color)'
+                    }}>
+                      {weightedAvgPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                    </td>
+                    <td colSpan={headers.length - 9} style={{
+                      position: 'sticky',
+                      bottom: 0,
+                      zIndex: 11,
+                      padding: '10px 16px',
+                      borderTop: '1px solid var(--border-color)',
+                      backgroundColor: '#f8fafc', // 🌟 ฝั่งขวาถมสีทึบบล็อคตัวอักษรทะลุ
+                      borderRight: '1px solid var(--border-color)'
+                    }}></td>
+                  </tr>
+                </tfoot>
+
+
               </table>
             </div>
 
@@ -515,7 +753,7 @@ function Axmr009() {
                 backgroundColor: 'var(--card-bg)',         
                 flexWrap: 'wrap',
                 gap: '12px',
-                transition: 'background-color 0.15s ease, border-color 0.15s ease' /* 🌟 [แก้ไข] */
+                transition: 'background-color 0.15s ease, border-color 0.15s ease'
               }}>
                 <div style={{ fontSize: '13px', color: 'var(--text-color)', opacity: 0.8 }}> 
                   Page <strong style={{ color: 'var(--text-color)' }}>{currentPage}</strong> of <strong style={{ color: 'var(--text-color)' }}>{totalPages}</strong> (Showing {rowsPerPage} rows per page)
