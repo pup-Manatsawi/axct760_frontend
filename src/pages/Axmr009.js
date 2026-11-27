@@ -56,7 +56,7 @@ function Axmr009() {
     'Customer Item No./Spec',
     'Name',
     'Shipping Oder',
-    'Shipping Oder Date',
+    'Debit Date',
     'Status',
     'Salesperson',
     'Department Name',
