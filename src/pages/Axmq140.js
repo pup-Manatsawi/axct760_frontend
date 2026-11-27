@@ -2,7 +2,8 @@ import { useEffect, useState, useCallback } from 'react';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 
-function Axmq140() {
+// 🌟 [แก้ไข] รับ props theme เข้ามาเพื่อระบุดร็อปดาวน์และสีแถว Over Credit ให้เป็นโทนมืดที่สบายตา
+function Axmq140({ theme }) {
   const [data, setData] = useState([]);
   const [loading, setLoading] = useState(false);
   const [creditFilter, setCreditFilter] = useState('ALL'); // ALL, OVER, NORMAL
@@ -11,6 +12,7 @@ function Axmq140() {
   // 🔹 State สำหรับ Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const [rowsPerPage] = useState(100);
+
   // 🔹 ฟังก์ชันสำหรับแปลงวันที่ปัจจุบันให้อยู่ในฟอร์แมต "19 Nov 26"
   const getTodayHeaderLabel = () => {
     const today = new Date();
@@ -119,7 +121,7 @@ function Axmq140() {
   // นับจำนวนรายการที่ OverCredit
   const overCreditCount = data.filter(isOverCredit).length;
 
-    const exportToExcel = () => {
+  const exportToExcel = () => {
     if (!Array.isArray(filteredData) || filteredData.length === 0) {
       return alert('No data available to download');
     }
@@ -150,6 +152,7 @@ function Axmq140() {
     );
   };
 
+  const isDark = theme === "dark";
 
   return (
     <div style={{
@@ -157,9 +160,11 @@ function Axmq140() {
       padding: '32px 24px',
       maxWidth: '1940px',
       margin: '0 auto',
-      backgroundColor: '#f1f5f9', // พื้นหลังหลักสี Slate สว่าง
+      backgroundColor: 'var(--bg-color)', 
+      color: 'var(--text-color)',         
       minHeight: '100vh',
-      boxSizing: 'border-box'
+      boxSizing: 'border-box',
+      transition: 'background-color 0.15s ease, color 0.15s ease' /* 🌟 [แก้ไข] สลับสลัวเฉดแบคกราวด์ใหญ่นุ่มๆ กระชับไม่ดีเลย์ */
     }}>
       {/* Header Section */}
       <div style={{ 
@@ -169,32 +174,29 @@ function Axmq140() {
         justifyContent: 'space-between',
         flexWrap: 'wrap',
         gap: '16px',
-        backgroundColor: '#ffffff',
+        backgroundColor: 'var(--card-bg)', 
         padding: '24px 32px',
         borderRadius: '20px',
         boxShadow: '0 4px 18px rgba(15, 23, 42, 0.04)',
-        border: '1px solid #e2e8f0'
+        border: '1px solid var(--border-color)', 
+        transition: 'background-color 0.15s ease, border-color 0.15s ease' /* 🌟 [แก้ไข] */
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '18px' }}>
           <div style={{
             width: '52px',
             height: '52px',
             borderRadius: '16px',
-            background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)', // 🔹 เปลี่ยนเป็นเฉดสี Royal Indigo พรีเมียม
+            background: 'linear-gradient(135deg, #4f46e5 0%, #3730a3 100%)', // 🔹 Royal Indigo
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             color: '#ffffff',
-            boxShadow: '0 6px 16px rgba(79, 70, 229, 0.28)' // 🔹 เงาสีครามนุ่มลึก
+            boxShadow: '0 6px 16px rgba(79, 70, 229, 0.28)'
           }}>
             <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
-              {/* กรอบตัวบัตรขอบมน */}
               <rect x="2" y="5" width="20" height="14" rx="3" />
-              {/* แถบแม่เหล็ก/แถบเส้นบน */}
               <line x1="2" y1="10" x2="22" y2="10" opacity="0.4" strokeWidth="2.5" />
-              {/* สมาร์ทชิปการ์ด (EMV Chip) */}
               <rect x="5" y="13" width="4" height="3" rx="0.8" fill="currentColor" fillOpacity="0.3" stroke="currentColor" strokeWidth="1.2" />
-              {/* เส้นแถบลายบัตรด้านขวา */}
               <line x1="12" y1="14.5" x2="18" y2="14.5" opacity="0.6" strokeDasharray="1.5 2" />
             </svg>
           </div>
@@ -202,13 +204,13 @@ function Axmq140() {
             <h2 style={{
               fontSize: '24px',
               fontWeight: '800',
-              color: '#0f172a',
+              color: 'var(--text-color)', 
               margin: '0 0 4px 0',
               letterSpacing: '-0.5px'
             }}>
               Customer Credit Limit Monitor
             </h2>
-            <p style={{ color: '#64748b', fontSize: '13px', margin: 0, fontWeight: '500' }}>
+            <p style={{ color: 'var(--text-color)', opacity: 0.7, fontSize: '13px', margin: 0, fontWeight: '500' }}> 
               ระบบตรวจสอบวงเงินสินเชื่อลูกค้า (AXMQ140) 
             </p>
           </div>
@@ -217,18 +219,18 @@ function Axmq140() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px', flexWrap: 'wrap' }}>
           {lastUpdated && (
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
-              <span style={{ fontSize: '12px', color: '#64748b', fontWeight: '500' }}>
-                Last Updated: <strong style={{ color: '#0f172a' }}>{lastUpdated.toLocaleTimeString('th-TH')}</strong>
+              <span style={{ fontSize: '12px', color: 'var(--text-color)', opacity: 0.8, fontWeight: '500' }}> 
+                Last Updated: <strong style={{ color: 'var(--text-color)' }}>{lastUpdated.toLocaleTimeString('th-TH')}</strong>
               </span>
-              <span style={{ fontSize: '11px', color: '#94a3b8' }}>Auto-refresh 3 min</span>
+              <span style={{ fontSize: '11px', color: 'var(--text-color)', opacity: 0.5 }}>Auto-refresh 3 min</span>
             </div>
           )}
           <button
             onClick={() => fetchData(false)}
             style={{
-              background: '#ffffff',
-              color: '#312e81', // สี Indigo เข้มดูแพงและอ่านง่าย
-              border: '1px solid #e2e8f0',
+              background: 'var(--card-bg)', 
+              color: 'var(--text-color)',  
+              border: '1px solid var(--border-color)', 
               padding: '9px 18px',
               borderRadius: '9999px',
               fontSize: '13px',
@@ -243,7 +245,7 @@ function Axmq140() {
               userSelect: 'none'
             }}
             onMouseOver={(e) => {
-              e.currentTarget.style.backgroundColor = '#f8fafc';
+              e.currentTarget.style.backgroundColor = 'var(--bg-color)';
               e.currentTarget.style.borderColor = '#6366f1';
               e.currentTarget.style.transform = 'translateY(-2px)';
               e.currentTarget.style.boxShadow = '0 10px 15px -3px rgba(99, 102, 241, 0.1), 0 4px 6px -4px rgba(99, 102, 241, 0.1)';
@@ -252,8 +254,8 @@ function Axmq140() {
               if (icon) icon.style.transform = 'rotate(180deg)';
             }}
             onMouseOut={(e) => {
-              e.currentTarget.style.backgroundColor = '#ffffff';
-              e.currentTarget.style.borderColor = '#e2e8f0';
+              e.currentTarget.style.backgroundColor = 'var(--card-bg)';
+              e.currentTarget.style.borderColor = 'var(--border-color)';
               e.currentTarget.style.transform = 'translateY(0px)';
               e.currentTarget.style.boxShadow = '0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05)';
 
@@ -267,7 +269,7 @@ function Axmq140() {
               e.currentTarget.style.transform = 'translateY(-2px) scale(1)';
             }}
           >
-            {/* 🔹 จุดไฟสถานะเปลี่ยนเป็นสีฟ้าสว่างเรืองแสง (ไม่ใช้สีเขียว) */}
+            {/* 🔹 จุดไฟสถานะเปลี่ยนเป็นสีฟ้าสว่างเรืองแสง */}
             <span style={{
               width: '6px',
               height: '6px',
@@ -277,7 +279,7 @@ function Axmq140() {
               display: 'inline-block'
             }} />
 
-            {/* ไอคอน SVG เส้นบางลื่นไหล */}
+            {/* ไอคอน Refresh */}
             <svg
               className="sync-svg-clean"
               width="14"
@@ -301,17 +303,18 @@ function Axmq140() {
 
           <div style={{
             fontSize: '13px',
-            color: '#334155',
-            backgroundColor: '#f8fafc',
+            color: 'var(--text-color)',
+            backgroundColor: 'var(--bg-color)', 
             padding: '10px 18px',
             borderRadius: '12px',
             fontWeight: '600',
-            border: '1px solid #e2e8f0',
+            border: '1px solid var(--border-color)', 
             display: 'flex',
-            gap: '12px'
+            gap: '12px',
+            transition: 'background-color 0.15s ease, border-color 0.15s ease' /* 🌟 [แก้ไข] */
           }}>
             <span>Customer Total: <strong style={{ color: '#4f46e5' }}>{data.length}</strong> </span>
-            <span style={{ color: '#cbd5e1' }}>|</span>
+            <span style={{ color: 'var(--border-color)' }}>|</span>
             <span>Over Credit: <strong style={{ color: '#ef4444' }}>{overCreditCount}</strong> </span>
           </div>
         </div>
@@ -319,7 +322,7 @@ function Axmq140() {
 
       {/* Filter Card */}
       <div style={{
-        backgroundColor: '#ffffff',
+        backgroundColor: 'var(--card-bg)', 
         padding: '20px 28px',
         borderRadius: '20px',
         boxShadow: '0 4px 18px rgba(15, 23, 42, 0.03)',
@@ -328,10 +331,11 @@ function Axmq140() {
         alignItems: 'flex-end',
         gap: '16px',
         marginBottom: '24px',
-        border: '1px solid #e2e8f0'
+        border: '1px solid var(--border-color)', 
+        transition: 'background-color 0.15s ease, border-color 0.15s ease' /* 🌟 [แก้ไข] */
       }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <label style={{ fontSize: '12px', fontWeight: '700', color: '#475569', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+          <label style={{ fontSize: '12px', fontWeight: '700', color: 'var(--text-color)', opacity: 0.8, textTransform: 'uppercase', letterSpacing: '0.5px' }}>
             Credit Status
           </label>
           <select 
@@ -340,22 +344,22 @@ function Axmq140() {
             style={{
               padding: '10px 16px',
               borderRadius: '10px',
-              border: '1px solid #cbd5e1',
+              border: '1px solid var(--border-color)', 
               fontSize: '14px',
               outline: 'none',
-              backgroundColor: '#f8fafc',
-              color: '#0f172a',
+              backgroundColor: 'var(--bg-color)',      
+              color: 'var(--text-color)',              
               fontWeight: '600',
               width: '260px',
               cursor: 'pointer',
-              transition: 'border-color 0.2s',
+              transition: 'all 0.2s ease',
             }}
-            onFocus={(e) => e.target.style.borderColor = '#4f46e5'} // 🔹 เปลี่ยนสีขอบตอน Focus เป็น Indigo
-            onBlur={(e) => e.target.style.borderColor = '#cbd5e1'}
+            onFocus={(e) => e.target.style.borderColor = '#4f46e5'}
+            onBlur={(e) => e.target.style.borderColor = 'var(--border-color)'}
           >
-            <option value="ALL">All ({data.length})</option>
-            <option value="OVER">🔴 Over Credit ({overCreditCount})</option>
-            <option value="NORMAL">⚪ Normal Credit ({data.length - overCreditCount})</option>
+            <option value="ALL" style={{ backgroundColor: 'var(--card-bg)', color: 'var(--text-color)' }}>All ({data.length})</option>
+            <option value="OVER" style={{ backgroundColor: 'var(--card-bg)', color: 'var(--text-color)' }}>🔴 Over Credit ({overCreditCount})</option>
+            <option value="NORMAL" style={{ backgroundColor: 'var(--card-bg)', color: 'var(--text-color)' }}>⚪ Normal Credit ({data.length - overCreditCount})</option>
           </select>
         </div>
 
@@ -363,7 +367,7 @@ function Axmq140() {
           <button
             onClick={exportToExcel}
             style={{
-              background: 'linear-gradient(135deg, #4f46e5 0%, #4338ca 100%)', // 🔹 ปุ่ม Export สี Royal Indigo
+              background: 'linear-gradient(135deg, #4f46e5 0%, #4338ca 100%)', 
               color: 'white',
               border: 'none',
               padding: '11px 24px',
@@ -374,7 +378,7 @@ function Axmq140() {
               display: 'inline-flex',
               alignItems: 'center',
               gap: '10px',
-              boxShadow: '0 4px 14px rgba(79, 70, 229, 0.3)', // 🔹 เงาสีคราม
+              boxShadow: '0 4px 14px rgba(79, 70, 229, 0.3)',
               transition: 'all 0.2s ease'
             }}
             onMouseOver={(e) => {
@@ -398,19 +402,20 @@ function Axmq140() {
 
       {/* Content Section */}
       <div style={{
-        backgroundColor: '#ffffff',
+        backgroundColor: 'var(--card-bg)', 
         borderRadius: '20px',
         boxShadow: '0 4px 20px rgba(15, 23, 42, 0.04)',
-        border: '1px solid #e2e8f0',
-        overflow: 'hidden'
+        border: '1px solid var(--border-color)', 
+        overflow: 'hidden',
+        transition: 'background-color 0.15s ease, border-color 0.15s ease' /* 🌟 [แก้ไข] */
       }}>
         {loading ? (
           <div style={{ padding: '100px 20px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '20px' }}>
             <div style={{
               width: '44px',
               height: '44px',
-              border: '3px solid #e2e8f0',
-              borderTop: '3px solid #4f46e5', // 🔹 เปลี่ยนสี Spinner เป็น Indigo
+              border: '3px solid var(--border-color)', 
+              borderTop: '3px solid #4f46e5',
               borderRadius: '50%',
               animation: 'spin 0.8s linear infinite'
             }}></div>
@@ -421,8 +426,8 @@ function Axmq140() {
               }
             `}</style>
             <div>
-              <p style={{ margin: '0 0 4px 0', fontSize: '16px', fontWeight: '700', color: '#0f172a' }}>Searching partner credit info...</p>
-              <p style={{ margin: 0, fontSize: '13px', color: '#64748b', fontWeight: '400' }}>Fetching live ERP data, please wait...</p>
+              <p style={{ margin: '0 0 4px 0', fontSize: '16px', fontWeight: '700', color: 'var(--text-color)' }}>Searching partner credit info...</p> 
+              <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-color)', opacity: 0.7 }}>Fetching live ERP data, please wait...</p> 
             </div>
           </div>
         ) : filteredData.length === 0 ? (
@@ -431,12 +436,13 @@ function Axmq140() {
               width: '60px',
               height: '60px',
               borderRadius: '18px',
-              backgroundColor: '#f8fafc',
+              backgroundColor: 'var(--bg-color)', 
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#94a3b8',
-              border: '1px solid #e2e8f0'
+              color: 'var(--text-color)', 
+              opacity: 0.7,
+              border: '1px solid var(--border-color)' 
             }}>
               <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <circle cx="11" cy="11" r="8"></circle>
@@ -444,8 +450,8 @@ function Axmq140() {
               </svg>
             </div>
             <div>
-              <h4 style={{ margin: '0 0 4px 0', fontSize: '16px', fontWeight: '700', color: '#1e293b' }}>No data found in the system.</h4>
-              <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>No Customers match this status.</p>
+              <h4 style={{ margin: '0 0 4px 0', fontSize: '16px', fontWeight: '700', color: 'var(--text-color)' }}>No data found in the system.</h4> 
+              <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-color)', opacity: 0.7 }}>No Customers match this status.</p> 
             </div>
           </div>
         ) : (
@@ -457,17 +463,17 @@ function Axmq140() {
             }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 1000, textAlign: 'left' }}>
                 <thead>
-                  <tr style={{ backgroundColor: '#f8fafc' }}>
+                  <tr style={{ backgroundColor: 'var(--bg-color)' }}> 
                     {headers.map((h, i) => (
                       <th
                         key={i}
                         style={{
                           position: 'sticky',
                           top: 0,
-                          backgroundColor: '#f8fafc',
-                          color: '#475569',
-                          borderBottom: '2px solid #e2e8f0',
-                          borderRight: '1px solid #f1f5f9',
+                          backgroundColor: 'var(--bg-color)', 
+                          color: 'var(--text-color)',         
+                          borderBottom: '2px solid var(--border-color)', 
+                          borderRight: '1px solid var(--border-color)',
                           padding: '16px 20px',
                           fontSize: '12px',
                           fontWeight: '700',
@@ -483,56 +489,63 @@ function Axmq140() {
                   </tr>
                 </thead>
                 <tbody>
-  {currentRows.map((row, idx) => {
-    const over = isOverCredit(row); // ถ้าช่องใดใน 3 ช่องติดลบ over จะเป็น true ทั้งแถว
+                  {currentRows.map((row, idx) => {
+                    const over = isOverCredit(row); // ถ้าช่องใดใน 3 ช่องติดลบ over จะเป็น true ทั้งแถว
+                  
+                    // 🌟 ปรับเฉดแถวสลับและแถว Over Credit ให้เป็นโทนพาสเทลสลัว ถนอมสายตาอย่างลงตัวในโหมดมืด
+                    let defaultBg = over 
+                      ? (isDark ? '#451a1a' : '#ffe4e6') 
+                      : (idx % 2 === 0 ? 'var(--card-bg)' : 'var(--bg-color)');
+                    
+                    let hoverBg = over 
+                      ? (isDark ? '#5a2323' : '#fecdd3') 
+                      : 'var(--border-color)';
 
-    // 🔹 แถวปกติสลับสีขาว-เทาอ่อน แถวที่มีช่องติดลบจะไฮไลต์พื้นหลังเป็นสีแดงพาสเทลนุ่มตา
-    const defaultBg = over ? '#ffe4e6' : (idx % 2 === 0 ? '#ffffff' : '#f8fafc');
-    const hoverBg = over ? '#fecdd3' : '#f1f5f9';
+                    return (
+                      <tr
+                        key={idx}
+                        style={{
+                          backgroundColor: defaultBg,
+                          transition: 'background-color 0.15s ease'
+                        }}
+                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverBg}
+                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = defaultBg}
+                      >
+                        {mapRow(row).map((value, i) => {
+                          const isNumberCol = i >= 3; // คอลัมน์ที่ 3 เป็นต้นไปเป็นตัวเลขเงิน
+                          
+                          // ตรวจสอบว่าตัวเลขในเซลล์นี้ติดลบหรือไม่ (< 0)
+                          const numVal = parseFloat(value);
+                          const isNegative = isNumberCol && !isNaN(numVal) && numVal < 0;
 
-    return (
-      <tr
-        key={idx}
-        style={{
-          backgroundColor: defaultBg,
-          transition: 'background-color 0.15s ease'
-        }}
-        onMouseOver={(e) => e.currentTarget.style.backgroundColor = hoverBg}
-        onMouseOut={(e) => e.currentTarget.style.backgroundColor = defaultBg}
-      >
-        {mapRow(row).map((value, i) => {
-          const isNumberCol = i >= 3; // คอลัมน์ที่ 3 เป็นต้นไปเป็นตัวเลขเงิน
-          
-          // ตรวจสอบว่าตัวเลขในเซลล์นี้ติดลบหรือไม่ (< 0)
-          const numVal = parseFloat(value);
-          const isNegative = isNumberCol && !isNaN(numVal) && numVal < 0;
+                          const formattedValue = isNumberCol ? formatNumber(value) : value;
 
-          const formattedValue = isNumberCol ? formatNumber(value) : value;
-
-          return (
-            <td
-              key={i}
-              style={{
-                borderBottom: '1px solid #f1f5f9',
-                borderRight: '1px solid #f1f5f9',
-                padding: '14px 20px',
-                fontSize: '13px',
-                // 🔹 ถ้าช่องนี้เป็นเลขติดลบ จะแสดงสีแดงเข้มและตัวหนา
-                color: isNegative ? '#991b1b' : '#334155',
-                fontWeight: isNegative ? '700' : '400',
-                textAlign: isNumberCol ? 'right' : 'left',
-                whiteSpace: 'nowrap'
-              }}
-            >
-              {value !== null && value !== undefined ? String(formattedValue) : ''}
-            </td>
-          );
-        })}
-      </tr>
-    );
-  })}
-</tbody>
-
+                          return (
+                            <td
+                              key={i}
+                              style={{
+                                borderBottom: '1px solid var(--border-color)', 
+                                borderRight: '1px solid var(--border-color)',
+                                padding: '14px 20px',
+                                fontSize: '13px',
+                                // เมื่อติดลบในโหมดมืดจะใช้สีแดงชมพูอ่อนสว่างเด่นอ่านง่ายพรีเมียม (#fca5a5) แทนสีแดงทึบเข้มของโหมดสว่างครับ
+                                color: isNegative 
+                                  ? (isDark ? '#fca5a5' : '#991b1b') 
+                                  : 'var(--text-color)',
+                                fontWeight: isNegative ? '700' : '400',
+                                textAlign: isNumberCol ? 'right' : 'left',
+                                whiteSpace: 'nowrap'
+                                /* 🌟 [แก้ไขด่วน] ลบ transition: 'all 0.3s ease' ที่ดีเลย์ออกไปเรียบร้อยแล้ว เพื่อให้เปลี่ยนสีแถวสัญลักษณ์ Over Credit ทั้งหมดได้เร็วปรี๊ดครับ */
+                              }}
+                            >
+                              {value !== null && value !== undefined ? String(formattedValue) : ''}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    );
+                  })}
+                </tbody>
               </table>
             </div>
 
@@ -543,13 +556,14 @@ function Axmq140() {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 padding: '18px 28px',
-                borderTop: '1px solid #e2e8f0',
-                backgroundColor: '#ffffff',
+                borderTop: '1px solid var(--border-color)', 
+                backgroundColor: 'var(--card-bg)',         
                 flexWrap: 'wrap',
-                gap: '12px'
+                gap: '12px',
+                transition: 'background-color 0.15s ease, border-color 0.15s ease' /* 🌟 [แก้ไข] */
               }}>
-                <div style={{ fontSize: '13px', color: '#64748b', fontWeight: '500' }}>
-                  Page <strong style={{ color: '#0f172a' }}>{currentPage}</strong> of <strong style={{ color: '#0f172a' }}>{totalPages}</strong> (Showing rows {indexOfFirstRow + 1} - {Math.min(indexOfLastRow, filteredData.length)} of {filteredData.length})
+                <div style={{ fontSize: '13px', color: 'var(--text-color)', opacity: 0.8, fontWeight: '500' }}> 
+                  Page <strong style={{ color: 'var(--text-color)' }}>{currentPage}</strong> of <strong style={{ color: 'var(--text-color)' }}>{totalPages}</strong> (Showing rows {indexOfFirstRow + 1} - {Math.min(indexOfLastRow, filteredData.length)} of {filteredData.length})
                 </div>
                 <div style={{ display: 'flex', gap: '8px' }}>
                   <button
@@ -558,19 +572,19 @@ function Axmq140() {
                     style={{
                       padding: '8px 16px',
                       borderRadius: '8px',
-                      border: '1px solid #cbd5e1',
-                      backgroundColor: currentPage === 1 ? '#f1f5f9' : '#ffffff',
-                      color: currentPage === 1 ? '#94a3b8' : '#475569',
+                      border: '1px solid var(--border-color)', 
+                      backgroundColor: currentPage === 1 ? 'var(--bg-color)' : 'var(--card-bg)',
+                      color: currentPage === 1 ? 'var(--border-color)' : 'var(--text-color)',
                       fontSize: '13px',
                       fontWeight: '600',
                       cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
                       transition: 'all 0.2s'
                     }}
                     onMouseOver={(e) => {
-                      if (currentPage !== 1) e.currentTarget.style.backgroundColor = '#f8fafc';
+                      if (currentPage !== 1) e.currentTarget.style.backgroundColor = 'var(--border-color)';
                     }}
                     onMouseOut={(e) => {
-                      if (currentPage !== 1) e.currentTarget.style.backgroundColor = '#ffffff';
+                      if (currentPage !== 1) e.currentTarget.style.backgroundColor = 'var(--card-bg)';
                     }}
                   >
                     Previous
@@ -581,19 +595,19 @@ function Axmq140() {
                     style={{
                       padding: '8px 16px',
                       borderRadius: '8px',
-                      border: '1px solid #cbd5e1',
-                      backgroundColor: currentPage === totalPages ? '#f1f5f9' : '#ffffff',
-                      color: currentPage === totalPages ? '#94a3b8' : '#475569',
+                      border: '1px solid var(--border-color)', 
+                      backgroundColor: currentPage === totalPages ? 'var(--bg-color)' : 'var(--card-bg)',
+                      color: currentPage === totalPages ? 'var(--border-color)' : 'var(--text-color)',
                       fontSize: '13px',
                       fontWeight: '600',
                       cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
                       transition: 'all 0.2s'
                     }}
                     onMouseOver={(e) => {
-                      if (currentPage !== totalPages) e.currentTarget.style.backgroundColor = '#f8fafc';
+                      if (currentPage !== totalPages) e.currentTarget.style.backgroundColor = 'var(--border-color)';
                     }}
                     onMouseOut={(e) => {
-                      if (currentPage !== totalPages) e.currentTarget.style.backgroundColor = '#ffffff';
+                      if (currentPage !== totalPages) e.currentTarget.style.backgroundColor = 'var(--card-bg)';
                     }}
                   >
                     Next

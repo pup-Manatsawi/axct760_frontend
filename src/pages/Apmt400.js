@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
 
-function Apmt400() {
+// 🌟 [แก้ไข] รับ props theme เข้ามาใช้งานโดยตรงจาก App.js
+function Apmt400({ theme }) {
   const now = new Date();
 
   const formatDate = (date) => {
@@ -215,7 +216,7 @@ function Apmt400() {
 
     const worksheetData = [
       headers,
-      ...filteredData.map(mapRow), // ใช้ filteredData เพื่อให้ดาวน์โหลดข้อมูลทั้งหมดที่กรองได้
+      ...filteredData.map(mapRow),
     ];
 
     const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
@@ -231,15 +232,20 @@ function Apmt400() {
     );
   };
 
+  // 🌟 [ตรวจสอบ] เช็คสถานะโหมดมืดผ่าน Props theme ส่งตรงจาก App.js
+  const isDark = theme === "dark";
+
   return (
     <div style={{
       fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
       padding: '32px 24px',
       maxWidth: '1940px',
       margin: '0 auto',
-      backgroundColor: '#f8fafc',
+      backgroundColor: 'var(--bg-color)',
+      color: 'var(--text-color)',
       minHeight: '100vh',
-      boxSizing: 'border-box'
+      boxSizing: 'border-box',
+      transition: 'background-color 0.15s ease, color 0.15s ease' /* 🌟 [แก้ไข] สลับเฉดสีพื้นหลังใหญ่ให้นุ่มนวลเบาๆ แทนการใช้ all */
     }}>
       {/* Header Section */}
       <div style={{ 
@@ -249,11 +255,12 @@ function Apmt400() {
         justifyContent: 'space-between',
         flexWrap: 'wrap',
         gap: '16px',
-        backgroundColor: '#ffffff',
+        backgroundColor: 'var(--card-bg)',
         padding: '24px 32px',
         borderRadius: '16px',
         boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.05)',
-        border: '1px solid #e2e8f0'
+        border: '1px solid var(--border-color)',
+        transition: 'background-color 0.15s ease, border-color 0.15s ease' /* 🌟 [แก้ไข] */
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <div style={{
@@ -278,13 +285,13 @@ function Apmt400() {
             <h2 style={{
               fontSize: '22px',
               fontWeight: '700',
-              color: '#0f172a',
+              color: 'var(--text-color)',
               margin: '0 0 4px 0',
               letterSpacing: '-0.3px'
             }}>
               APMT400 REPORT
             </h2>
-            <p style={{ color: '#64748b', fontSize: '13px', margin: 0, fontWeight: '400' }}>
+            <p style={{ color: 'var(--text-color)', opacity: 0.7, fontSize: '13px', margin: 0, fontWeight: '400' }}>
               ระบบรายงานการจัดซื้อและเจ้าหนี้ (Procurement & Accounts Payable Report)
             </p>
           </div>
@@ -292,20 +299,21 @@ function Apmt400() {
 
         <div style={{
           fontSize: '13px',
-          color: '#475569',
-          backgroundColor: '#f1f5f9',
+          color: 'var(--text-color)',
+          backgroundColor: 'var(--bg-color)',
           padding: '8px 16px',
           borderRadius: '20px',
           fontWeight: '500',
-          border: '1px solid #e2e8f0'
+          border: '1px solid var(--border-color)',
+          transition: 'background-color 0.15s ease, border-color 0.15s ease' /* 🌟 [แก้ไข] */
         }}>
-          รายการทั้งหมด: <strong style={{ color: '#0f172a' }}>{filteredData.length}</strong> รายการ
+          รายการทั้งหมด: <strong style={{ color: 'var(--text-color)' }}>{filteredData.length}</strong> รายการ
         </div>
       </div>
 
       {/* Filter Card */}
       <div style={{
-        backgroundColor: '#ffffff',
+        backgroundColor: 'var(--card-bg)',
         padding: '24px',
         borderRadius: '16px',
         boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)',
@@ -314,10 +322,11 @@ function Apmt400() {
         alignItems: 'flex-end',
         gap: '20px',
         marginBottom: '20px',
-        border: '1px solid #e2e8f0'
+        border: '1px solid var(--border-color)',
+        transition: 'background-color 0.15s ease, border-color 0.15s ease' /* 🌟 [แก้ไข] */
       }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <label style={{ fontSize: '13px', fontWeight: '600', color: '#334155' }}>Start Date</label>
+          <label style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-color)' }}>Start Date</label>
           <input
             type="date"
             value={startDate}
@@ -325,18 +334,19 @@ function Apmt400() {
             style={{
               padding: '10px 14px',
               borderRadius: '8px',
-              border: '1px solid #cbd5e1',
+              border: '1px solid var(--border-color)',
               fontSize: '14px',
               outline: 'none',
-              backgroundColor: '#f8fafc',
-              color: '#0f172a',
-              fontWeight: '500'
+              backgroundColor: 'var(--bg-color)',
+              color: 'var(--text-color)',
+              fontWeight: '500',
+              transition: 'all 0.2s ease'
             }}
           />
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <label style={{ fontSize: '13px', fontWeight: '600', color: '#334155' }}>End Date</label>
+          <label style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-color)' }}>End Date</label>
           <input
             type="date"
             value={endDate}
@@ -344,18 +354,19 @@ function Apmt400() {
             style={{
               padding: '10px 14px',
               borderRadius: '8px',
-              border: '1px solid #cbd5e1',
+              border: '1px solid var(--border-color)',
               fontSize: '14px',
               outline: 'none',
-              backgroundColor: '#f8fafc',
-              color: '#0f172a',
-              fontWeight: '500'
+              backgroundColor: 'var(--bg-color)',
+              color: 'var(--text-color)',
+              fontWeight: '500',
+              transition: 'all 0.2s ease'
             }}
           />
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <label style={{ fontSize: '13px', fontWeight: '600', color: '#334155' }}>Status</label>
+          <label style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-color)' }}>Status</label>
           <select 
             name="status"
             value={status}
@@ -363,41 +374,43 @@ function Apmt400() {
             style={{
               padding: '10px 14px',
               borderRadius: '8px',
-              border: '1px solid #cbd5e1',
+              border: '1px solid var(--border-color)',
               fontSize: '14px',
               outline: 'none',
-              backgroundColor: '#f8fafc',
-              color: '#0f172a',
-              fontWeight: '500'
+              backgroundColor: 'var(--bg-color)',
+              color: 'var(--text-color)',
+              fontWeight: '500',
+              transition: 'all 0.2s ease'
             }}
           >
-            <option value="">-- All --</option>
-            <option value="NoPo">Pending PO</option>
-            <option value="NoAp">Pending AP</option>
-            <option value="NoWriteOff">Pending Write-off</option>
+            <option value="" style={{ backgroundColor: 'var(--card-bg)', color: 'var(--text-color)' }}>-- All --</option>
+            <option value="NoPo" style={{ backgroundColor: 'var(--card-bg)', color: 'var(--text-color)' }}>Pending PO</option>
+            <option value="NoAp" style={{ backgroundColor: 'var(--card-bg)', color: 'var(--text-color)' }}>Pending AP</option>
+            <option value="NoWriteOff" style={{ backgroundColor: 'var(--card-bg)', color: 'var(--text-color)' }}>Pending Write-off</option>
           </select>
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <label style={{ fontSize: '13px', fontWeight: '600', color: '#334155' }}>Color Warning</label>
+          <label style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-color)' }}>Color Warning</label>
           <select
             value={colorFilter}
             onChange={(e) => setColorFilter(e.target.value)}
             style={{
               padding: '10px 14px',
               borderRadius: '8px',
-              border: '1px solid #cbd5e1',
+              border: '1px solid var(--border-color)',
               fontSize: '14px',
               outline: 'none',
-              backgroundColor: '#f8fafc',
-              color: '#0f172a',
-              fontWeight: '500'
+              backgroundColor: 'var(--bg-color)',
+              color: 'var(--text-color)',
+              fontWeight: '500',
+              transition: 'all 0.2s ease'
             }}
           >
-            <option value="">-- All Colors --</option>
-            <option value="red">🔴 ถึง/เลยกำหนดส่ง (Overdue)</option>
-            <option value="orange">🟠 ใกล้ถึงกำหนดใน 7 วัน (Near Due)</option>
-            <option value="none">⚪ ปกติ (Normal)</option>
+            <option value="" style={{ backgroundColor: 'var(--card-bg)', color: 'var(--text-color)' }}>-- All Colors --</option>
+            <option value="red" style={{ backgroundColor: 'var(--card-bg)', color: 'var(--text-color)' }}>🔴 ถึง/เลยกำหนดส่ง (Overdue)</option>
+            <option value="orange" style={{ backgroundColor: 'var(--card-bg)', color: 'var(--text-color)' }}>🟠 ใกล้ถึงกำหนดใน 7 วัน (Near Due)</option>
+            <option value="none" style={{ backgroundColor: 'var(--card-bg)', color: 'var(--text-color)' }}>⚪ ปกติ (Normal)</option>
           </select>
         </div>
 
@@ -450,57 +463,80 @@ function Apmt400() {
         </div>
       </div>
 
-      {/* Legend Card */}
+      {/* 🌟 กล่องอธิบายสี (Legend Card) ให้รองรับโหมดกลางวัน/กลางคืนแบบหรูหรา */}
       <div style={{ 
         display: 'flex', 
         justifyContent: 'center', 
         alignItems: 'center',
         gap: '24px', 
-        marginBottom: '20px', 
+        marginBottom: '24px', 
         fontSize: '13px', 
-        backgroundColor: '#ffffff',
+        backgroundColor: 'var(--card-bg)',
         padding: '12px 20px',
         borderRadius: '12px',
-        border: '1px solid #e2e8f0',
+        border: '1px solid var(--border-color)',
         boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.02)',
         width: 'fit-content',
         margin: '0 auto 24px auto',
-        flexWrap: 'wrap'
+        flexWrap: 'wrap',
+        transition: 'background-color 0.15s ease, border-color 0.15s ease' /* 🌟 [แก้ไข] */
       }}>
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ width: 14, height: 14, backgroundColor: '#fee2e2', border: '1px solid #f87171', display: 'inline-block', borderRadius: 4 }}></span>
-          <span style={{ color: '#334155', fontWeight: '500' }}><strong>สีแดง:</strong> Receipt Date ว่าง + ถึง/เลย Expected Date</span>
+          <span style={{ 
+            width: 14, 
+            height: 14, 
+            backgroundColor: isDark ? '#451a1a' : '#fee2e2', 
+            border: `1px solid ${isDark ? '#ef4444' : '#f87171'}`, 
+            display: 'inline-block', 
+            borderRadius: 4 
+          }}></span>
+          <span style={{ color: 'var(--text-color)', fontWeight: '500' }}><strong>สีแดง:</strong> Receipt Date ว่าง + เลยกำหนด Expected Delivery</span>
         </div>
 
-        <span style={{ color: '#cbd5e1' }}>|</span>
+        <span style={{ color: 'var(--border-color)' }}>|</span>
 
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ width: 14, height: 14, backgroundColor: '#fef3c7', border: '1px solid #fbbf24', display: 'inline-block', borderRadius: 4 }}></span>
-          <span style={{ color: '#334155', fontWeight: '500' }}><strong>สีส้ม:</strong> Receipt Date ว่าง + เหลือ ≤ 7 วันจะถึง Expected Date</span>
+          <span style={{ 
+            width: 14, 
+            height: 14, 
+            backgroundColor: isDark ? '#432818' : '#fef3c7', 
+            border: `1px solid ${isDark ? '#f59e0b' : '#fbbf24'}`, 
+            display: 'inline-block', 
+            borderRadius: 4 
+          }}></span>
+          <span style={{ color: 'var(--text-color)', fontWeight: '500' }}><strong>สีส้ม:</strong> Receipt Date ว่าง + เหลือ ≤ 7 วันจะถึง Expected Delivery</span>
         </div>
 
-        <span style={{ color: '#cbd5e1' }}>|</span>
+        <span style={{ color: 'var(--border-color)' }}>|</span>
 
         <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px' }}>
-          <span style={{ width: 14, height: 14, backgroundColor: '#ffffff', border: '1px solid #cbd5e1', display: 'inline-block', borderRadius: 4 }}></span>
-          <span style={{ color: '#334155', fontWeight: '500' }}><strong>ไม่มีสี:</strong> มี Receipt Date หรือ เหลือเวลา &gt; 7 วัน</span>
+          <span style={{ 
+            width: 14, 
+            height: 14, 
+            backgroundColor: 'var(--card-bg)', 
+            border: '1px solid var(--border-color)', 
+            display: 'inline-block', 
+            borderRadius: 4 
+          }}></span>
+          <span style={{ color: 'var(--text-color)', fontWeight: '500' }}><strong>ไม่มีสี:</strong> มี Receipt Date หรือ เหลือเวลา &gt; 7 วัน</span>
         </div>
       </div>
 
       {/* Content Section */}
       <div style={{
-        backgroundColor: '#ffffff',
+        backgroundColor: 'var(--card-bg)',
         borderRadius: '16px',
         boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)',
-        border: '1px solid #e2e8f0',
-        overflow: 'hidden'
+        border: '1px solid var(--border-color)',
+        overflow: 'hidden',
+        transition: 'background-color 0.15s ease, border-color 0.15s ease' /* 🌟 [แก้ไข] */
       }}>
         {loading ? (
           <div style={{ padding: '80px 20px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px' }}>
             <div style={{
               width: '40px',
               height: '40px',
-              border: '3px solid #e2e8f0',
+              border: '3px solid var(--border-color)',
               borderTop: '3px solid #2563eb',
               borderRadius: '50%',
               animation: 'spin 0.8s linear infinite'
@@ -512,8 +548,8 @@ function Apmt400() {
               }
             `}</style>
             <div>
-              <p style={{ margin: '0 0 4px 0', fontSize: '15px', fontWeight: '600', color: '#1e293b' }}>กำลังโหลดข้อมูล...</p>
-              <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>正在載入資料，請稍候...</p>
+              <p style={{ margin: '0 0 4px 0', fontSize: '15px', fontWeight: '600', color: 'var(--text-color)' }}>กำลังโหลดข้อมูล...</p>
+              <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-color)', opacity: 0.7 }}>正在載入資料，請稍候...</p>
             </div>
           </div>
         ) : !Array.isArray(filteredData) || filteredData.length === 0 ? (
@@ -522,11 +558,12 @@ function Apmt400() {
               width: '56px',
               height: '56px',
               borderRadius: '16px',
-              backgroundColor: '#f1f5f9',
+              backgroundColor: 'var(--bg-color)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#64748b',
+              color: 'var(--text-color)',
+              opacity: 0.8,
               marginBottom: '4px'
             }}>
               <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -536,8 +573,8 @@ function Apmt400() {
               </svg>
             </div>
             <div>
-              <h4 style={{ margin: '0 0 4px 0', fontSize: '16px', fontWeight: '600', color: '#1e293b' }}>ไม่พบข้อมูล กรุณาตรวจสอบเดือนและปีอีกครั้ง</h4>
-              <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>未找到資料，請再次檢查月份和年份。</p>
+              <h4 style={{ margin: '0 0 4px 0', fontSize: '16px', fontWeight: '600', color: 'var(--text-color)' }}>ไม่พบข้อมูล กรุณาตรวจสอบเดือนและปีอีกครั้ง</h4>
+              <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-color)', opacity: 0.7 }}>未找到資料，請再次檢查月份和年份。</p>
             </div>
           </div>
         ) : (
@@ -549,17 +586,17 @@ function Apmt400() {
             }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 800, textAlign: 'left' }}>
                 <thead>
-                  <tr style={{ backgroundColor: '#f8fafc' }}>
+                  <tr style={{ backgroundColor: 'var(--bg-color)' }}>
                     {headers.map((h, i) => (
                       <th
                         key={i}
                         style={{
                           position: 'sticky',
                           top: 0,
-                          backgroundColor: '#f8fafc',
-                          color: '#475569',
-                          borderBottom: '2px solid #e2e8f0',
-                          borderRight: '1px solid #f1f5f9',
+                          backgroundColor: 'var(--bg-color)',
+                          color: 'var(--text-color)',
+                          borderBottom: '2px solid var(--border-color)',
+                          borderRight: '1px solid var(--border-color)',
                           padding: '14px 16px',
                           fontSize: '12px',
                           fontWeight: '700',
@@ -575,15 +612,14 @@ function Apmt400() {
                   </tr>
                 </thead>
                 <tbody>
-                  {/* 🔹 แก้ไข: เปลี่ยนจาก filteredData เป็น currentRows เพื่อให้แสดงผลทีละหน้าตาม Pagination */}
                   {currentRows.map((row, idx) => {
                     const colorStatus = getRowColorStatus(row);
 
-                    let bgColor = idx % 2 === 0 ? '#ffffff' : '#fcfcfc';
+                    let bgColor = idx % 2 === 0 ? 'var(--card-bg)' : 'var(--bg-color)';
                     if (colorStatus === 'red') {
-                      bgColor = '#fee2e2';
+                      bgColor = isDark ? '#451a1a' : '#fee2e2';
                     } else if (colorStatus === 'orange') {
-                      bgColor = '#fef3c7';
+                      bgColor = isDark ? '#432818' : '#fef3c7';
                     }
 
                     return (
@@ -595,11 +631,11 @@ function Apmt400() {
                         }}
                         onMouseOver={(e) => {
                           if (colorStatus === 'red') {
-                            e.currentTarget.style.backgroundColor = '#fecaca';
+                            e.currentTarget.style.backgroundColor = isDark ? '#5a2323' : '#fecaca';
                           } else if (colorStatus === 'orange') {
-                            e.currentTarget.style.backgroundColor = '#fde68a';
+                            e.currentTarget.style.backgroundColor = isDark ? '#573420' : '#fde68a';
                           } else {
-                            e.currentTarget.style.backgroundColor = '#f1f5f9';
+                            e.currentTarget.style.backgroundColor = 'var(--border-color)';
                           }
                         }}
                         onMouseOut={(e) => {
@@ -610,15 +646,16 @@ function Apmt400() {
                           <td
                             key={i}
                             style={{
-                              borderBottom: '1px solid #f1f5f9',
-                              borderRight: '1px solid #f8fafc',
+                              borderBottom: '1px solid var(--border-color)',
+                              borderRight: '1px solid var(--border-color)',
                               padding: '12px 16px',
                               fontSize: '13px',
-                              color: '#334155',
+                              color: 'var(--text-color)',
                               whiteSpace: 'nowrap'
+                              /* 🌟 [แก้ไข] ลบ transition: 'all 0.3s ease' ออกเรียบร้อยเพื่อปลดล็อกอาการดีเลย์เมื่อเปลี่ยนสีแถวสัญลักษณ์ Overdue ทั้งหมดครับ */
                             }}
                           >
-                            {value}
+                            {value !== null && value !== undefined ? String(value) : ''}
                           </td>
                         ))}
                       </tr>
@@ -635,13 +672,14 @@ function Apmt400() {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 padding: '16px 24px',
-                borderTop: '1px solid #e2e8f0',
-                backgroundColor: '#ffffff',
+                borderTop: '1px solid var(--border-color)',
+                backgroundColor: 'var(--card-bg)',
                 flexWrap: 'wrap',
-                gap: '12px'
+                gap: '12px',
+                transition: 'background-color 0.15s ease, border-color 0.15s ease' /* 🌟 [แก้ไข] */
               }}>
-                <div style={{ fontSize: '13px', color: '#64748b' }}>
-                  Page <strong style={{ color: '#0f172a' }}>{currentPage}</strong> of <strong style={{ color: '#0f172a' }}>{totalPages}</strong> (Showing {rowsPerPage} rows per page)
+                <div style={{ fontSize: '13px', color: 'var(--text-color)', opacity: 0.8 }}>
+                  Page <strong style={{ color: 'var(--text-color)' }}>{currentPage}</strong> of <strong style={{ color: 'var(--text-color)' }}>{totalPages}</strong> (Showing {rowsPerPage} rows per page)
                 </div>
                 <div style={{ display: 'flex', gap: '8px' }}>
                   <button
@@ -650,12 +688,13 @@ function Apmt400() {
                     style={{
                       padding: '8px 16px',
                       borderRadius: '8px',
-                      border: '1px solid #cbd5e1',
-                      backgroundColor: currentPage === 1 ? '#f1f5f9' : '#ffffff',
-                      color: currentPage === 1 ? '#94a3b8' : '#334155',
+                      border: '1px solid var(--border-color)',
+                      backgroundColor: currentPage === 1 ? 'var(--bg-color)' : 'var(--card-bg)',
+                      color: currentPage === 1 ? 'var(--border-color)' : 'var(--text-color)',
                       fontSize: '13px',
                       fontWeight: '600',
-                      cursor: currentPage === 1 ? 'not-allowed' : 'pointer'
+                      cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                      transition: 'all 0.2s'
                     }}
                   >
                     Previous
@@ -666,12 +705,13 @@ function Apmt400() {
                     style={{
                       padding: '8px 16px',
                       borderRadius: '8px',
-                      border: '1px solid #cbd5e1',
-                      backgroundColor: currentPage === totalPages ? '#f1f5f9' : '#ffffff',
-                      color: currentPage === totalPages ? '#94a3b8' : '#334155',
+                      border: '1px solid var(--border-color)',
+                      backgroundColor: currentPage === totalPages ? 'var(--bg-color)' : 'var(--card-bg)',
+                      color: currentPage === totalPages ? 'var(--border-color)' : 'var(--text-color)',
                       fontSize: '13px',
                       fontWeight: '600',
-                      cursor: currentPage === totalPages ? 'not-allowed' : 'pointer'
+                      cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                      transition: 'all 0.2s'
                     }}
                   >
                     Next

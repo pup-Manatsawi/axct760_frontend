@@ -1,4 +1,4 @@
-body {
+/*body {
   margin: 0;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -11,3 +11,42 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+*/
+
+/* ☀️ ธีมสว่าง (ค่าเริ่มต้น) */
+:root {
+  --bg-color: #f8f9fa;
+  --card-bg: #ffffff;
+  --text-color: #212529;
+  --border-color: #dee2e6;
+  --brand-color: #073cad;
+  color-scheme: light;
+}
+
+/* 🌙 ธีมกลางคืน (จะทำงานเมื่อ html/body มี attribute data-theme="dark") */
+[data-theme="dark"] {
+  --bg-color: #121212;
+  --card-bg: #1e1e1e;
+  --text-color: #e0e0e0;
+  --border-color: #333333;
+  --brand-color: #ffffff;
+  color-scheme: dark;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+}
+
+/* นำตัวแปรไปผูกกับ CSS หลักของเว็บ */
+body {
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease; /* ใส่เพื่อให้ตอนเปลี่ยนสีมันดูสมูทนุ่มตา */
+}
+
+/* หน้าตาราง ฟอร์ม หรือการ์ดต่าง ๆ ก็ให้ดึงตัวแปรเหล่านี้ไปใช้ */
+.card, .table-container {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+}
+

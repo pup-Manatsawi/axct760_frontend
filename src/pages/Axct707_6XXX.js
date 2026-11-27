@@ -97,9 +97,11 @@ function Axct707_6XXX() {
       padding: '32px 24px',
       maxWidth: '1940px',
       margin: '0 auto',
-      backgroundColor: '#f8fafc',
+      backgroundColor: 'var(--bg-color)', 
+      color: 'var(--text-color)',         
       minHeight: '100vh',
-      boxSizing: 'border-box'
+      boxSizing: 'border-box',
+      transition: 'background-color 0.15s ease, color 0.15s ease' /* 🌟 [แก้ไข] สลับเฉดพื้นหลังใหญ่ให้นุ่มนวลกระชับแทนการใช้ all */
     }}>
       {/* Header Section */}
       <div style={{ 
@@ -109,11 +111,12 @@ function Axct707_6XXX() {
         justifyContent: 'space-between',
         flexWrap: 'wrap',
         gap: '16px',
-        backgroundColor: '#ffffff',
+        backgroundColor: 'var(--card-bg)', 
         padding: '24px 32px',
         borderRadius: '16px',
         boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.05)',
-        border: '1px solid #e2e8f0'
+        border: '1px solid var(--border-color)', 
+        transition: 'background-color 0.15s ease, border-color 0.15s ease' /* 🌟 [แก้ไข] */
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <div style={{
@@ -138,13 +141,13 @@ function Axct707_6XXX() {
             <h2 style={{
               fontSize: '22px',
               fontWeight: '700',
-              color: '#0f172a',
+              color: 'var(--text-color)', 
               margin: '0 0 4px 0',
               letterSpacing: '-0.3px'
             }}>
               AXCT707(6XXX) REPORT
             </h2>
-            <p style={{ color: '#64748b', fontSize: '13px', margin: 0, fontWeight: '400' }}>
+            <p style={{ color: 'var(--text-color)', opacity: 0.7, fontSize: '13px', margin: 0, fontWeight: '400' }}> 
               ระบบรายงานต้นทุนและรายการบัญชี 6XXX (Cost & Accounting Report)
             </p>
           </div>
@@ -152,20 +155,21 @@ function Axct707_6XXX() {
 
         <div style={{
           fontSize: '13px',
-          color: '#475569',
-          backgroundColor: '#f1f5f9',
+          color: 'var(--text-color)',
+          backgroundColor: 'var(--bg-color)', 
           padding: '8px 16px',
           borderRadius: '20px',
           fontWeight: '500',
-          border: '1px solid #e2e8f0'
+          border: '1px solid var(--border-color)', 
+          transition: 'background-color 0.15s ease, border-color 0.15s ease' /* 🌟 [แก้ไข] */
         }}>
-          รายการทั้งหมด: <strong style={{ color: '#0f172a' }}>{data.length}</strong> รายการ
+          รายการทั้งหมด: <strong style={{ color: 'var(--text-color)' }}>{data.length}</strong> รายการ 
         </div>
       </div>
 
       {/* Filter Card */}
       <div style={{
-        backgroundColor: '#ffffff',
+        backgroundColor: 'var(--card-bg)', 
         padding: '24px',
         borderRadius: '16px',
         boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)',
@@ -174,10 +178,11 @@ function Axct707_6XXX() {
         alignItems: 'flex-end',
         gap: '20px',
         marginBottom: '24px',
-        border: '1px solid #e2e8f0'
+        border: '1px solid var(--border-color)', 
+        transition: 'background-color 0.15s ease, border-color 0.15s ease' /* 🌟 [แก้ไข] */
       }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <label style={{ fontSize: '13px', fontWeight: '600', color: '#334155' }}>Month</label>
+          <label style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-color)' }}>Month</label> 
           <input
             type="number"
             min="1"
@@ -187,20 +192,20 @@ function Axct707_6XXX() {
             style={{
               padding: '10px 14px',
               borderRadius: '8px',
-              border: '1px solid #cbd5e1',
+              border: '1px solid var(--border-color)', 
               fontSize: '14px',
               outline: 'none',
-              backgroundColor: '#f8fafc',
-              color: '#0f172a',
+              backgroundColor: 'var(--bg-color)', 
+              color: 'var(--text-color)',         
               fontWeight: '500',
               width: '100px',
-              transition: 'all 0.2s'
+              transition: 'all 0.2s ease'
             }}
           />
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <label style={{ fontSize: '13px', fontWeight: '600', color: '#334155' }}>Year</label>
+          <label style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-color)' }}>Year</label> 
           <input
             type="number"
             min="2000"
@@ -210,13 +215,14 @@ function Axct707_6XXX() {
             style={{
               padding: '10px 14px',
               borderRadius: '8px',
-              border: '1px solid #cbd5e1',
+              border: '1px solid var(--border-color)', 
               fontSize: '14px',
               outline: 'none',
-              backgroundColor: '#f8fafc',
-              color: '#0f172a',
+              backgroundColor: 'var(--bg-color)', 
+              color: 'var(--text-color)',         
               fontWeight: '500',
-              width: '120px'
+              width: '120px',
+              transition: 'all 0.2s ease'
             }}
           />
         </div>
@@ -272,18 +278,19 @@ function Axct707_6XXX() {
 
       {/* Content Section */}
       <div style={{
-        backgroundColor: '#ffffff',
+        backgroundColor: 'var(--card-bg)', 
         borderRadius: '16px',
         boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)',
-        border: '1px solid #e2e8f0',
-        overflow: 'hidden'
+        border: '1px solid var(--border-color)', 
+        overflow: 'hidden',
+        transition: 'background-color 0.15s ease, border-color 0.15s ease' /* 🌟 [แก้ไข] */
       }}>
         {loading ? (
           <div style={{ padding: '80px 20px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px' }}>
             <div style={{
               width: '40px',
               height: '40px',
-              border: '3px solid #e2e8f0',
+              border: '3px solid var(--border-color)', 
               borderTop: '3px solid #0d9488',
               borderRadius: '50%',
               animation: 'spin 0.8s linear infinite'
@@ -295,8 +302,8 @@ function Axct707_6XXX() {
               }
             `}</style>
             <div>
-              <p style={{ margin: '0 0 4px 0', fontSize: '15px', fontWeight: '600', color: '#1e293b' }}>กำลังโหลดข้อมูล...</p>
-              <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>正在載入資料，請稍候...</p>
+              <p style={{ margin: '0 0 4px 0', fontSize: '15px', fontWeight: '600', color: 'var(--text-color)' }}>กำลังโหลดข้อมูล...</p> 
+              <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-color)', opacity: 0.7 }}>正在載入資料，請稍候...</p> 
             </div>
           </div>
         ) : !Array.isArray(data) || data.length === 0 ? (
@@ -305,11 +312,12 @@ function Axct707_6XXX() {
               width: '56px',
               height: '56px',
               borderRadius: '16px',
-              backgroundColor: '#f1f5f9',
+              backgroundColor: 'var(--bg-color)', 
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#64748b',
+              color: 'var(--text-color)', 
+              opacity: 0.8,
               marginBottom: '4px'
             }}>
               <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -319,8 +327,8 @@ function Axct707_6XXX() {
               </svg>
             </div>
             <div>
-              <h4 style={{ margin: '0 0 4px 0', fontSize: '16px', fontWeight: '600', color: '#1e293b' }}>ไม่พบข้อมูล กรุณาตรวจสอบเดือนและปีอีกครั้ง</h4>
-              <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>未找到資料，請再次檢查月份和年份。</p>
+              <h4 style={{ margin: '0 0 4px 0', fontSize: '16px', fontWeight: '600', color: 'var(--text-color)' }}>ไม่พบข้อมูล กรุณาตรวจสอบเดือนและปีอีกครั้ง</h4> 
+              <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-color)', opacity: 0.7 }}>未找到資料，請再次檢查月份和年份。</p> 
             </div>
           </div>
         ) : (
@@ -332,17 +340,17 @@ function Axct707_6XXX() {
             }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 800, textAlign: 'left' }}>
                 <thead>
-                  <tr style={{ backgroundColor: '#f8fafc' }}>
+                  <tr style={{ backgroundColor: 'var(--bg-color)' }}> 
                     {headers.map((h, i) => (
                       <th
                         key={i}
                         style={{
                           position: 'sticky',
                           top: 0,
-                          backgroundColor: '#f8fafc',
-                          color: '#475569',
-                          borderBottom: '2px solid #e2e8f0',
-                          borderRight: '1px solid #f1f5f9',
+                          backgroundColor: 'var(--bg-color)', 
+                          color: 'var(--text-color)',         
+                          borderBottom: '2px solid var(--border-color)', 
+                          borderRight: '1px solid var(--border-color)',  
                           padding: '14px 16px',
                           fontSize: '12px',
                           fontWeight: '700',
@@ -358,51 +366,39 @@ function Axct707_6XXX() {
                   </tr>
                 </thead>
                 <tbody>
-                  {currentRows.map((row, idx) => (
-                    <tr
-                      key={idx}
-                      style={{
-                        backgroundColor: idx % 2 === 0 ? '#ffffff' : '#fcfcfc',
-                        transition: 'background-color 0.15s'
-                      }}
-                      onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
-                      onMouseOut={(e) => e.currentTarget.style.backgroundColor = idx % 2 === 0 ? '#ffffff' : '#fcfcfc'}
-                    >
-                      {Array.isArray(row) ? (
-                        row.map((value, i) => (
+                  {currentRows.map((row, idx) => {
+                    const rowBgColor = idx % 2 === 0 ? 'var(--card-bg)' : 'var(--bg-color)';
+                    const rowData = Array.isArray(row) ? row : Object.values(row);
+
+                    return (
+                      <tr
+                        key={idx}
+                        style={{
+                          backgroundColor: rowBgColor,
+                          transition: 'background-color 0.15s'
+                        }}
+                        onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--border-color)'} 
+                        onMouseOut={(e) => e.currentTarget.style.backgroundColor = rowBgColor}
+                      >
+                        {rowData.map((value, i) => (
                           <td
                             key={i}
                             style={{
-                              borderBottom: '1px solid #f1f5f9',
-                              borderRight: '1px solid #f8fafc',
+                              borderBottom: '1px solid var(--border-color)', 
+                              borderRight: '1px solid var(--border-color)',  
                               padding: '12px 16px',
                               fontSize: '13px',
-                              color: '#334155',
+                              color: 'var(--text-color)',                    
                               whiteSpace: 'nowrap'
+                              /* 🌟 [แก้ไข] ลบ transition: 'all 0.3s ease' ย่อยที่ถ่วง CPU ในตารางกว่า 1,400 เซลล์ออกทั้งหมด เพื่อแก้ปัญหาดีเลย์สะดุดในโหมดกลางคืนเรียบร้อยครับ */
                             }}
                           >
                             {value !== null && value !== undefined ? String(value) : ''}
                           </td>
-                        ))
-                      ) : (
-                        Object.values(row).map((value, i) => (
-                          <td
-                            key={i}
-                            style={{
-                              borderBottom: '1px solid #f1f5f9',
-                              borderRight: '1px solid #f8fafc',
-                              padding: '12px 16px',
-                              fontSize: '13px',
-                              color: '#334155',
-                              whiteSpace: 'nowrap'
-                            }}
-                          >
-                            {value !== null && value !== undefined ? String(value) : ''}
-                          </td>
-                        ))
-                      )}
-                    </tr>
-                  ))}
+                        ))}
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
@@ -414,13 +410,14 @@ function Axct707_6XXX() {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 padding: '16px 24px',
-                borderTop: '1px solid #e2e8f0',
-                backgroundColor: '#ffffff',
+                borderTop: '1px solid var(--border-color)', 
+                backgroundColor: 'var(--card-bg)',         
                 flexWrap: 'wrap',
-                gap: '12px'
+                gap: '12px',
+                transition: 'background-color 0.15s ease, border-color 0.15s ease' /* 🌟 [แก้ไข] */
               }}>
-                <div style={{ fontSize: '13px', color: '#64748b' }}>
-                  Page <strong style={{ color: '#0f172a' }}>{currentPage}</strong> of <strong style={{ color: '#0f172a' }}>{totalPages}</strong> (Showing {rowsPerPage} rows per page)
+                <div style={{ fontSize: '13px', color: 'var(--text-color)', opacity: 0.8 }}> 
+                  Page <strong style={{ color: 'var(--text-color)' }}>{currentPage}</strong> of <strong style={{ color: 'var(--text-color)' }}>{totalPages}</strong> (Showing {rowsPerPage} rows per page)
                 </div>
                 <div style={{ display: 'flex', gap: '8px' }}>
                   <button
@@ -429,12 +426,13 @@ function Axct707_6XXX() {
                     style={{
                       padding: '8px 16px',
                       borderRadius: '8px',
-                      border: '1px solid #cbd5e1',
-                      backgroundColor: currentPage === 1 ? '#f1f5f9' : '#ffffff',
-                      color: currentPage === 1 ? '#94a3b8' : '#334155',
+                      border: '1px solid var(--border-color)', 
+                      backgroundColor: currentPage === 1 ? 'var(--bg-color)' : 'var(--card-bg)',
+                      color: currentPage === 1 ? 'var(--border-color)' : 'var(--text-color)',
                       fontSize: '13px',
                       fontWeight: '600',
-                      cursor: currentPage === 1 ? 'not-allowed' : 'pointer'
+                      cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                      transition: 'all 0.2s'
                     }}
                   >
                     Previous
@@ -445,12 +443,13 @@ function Axct707_6XXX() {
                     style={{
                       padding: '8px 16px',
                       borderRadius: '8px',
-                      border: '1px solid #cbd5e1',
-                      backgroundColor: currentPage === totalPages ? '#f1f5f9' : '#ffffff',
-                      color: currentPage === totalPages ? '#94a3b8' : '#334155',
+                      border: '1px solid var(--border-color)', 
+                      backgroundColor: currentPage === totalPages ? 'var(--bg-color)' : 'var(--card-bg)',
+                      color: currentPage === totalPages ? 'var(--border-color)' : 'var(--text-color)',
                       fontSize: '13px',
                       fontWeight: '600',
-                      cursor: currentPage === totalPages ? 'not-allowed' : 'pointer'
+                      cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                      transition: 'all 0.2s'
                     }}
                   >
                     Next

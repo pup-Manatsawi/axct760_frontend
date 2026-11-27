@@ -440,140 +440,175 @@ Expire Date: ${formData.expireDate || '-'}`;
   const isCreatorError = touched.creator && !formData.creator;
 
   return (
-    <div style={{ fontFamily: "'Inter', 'Segoe UI', Arial, sans-serif", padding: '20px', maxWidth: '1500px', margin: 'auto', color: '#1e293b' }}>
+    <div style={{ 
+      fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Prompt', sans-serif", 
+      padding: '20px', 
+      maxWidth: '1500px', 
+      margin: 'auto', 
+      color: 'var(--text-color)', /* 🌟 เปลี่ยนตามธีม */
+      transition: 'all 0.3s ease'
+    }}>
       
-     {/* 🌟 แถบเมนูล้ำสมัยสไตล์ Ultra-Modern Glassmorphism */}
-    <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '22px', gap: '12px' }}>
+      {/* 🌟 แถบเมนูเลือกภาษาและคู่มือ */}
+      <div style={{ display: 'flex', justifyContent: 'flex-end', alignItems: 'center', marginBottom: '22px', gap: '12px' }}>
   
-        {/* กลุ่มปุ่มเลือกภาษา (Glass Segmented Control) */}
-          <div style={{
-                        display: 'flex',
-                        background: 'rgba(255, 255, 255, 0.75)',
-                        backdropFilter: 'blur(12px)',
-                        WebkitBackdropFilter: 'blur(12px)',
-                        padding: '4px',
-                        borderRadius: '12px',
-                        border: '1px solid rgba(226, 232, 240, 0.8)',
-                        boxShadow: '0 4px 20px rgba(0, 0, 0, 0.03), inset 0 1px 0 rgba(255, 255, 255, 0.8)'
-                      }}>
-              <button 
-                onClick={() => setLang('TH')} 
-                style={{
-                        padding: '6px 14px',
-                        borderRadius: '9px',
-                        border: 'none',
-                        background: lang === 'TH' ? 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)' : 'transparent',
-                        color: lang === 'TH' ? '#ffffff' : '#64748b',
-                        fontWeight: lang === 'TH' ? '700' : '500',
-                        fontSize: '12px',
-                        cursor: 'pointer',
-                        boxShadow: lang === 'TH' ? '0 4px 12px rgba(37, 99, 235, 0.25)' : 'none',
-                        transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
-                        }}
-                > ไทย
-              </button>
+        {/* กลุ่มปุ่มเลือกภาษา */}
+        <div style={{
+          display: 'flex',
+          background: 'var(--card-bg)', /* 🌟 เปลี่ยนตามธีม */
+          padding: '4px',
+          borderRadius: '12px',
+          border: '1px solid var(--border-color)', /* 🌟 เปลี่ยนตามธีม */
+          boxShadow: '0 4px 20px rgba(0, 0, 0, 0.05)',
+          transition: 'all 0.3s ease'
+        }}>
+          <button 
+            onClick={() => setLang('TH')} 
+            style={{
+              padding: '6px 14px',
+              borderRadius: '9px',
+              border: 'none',
+              background: lang === 'TH' ? 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)' : 'transparent',
+              color: lang === 'TH' ? '#ffffff' : 'var(--text-color)',
+              fontWeight: lang === 'TH' ? '700' : '500',
+              fontSize: '12px',
+              cursor: 'pointer',
+              boxShadow: lang === 'TH' ? '0 4px 12px rgba(37, 99, 235, 0.25)' : 'none',
+              transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
+            }}
+          >
+            ไทย
+          </button>
 
-              <button 
-                onClick={() => setLang('EN')} 
-                style={{
-                        padding: '6px 14px',
-                        borderRadius: '9px',
-                        border: 'none',
-                        background: lang === 'EN' ? 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)' : 'transparent',
-                        color: lang === 'EN' ? '#ffffff' : '#64748b',
-                        fontWeight: lang === 'EN' ? '700' : '500',
-                        fontSize: '12px',
-                        cursor: 'pointer',
-                        boxShadow: lang === 'EN' ? '0 4px 12px rgba(37, 99, 235, 0.25)' : 'none',
-                        transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
-                      }}
-                > EN
-              </button>
+          <button 
+            onClick={() => setLang('EN')} 
+            style={{
+              padding: '6px 14px',
+              borderRadius: '9px',
+              border: 'none',
+              background: lang === 'EN' ? 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)' : 'transparent',
+              color: lang === 'EN' ? '#ffffff' : 'var(--text-color)',
+              fontWeight: lang === 'EN' ? '700' : '500',
+              fontSize: '12px',
+              cursor: 'pointer',
+              boxShadow: lang === 'EN' ? '0 4px 12px rgba(37, 99, 235, 0.25)' : 'none',
+              transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
+            }}
+          >
+            EN
+          </button>
 
-              <button 
-                onClick={() => setLang('TW')} 
-                style={{
-                        padding: '6px 14px',
-                        borderRadius: '9px',
-                        border: 'none',
-                        background: lang === 'TW' ? 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)' : 'transparent',
-                        color: lang === 'TW' ? '#ffffff' : '#64748b',
-                        fontWeight: lang === 'TW' ? '700' : '500',
-                        fontSize: '12px',
-                        cursor: 'pointer',
-                        boxShadow: lang === 'TW' ? '0 4px 12px rgba(37, 99, 235, 0.25)' : 'none',
-                        transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
-                      }}
-                > 中文
-              </button>
-            </div>
+          <button 
+            onClick={() => setLang('TW')} 
+            style={{
+              padding: '6px 14px',
+              borderRadius: '9px',
+              border: 'none',
+              background: lang === 'TW' ? 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)' : 'transparent',
+              color: lang === 'TW' ? '#ffffff' : 'var(--text-color)',
+              fontWeight: lang === 'TW' ? '700' : '500',
+              fontSize: '12px',
+              cursor: 'pointer',
+              boxShadow: lang === 'TW' ? '0 4px 12px rgba(37, 99, 235, 0.25)' : 'none',
+              transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
+            }}
+          >
+            中文
+          </button>
+        </div>
 
-            {/* ปุ่มคู่มือดีไซน์พิเศษ (Glow Soft Button + ไอคอนหนังสือมีมิติ) */}
-      <button 
+        {/* ปุ่มคู่มือ */}
+        <button 
           onClick={handleOpenManual}
           title="คู่มือการใช้งาน / User Manual"
           style={{
-                  background: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)',
-                  border: '1px solid #bfdbfe',
-                  padding: '7px 16px',
-                  borderRadius: '12px',
-                  cursor: 'pointer',
-                  fontSize: '12px',
-                  fontWeight: '750',
-                  color: '#1d4ed8',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '7px',
-                  boxShadow: '0 4px 15px rgba(37, 99, 235, 0.08)',
-                  transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
-                  letterSpacing: '0.2px'
-                }}
-        onMouseEnter={(e) => {
-                              e.currentTarget.style.background = 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)';
-                              e.currentTarget.style.transform = 'translateY(-2px)';
-                              e.currentTarget.style.boxShadow = '0 6px 20px rgba(37, 99, 235, 0.18)';
-                            }}
-        onMouseLeave={(e) => {
-                              e.currentTarget.style.background = 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)';
-                              e.currentTarget.style.transform = 'translateY(0)';
-                              e.currentTarget.style.boxShadow = '0 4px 15px rgba(37, 99, 235, 0.08)';
-                            }}
+            background: 'var(--card-bg)', /* 🌟 เปลี่ยนตามธีม */
+            border: '1px solid var(--border-color)', /* 🌟 เปลี่ยนตามธีม */
+            padding: '7px 16px',
+            borderRadius: '12px',
+            cursor: 'pointer',
+            fontSize: '12px',
+            fontWeight: '700',
+            color: 'var(--brand-color)', /* 🌟 เปลี่ยนตามธีม */
+            display: 'flex',
+            alignItems: 'center',
+            gap: '7px',
+            boxShadow: '0 4px 15px rgba(37, 99, 235, 0.08)',
+            transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
+            letterSpacing: '0.2px'
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'translateY(-2px)';
+            e.currentTarget.style.boxShadow = '0 6px 20px rgba(37, 99, 235, 0.18)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'translateY(0)';
+            e.currentTarget.style.boxShadow = '0 4px 15px rgba(37, 99, 235, 0.08)';
+          }}
         >
-        <span style={{ fontSize: '14px', filter: 'drop-shadow(0 1px 2px rgba(0,0,0,0.1))' }}>📖</span>
-        <span>Manual</span>
-      </button>
+          <span style={{ fontSize: '14px' }}>📖</span>
+          <span>Manual</span>
+        </button>
 
-    </div>
+      </div>
 
       {/* หัวข้อหน้า */}
       <div style={{ textAlign: 'center', marginBottom: '25px' }}>
-        <h2 style={{ fontSize: '24px', fontWeight: '800', color: '#0f172a', letterSpacing: '-0.5px', margin: 0 }}>
+        <h2 style={{ fontSize: '24px', fontWeight: '800', color: 'var(--text-color)', letterSpacing: '-0.5px', margin: 0 }}>
           {t.title}
         </h2>
-        <p style={{ fontSize: '14px', color: '#64748b', marginTop: '6px' }}>
+        <p style={{ fontSize: '14px', color: 'var(--text-color)', opacity: 0.7, marginTop: '6px' }}>
           {t.subtitle}
         </p>
       </div>
 
       {/* คอนเทนเนอร์หลัก (Grid 2 ฝั่ง) */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '25px', background: '#ffffff', padding: '30px', borderRadius: '20px', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.05)', border: '1px solid #f1f5f9' }}>
+      <div style={{ 
+        display: 'grid', 
+        gridTemplateColumns: '1.4fr 1fr', 
+        gap: '25px', 
+        background: 'var(--card-bg)', /* 🌟 เปลี่ยนตามธีม */
+        padding: '30px', 
+        borderRadius: '20px', 
+        boxShadow: '0 10px 25px -5px rgba(0,0,0,0.05)', 
+        border: '1px solid var(--border-color)', /* 🌟 เปลี่ยนตามธีม */
+        transition: 'all 0.3s ease'
+      }}>
         
         {/* ฝั่งซ้าย: ฟอร์มกรอกข้อมูล */}
         <form onSubmit={handleSaveToHistory} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <span style={{ fontSize: '14px', fontWeight: '700', color: isViewOnly ? '#2563eb' : (editingId ? '#d97706' : '#16a34a') }}>
+            <span style={{ fontSize: '14px', fontWeight: '700', color: isViewOnly ? '#3b82f6' : (editingId ? '#f59e0b' : '#10b981') }}>
               {isViewOnly ? t.viewingMode : (editingId ? `${t.editEntry} ${editingId}` : t.newEntry)}
             </span>
             {(editingId || isViewOnly) && (
-              <button type="button" onClick={() => { setEditingId(null); setIsViewOnly(false); setFormData({ boxName: '', category: '', description: '', creator: '', date: todayStr, expireDate: calculateExpireDate(todayStr) }); setTouched({ boxName: false, category: false, creator: false }); }} style={{ background: '#cbd5e1', border: 'none', padding: '4px 8px', borderRadius: '6px', cursor: 'pointer', fontSize: '12px' }}>
+              <button 
+                type="button" 
+                onClick={() => { 
+                  setEditingId(null); 
+                  setIsViewOnly(false); 
+                  setFormData({ boxName: '', category: '', description: '', creator: '', date: todayStr, expireDate: calculateExpireDate(todayStr) }); 
+                  setTouched({ boxName: false, category: false, creator: false }); 
+                }} 
+                style={{ 
+                  background: 'var(--bg-color)', 
+                  color: 'var(--text-color)', 
+                  border: '1px solid var(--border-color)', 
+                  padding: '4px 10px', 
+                  borderRadius: '6px', 
+                  cursor: 'pointer', 
+                  fontSize: '12px',
+                  fontWeight: '600'
+                }}
+              >
                 {isViewOnly ? t.cancelView : t.cancelEdit}
               </button>
             )}
           </div>
 
           <div>
-            <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: '700', color: isBoxNameError ? '#dc2626' : '#334155' }}>
-              {t.boxName} <span style={{ color: '#dc2626' }}>*</span>
+            <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: '700', color: isBoxNameError ? '#ef4444' : 'var(--text-color)' }}>
+              {t.boxName} <span style={{ color: '#ef4444' }}>*</span>
             </label>
             <input 
               type="text" 
@@ -585,17 +620,18 @@ Expire Date: ${formData.expireDate || '-'}`;
               placeholder={t.boxNamePlaceholder} 
               style={{
                 ...inputStyle,
-                borderColor: isBoxNameError ? '#dc2626' : '#cbd5e1',
-                backgroundColor: isViewOnly ? '#e2e8f0' : (isBoxNameError ? '#fef2f2' : '#f8fafc'),
-                cursor: isViewOnly ? 'not-allowed' : 'text'
+                borderColor: isBoxNameError ? '#ef4444' : 'var(--border-color)',
+                backgroundColor: isViewOnly ? 'var(--border-color)' : 'var(--bg-color)',
+                cursor: isViewOnly ? 'not-allowed' : 'text',
+                opacity: isViewOnly ? 0.7 : 1
               }} 
             />
-            {isBoxNameError && <span style={{ fontSize: '11px', color: '#dc2626', marginTop: '3px', display: 'block' }}>* จำเป็นต้องกรอกข้อมูลนี้</span>}
+            {isBoxNameError && <span style={{ fontSize: '11px', color: '#ef4444', marginTop: '3px', display: 'block' }}>* จำเป็นต้องกรอกข้อมูลนี้</span>}
           </div>
 
           <div>
-            <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: '700', color: isCategoryError ? '#dc2626' : '#334155' }}>
-              {t.category} <span style={{ color: '#dc2626' }}>*</span>
+            <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: '700', color: isCategoryError ? '#ef4444' : 'var(--text-color)' }}>
+              {t.category} <span style={{ color: '#ef4444' }}>*</span>
             </label>
             <input 
               type="text" 
@@ -607,23 +643,39 @@ Expire Date: ${formData.expireDate || '-'}`;
               placeholder={t.categoryPlaceholder} 
               style={{
                 ...inputStyle,
-                borderColor: isCategoryError ? '#dc2626' : '#cbd5e1',
-                backgroundColor: isViewOnly ? '#e2e8f0' : (isCategoryError ? '#fef2f2' : '#f8fafc'),
-                cursor: isViewOnly ? 'not-allowed' : 'text'
+                borderColor: isCategoryError ? '#ef4444' : 'var(--border-color)',
+                backgroundColor: isViewOnly ? 'var(--border-color)' : 'var(--bg-color)',
+                cursor: isViewOnly ? 'not-allowed' : 'text',
+                opacity: isViewOnly ? 0.7 : 1
               }} 
             />
-            {isCategoryError && <span style={{ fontSize: '11px', color: '#dc2626', marginTop: '3px', display: 'block' }}>* จำเป็นต้องกรอกข้อมูลนี้</span>}
+            {isCategoryError && <span style={{ fontSize: '11px', color: '#ef4444', marginTop: '3px', display: 'block' }}>* จำเป็นต้องกรอกข้อมูลนี้</span>}
           </div>
 
           <div>
-            <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: '700', color: '#334155' }}>{t.description}</label>
-            <textarea name="description" maxLength={300} value={formData.description} onChange={handleChange} readOnly={isViewOnly} rows="4" placeholder={t.descriptionPlaceholder} style={{ ...inputStyle, resize: 'vertical', backgroundColor: isViewOnly ? '#e2e8f0' : '#f8fafc', cursor: isViewOnly ? 'not-allowed' : 'text' }} />
+            <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: '700', color: 'var(--text-color)' }}>{t.description}</label>
+            <textarea 
+              name="description" 
+              maxLength={300} 
+              value={formData.description} 
+              onChange={handleChange} 
+              readOnly={isViewOnly} 
+              rows="4" 
+              placeholder={t.descriptionPlaceholder} 
+              style={{ 
+                ...inputStyle, 
+                resize: 'vertical', 
+                backgroundColor: isViewOnly ? 'var(--border-color)' : 'var(--bg-color)', 
+                cursor: isViewOnly ? 'not-allowed' : 'text',
+                opacity: isViewOnly ? 0.7 : 1
+              }} 
+            />
           </div>
 
           <div style={{ display: 'flex', gap: '12px' }}>
             <div style={{ flex: 1 }}>
-              <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: '700', color: isCreatorError ? '#dc2626' : '#334155' }}>
-                {t.creator} <span style={{ color: '#dc2626' }}>*</span>
+              <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: '700', color: isCreatorError ? '#ef4444' : 'var(--text-color)' }}>
+                {t.creator} <span style={{ color: '#ef4444' }}>*</span>
               </label>
               <input 
                 type="text" 
@@ -635,35 +687,92 @@ Expire Date: ${formData.expireDate || '-'}`;
                 placeholder={t.creatorPlaceholder} 
                 style={{
                   ...inputStyle,
-                  borderColor: isCreatorError ? '#dc2626' : '#cbd5e1',
-                  backgroundColor: isViewOnly ? '#e2e8f0' : (isCreatorError ? '#fef2f2' : '#f8fafc'),
-                  cursor: isViewOnly ? 'not-allowed' : 'text'
+                  borderColor: isCreatorError ? '#ef4444' : 'var(--border-color)',
+                  backgroundColor: isViewOnly ? 'var(--border-color)' : 'var(--bg-color)',
+                  cursor: isViewOnly ? 'not-allowed' : 'text',
+                  opacity: isViewOnly ? 0.7 : 1
                 }} 
               />
-              {isCreatorError && <span style={{ fontSize: '11px', color: '#dc2626', marginTop: '3px', display: 'block' }}>* จำเป็น</span>}
+              {isCreatorError && <span style={{ fontSize: '11px', color: '#ef4444', marginTop: '3px', display: 'block' }}>* จำเป็น</span>}
             </div>
             <div style={{ flex: 1 }}>
-              <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: '700', color: '#334155' }}>{t.date}</label>
-              <input type="date" name="date" value={formData.date} onChange={handleChange} readOnly={isViewOnly} style={{ ...inputStyle, backgroundColor: isViewOnly ? '#e2e8f0' : '#f8fafc', cursor: isViewOnly ? 'not-allowed' : 'text' }} />
+              <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: '700', color: 'var(--text-color)' }}>{t.date}</label>
+              <input 
+                type="date" 
+                name="date" 
+                value={formData.date} 
+                onChange={handleChange} 
+                readOnly={isViewOnly} 
+                style={{ 
+                  ...inputStyle, 
+                  backgroundColor: isViewOnly ? 'var(--border-color)' : 'var(--bg-color)', 
+                  cursor: isViewOnly ? 'not-allowed' : 'text',
+                  opacity: isViewOnly ? 0.7 : 1
+                }} 
+              />
             </div>
           </div>
 
           <div>
-            <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: '700', color: '#e11d48' }}>{t.expireDate}</label>
-            <input type="date" name="expireDate" value={formData.expireDate} onChange={handleChange} readOnly={isViewOnly} style={{ ...inputStyle, background: isViewOnly ? '#e2e8f0' : '#fff1f2', borderColor: '#fecdd3', color: '#9f1239', cursor: isViewOnly ? 'not-allowed' : 'text' }} />
+            <label style={{ display: 'block', marginBottom: '6px', fontSize: '13px', fontWeight: '700', color: '#f43f5e' }}>{t.expireDate}</label>
+            <input 
+              type="date" 
+              name="expireDate" 
+              value={formData.expireDate} 
+              onChange={handleChange} 
+              readOnly={isViewOnly} 
+              style={{ 
+                ...inputStyle, 
+                backgroundColor: isViewOnly ? 'var(--border-color)' : 'var(--bg-color)', 
+                borderColor: '#f43f5e', 
+                color: '#f43f5e', 
+                fontWeight: '700',
+                cursor: isViewOnly ? 'not-allowed' : 'text',
+                opacity: isViewOnly ? 0.7 : 1
+              }} 
+            />
           </div>
 
           {!isViewOnly && (
-            <button type="submit" onMouseEnter={() => setHoverSubmit(true)} onMouseLeave={() => setHoverSubmit(false)} style={{ background: hoverSubmit ? (editingId ? '#b45309' : '#15803d') : (editingId ? '#d97706' : '#16a34a'), color: 'white', border: 'none', padding: '12px', borderRadius: '10px', cursor: 'pointer', fontWeight: '700', fontSize: '14px', transition: 'all 0.2s ease', marginTop: '4px' }}>
+            <button 
+              type="submit" 
+              onMouseEnter={() => setHoverSubmit(true)} 
+              onMouseLeave={() => setHoverSubmit(false)} 
+              style={{ 
+                background: hoverSubmit ? (editingId ? '#b45309' : '#15803d') : (editingId ? '#d97706' : '#16a34a'), 
+                color: 'white', 
+                border: 'none', 
+                padding: '12px', 
+                borderRadius: '10px', 
+                cursor: 'pointer', 
+                fontWeight: '700', 
+                fontSize: '14px', 
+                transition: 'all 0.2s ease', 
+                marginTop: '4px' 
+              }}
+            >
               {editingId ? t.saveUpdate : t.saveNew}
             </button>
           )}
         </form>
 
         {/* ฝั่งขวา: พรีวิวป้าย QR Code ในหน้าจอ */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', backgroundColor: '#f8fafc', padding: '20px', borderRadius: '16px', border: '1px solid #e2e8f0', width: '100%', boxSizing: 'border-box' }}>
-          <div style={{ fontSize: '13px', fontWeight: '700', marginBottom: '12px', color: '#475569' }}>{t.previewTitle}</div>
+        <div style={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          alignItems: 'center', 
+          justifyContent: 'center', 
+          backgroundColor: 'var(--bg-color)', /* 🌟 เปลี่ยนตามธีม */
+          padding: '20px', 
+          borderRadius: '16px', 
+          border: '1px solid var(--border-color)', /* 🌟 เปลี่ยนตามธีม */
+          width: '100%', 
+          boxSizing: 'border-box',
+          transition: 'all 0.3s ease'
+        }}>
+          <div style={{ fontSize: '13px', fontWeight: '700', marginBottom: '12px', color: 'var(--text-color)' }}>{t.previewTitle}</div>
           
+          {/* 📌 ตัวป้ายสติกเกอร์ด้านในคงสีขาว (#ffffff) ไว้เสมอ เพื่อให้สแกน QR Code ติดง่ายและตรงกับตอนพิมพ์กระดาษ */}
           <div ref={previewWrapperRef} style={{ width: '100%', height: `${previewHeight}px`, overflow: 'hidden', display: 'flex', justifyContent: 'center', alignItems: 'flex-start', position: 'relative' }}>
             <div style={{ transform: `scale(${previewScale})`, transformOrigin: 'top center', position: 'absolute', top: '10px', width: '900px' }}>
               <div style={{ background: '#ffffff', padding: '50px', borderRadius: '24px', border: '3px solid #0f172a', display: 'flex', alignItems: 'center', gap: '50px', width: '900px', boxSizing: 'border-box' }}>
@@ -696,13 +805,36 @@ Expire Date: ${formData.expireDate || '-'}`;
             </div>
           </div>
 
-          <button onClick={downloadPDF} onMouseEnter={() => setHoverPdf(true)} onMouseLeave={() => setHoverPdf(false)} style={{ background: hoverPdf ? '#1d4ed8' : '#2563eb', color: 'white', border: 'none', padding: '12px 20px', borderRadius: '10px', cursor: 'pointer', marginTop: '16px', width: '100%', maxWidth: '280px', fontWeight: '700', fontSize: '13px', boxShadow: '0 4px 12px rgba(37,99,235,0.25)', transition: 'all 0.2s ease', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+          <button 
+            onClick={downloadPDF} 
+            onMouseEnter={() => setHoverPdf(true)} 
+            onMouseLeave={() => setHoverPdf(false)} 
+            style={{ 
+              background: hoverPdf ? '#1d4ed8' : '#2563eb', 
+              color: 'white', 
+              border: 'none', 
+              padding: '12px 20px', 
+              borderRadius: '10px', 
+              cursor: 'pointer', 
+              marginTop: '16px', 
+              width: '100%', 
+              maxWidth: '280px', 
+              fontWeight: '700', 
+              fontSize: '13px', 
+              boxShadow: '0 4px 12px rgba(37,99,235,0.25)', 
+              transition: 'all 0.2s ease', 
+              display: 'flex', 
+              alignItems: 'center', 
+              justifyContent: 'center', 
+              gap: '8px' 
+            }}
+          >
             {t.downloadPdf}
           </button>
         </div>
       </div>
 
-      {/* ส่วนซ่อนสำหรับสร้าง PDF */}
+      {/* ส่วนซ่อนสำหรับสร้าง PDF (คงสีขาวไว้สำหรับพิมพ์) */}
       <div style={{ position: 'absolute', left: '-9999px', top: '-9999px' }}>
         <div ref={pdfRef} style={{ background: '#ffffff', padding: '50px', borderRadius: '24px', border: '3px solid #0f172a', display: 'flex', alignItems: 'center', gap: '50px', width: '900px', boxSizing: 'border-box' }}>
           <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0 }}>
@@ -734,25 +866,32 @@ Expire Date: ${formData.expireDate || '-'}`;
       </div>
 
       {/* ส่วนตารางรายงานประวัติ (Report Table) */}
-      <div style={{ marginTop: '40px', background: '#ffffff', padding: '30px', borderRadius: '20px', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.05)', border: '1px solid #f1f5f9' }}>
+      <div style={{ 
+        marginTop: '40px', 
+        background: 'var(--card-bg)', /* 🌟 เปลี่ยนตามธีม */
+        padding: '30px', 
+        borderRadius: '20px', 
+        boxShadow: '0 10px 25px -5px rgba(0,0,0,0.05)', 
+        border: '1px solid var(--border-color)', /* 🌟 เปลี่ยนตามธีม */
+        transition: 'all 0.3s ease'
+      }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '15px' }}>
           
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-            <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '800', color: '#0f172a' }}>
+            <h3 style={{ margin: 0, fontSize: '18px', fontWeight: '800', color: 'var(--text-color)' }}>
               {t.reportTitle}
             </h3>
             <div style={{
               display: 'inline-flex',
               alignItems: 'center',
               gap: '6px',
-              background: 'linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%)',
-              border: '1px solid #bfdbfe',
-              color: '#1d4ed8',
+              background: 'var(--bg-color)', /* 🌟 เปลี่ยนตามธีม */
+              border: '1px solid var(--border-color)', /* 🌟 เปลี่ยนตามธีม */
+              color: 'var(--brand-color)',
               padding: '5px 12px',
               borderRadius: '20px',
               fontSize: '13px',
-              fontWeight: '700',
-              boxShadow: '0 2px 5px rgba(37,99,235,0.08)'
+              fontWeight: '700'
             }}>
               <span>📦</span>
               <span>{filteredHistory.length} {t.items}</span>
@@ -766,23 +905,60 @@ Expire Date: ${formData.expireDate || '-'}`;
               value={searchTerm} 
               onChange={(e) => setSearchTerm(e.target.value)} 
               placeholder={t.searchPlaceholder}
-              style={{ padding: '7px 14px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#f8fafc', fontSize: '13px', outline: 'none', width: '220px' }}
+              style={{ 
+                padding: '7px 14px', 
+                borderRadius: '8px', 
+                border: '1px solid var(--border-color)', 
+                background: 'var(--bg-color)', 
+                color: 'var(--text-color)',
+                fontSize: '13px', 
+                outline: 'none', 
+                width: '220px' 
+              }}
             />
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <label style={{ fontSize: '13px', fontWeight: '700', color: '#475569' }}>{t.filterCategory}</label>
-              <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)} style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#f8fafc', fontWeight: '600', fontSize: '13px' }}>
+              <label style={{ fontSize: '13px', fontWeight: '700', color: 'var(--text-color)' }}>{t.filterCategory}</label>
+              <select 
+                value={selectedCategory} 
+                onChange={(e) => setSelectedCategory(e.target.value)} 
+                style={{ 
+                  padding: '6px 12px', 
+                  borderRadius: '8px', 
+                  border: '1px solid var(--border-color)', 
+                  background: 'var(--bg-color)', 
+                  color: 'var(--text-color)',
+                  fontWeight: '600', 
+                  fontSize: '13px' 
+                }}
+              >
                 {availableCategories.map(cat => (
-                  <option key={cat} value={cat}>{cat === 'ALL' ? t.allCategories : cat}</option>
+                  <option key={cat} value={cat} style={{ background: 'var(--card-bg)', color: 'var(--text-color)' }}>
+                    {cat === 'ALL' ? t.allCategories : cat}
+                  </option>
                 ))}
               </select>
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
-              <label style={{ fontSize: '13px', fontWeight: '700', color: '#475569' }}>{t.filterYear}</label>
-              <select value={selectedYear} onChange={(e) => setSelectedYear(e.target.value)} style={{ padding: '6px 12px', borderRadius: '8px', border: '1px solid #cbd5e1', background: '#f8fafc', fontWeight: '600', fontSize: '13px' }}>
+              <label style={{ fontSize: '13px', fontWeight: '700', color: 'var(--text-color)' }}>{t.filterYear}</label>
+              <select 
+                value={selectedYear} 
+                onChange={(e) => setSelectedYear(e.target.value)} 
+                style={{ 
+                  padding: '6px 12px', 
+                  borderRadius: '8px', 
+                  border: '1px solid var(--border-color)', 
+                  background: 'var(--bg-color)', 
+                  color: 'var(--text-color)',
+                  fontWeight: '600', 
+                  fontSize: '13px' 
+                }}
+              >
                 {availableYears.map(year => (
-                  <option key={year} value={year}>{year === 'ALL' ? t.allYears : year}</option>
+                  <option key={year} value={year} style={{ background: 'var(--card-bg)', color: 'var(--text-color)' }}>
+                    {year === 'ALL' ? t.allYears : year}
+                  </option>
                 ))}
               </select>
             </div>
@@ -815,7 +991,7 @@ Expire Date: ${formData.expireDate || '-'}`;
         <div style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left', fontSize: '13px' }}>
             <thead>
-              <tr style={{ background: '#f8fafc', borderBottom: '2px solid #e2e8f0', color: '#475569' }}>
+              <tr style={{ background: 'var(--bg-color)', borderBottom: '2px solid var(--border-color)', color: 'var(--text-color)' }}>
                 <th style={{ padding: '12px' }}>{t.colBox}</th>
                 <th style={{ padding: '12px' }}>{t.colCategory}</th>
                 <th style={{ padding: '12px' }}>{t.colCreator}</th>
@@ -827,31 +1003,31 @@ Expire Date: ${formData.expireDate || '-'}`;
             <tbody>
               {currentRows.length === 0 ? (
                 <tr>
-                  <td colSpan="6" style={{ textAlign: 'center', padding: '30px', color: '#94a3b8' }}>
+                  <td colSpan="6" style={{ textAlign: 'center', padding: '30px', color: 'var(--text-color)', opacity: 0.6 }}>
                     {t.noData}
                   </td>
                 </tr>
               ) : (
                 currentRows.map((item) => (
-                  <tr key={item.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                    <td style={{ padding: '12px', fontWeight: '700', color: '#0f172a' }}>{item.boxName}</td>
+                  <tr key={item.id} style={{ borderBottom: '1px solid var(--border-color)' }}>
+                    <td style={{ padding: '12px', fontWeight: '700', color: 'var(--text-color)' }}>{item.boxName}</td>
                     <td style={{ padding: '12px' }}>
-                      <span style={{ background: '#f1f5f9', padding: '2px 8px', borderRadius: '4px', fontWeight: '600', color: '#334155' }}>
+                      <span style={{ background: 'var(--bg-color)', border: '1px solid var(--border-color)', padding: '2px 8px', borderRadius: '4px', fontWeight: '600', color: 'var(--text-color)' }}>
                         {item.category || '-'}
                       </span>
                     </td>
-                    <td style={{ padding: '12px', color: '#64748b' }}>{item.creator || '-'}</td>
-                    <td style={{ padding: '12px', color: '#64748b' }}>{item.date}</td>
-                    <td style={{ padding: '12px', color: '#e11d48', fontWeight: '600' }}>{item.expireDate}</td>
+                    <td style={{ padding: '12px', color: 'var(--text-color)', opacity: 0.85 }}>{item.creator || '-'}</td>
+                    <td style={{ padding: '12px', color: 'var(--text-color)', opacity: 0.85 }}>{item.date}</td>
+                    <td style={{ padding: '12px', color: '#f43f5e', fontWeight: '600' }}>{item.expireDate}</td>
                     <td style={{ padding: '12px', textAlign: 'center' }}>
                       <div style={{ display: 'flex', justifyContent: 'center', gap: '8px' }}>
-                        <button title="Print" onClick={() => handlePrintQRClick(item)} style={{ background: '#eff6ff', border: '1px solid #bfdbfe', color: '#2563eb', padding: '6px 10px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: '600' }}>
+                        <button title="Print" onClick={() => handlePrintQRClick(item)} style={{ background: 'rgba(37, 99, 235, 0.12)', border: '1px solid rgba(37, 99, 235, 0.3)', color: '#3b82f6', padding: '6px 10px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: '600' }}>
                           {t.print}
                         </button>
-                        <button title="Edit" onClick={() => handleEditClick(item)} style={{ background: '#fef3c7', border: '1px solid #fde68a', color: '#d97706', padding: '6px 10px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: '600' }}>
+                        <button title="Edit" onClick={() => handleEditClick(item)} style={{ background: 'rgba(217, 119, 6, 0.12)', border: '1px solid rgba(217, 119, 6, 0.3)', color: '#f59e0b', padding: '6px 10px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: '600' }}>
                           {t.edit}
                         </button>
-                        <button title="Delete" onClick={() => handleDelete(item.id)} style={{ background: '#fee2e2', border: '1px solid #fecaca', color: '#dc2626', padding: '6px 10px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: '600' }}>
+                        <button title="Delete" onClick={() => handleDelete(item.id)} style={{ background: 'rgba(220, 38, 38, 0.12)', border: '1px solid rgba(220, 38, 38, 0.3)', color: '#ef4444', padding: '6px 10px', borderRadius: '6px', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '4px', fontSize: '12px', fontWeight: '600' }}>
                           {t.delete}
                         </button>
                       </div>
@@ -865,27 +1041,27 @@ Expire Date: ${formData.expireDate || '-'}`;
 
         {/* Pagination Footer */}
         {totalPages > 1 && (
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', paddingTop: '15px', borderTop: '1px solid #e2e8f0', flexWrap: 'wrap', gap: '15px' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '20px', paddingTop: '15px', borderTop: '1px solid var(--border-color)', flexWrap: 'wrap', gap: '15px' }}>
             
             <div style={{ 
               display: 'inline-flex', 
               alignItems: 'center', 
               gap: '6px', 
-              background: '#f8fafc', 
-              border: '1px solid #e2e8f0', 
+              background: 'var(--bg-color)', 
+              border: '1px solid var(--border-color)', 
               padding: '6px 14px', 
               borderRadius: '10px', 
               fontSize: '13px', 
-              color: '#475569',
+              color: 'var(--text-color)',
               fontWeight: '600' 
             }}>
               <span>📑</span>
               <span>{t.showing}</span>
-              <strong style={{ color: '#0f172a' }}>{indexOfFirstRow + 1}</strong>
+              <strong style={{ color: 'var(--text-color)' }}>{indexOfFirstRow + 1}</strong>
               <span>-</span>
-              <strong style={{ color: '#0f172a' }}>{Math.min(indexOfLastRow, filteredHistory.length)}</strong>
+              <strong style={{ color: 'var(--text-color)' }}>{Math.min(indexOfLastRow, filteredHistory.length)}</strong>
               <span>{t.ofTotal}</span>
-              <strong style={{ color: '#2563eb' }}>{filteredHistory.length}</strong>
+              <strong style={{ color: 'var(--brand-color)' }}>{filteredHistory.length}</strong>
               <span>{t.items}</span>
             </div>
 
@@ -896,13 +1072,12 @@ Expire Date: ${formData.expireDate || '-'}`;
                 style={{
                   padding: '7px 14px',
                   borderRadius: '10px',
-                  border: '1px solid #cbd5e1',
-                  background: currentPage === 1 ? '#f1f5f9' : '#ffffff',
-                  color: currentPage === 1 ? '#94a3b8' : '#334155',
+                  border: '1px solid var(--border-color)',
+                  background: currentPage === 1 ? 'var(--bg-color)' : 'var(--card-bg)',
+                  color: currentPage === 1 ? 'var(--border-color)' : 'var(--text-color)',
                   fontWeight: '700',
                   fontSize: '13px',
                   cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
-                  boxShadow: '0 1px 2px rgba(0,0,0,0.02)',
                   transition: 'all 0.2s'
                 }}
               >
@@ -918,9 +1093,9 @@ Expire Date: ${formData.expireDate || '-'}`;
                       width: '34px',
                       height: '34px',
                       borderRadius: '10px',
-                      border: currentPage === num ? 'none' : '1px solid #e2e8f0',
-                      background: currentPage === num ? 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)' : '#ffffff',
-                      color: currentPage === num ? '#ffffff' : '#475569',
+                      border: currentPage === num ? 'none' : '1px solid var(--border-color)',
+                      background: currentPage === num ? 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)' : 'var(--card-bg)',
+                      color: currentPage === num ? '#ffffff' : 'var(--text-color)',
                       fontWeight: '700',
                       fontSize: '13px',
                       cursor: 'pointer',
@@ -939,13 +1114,12 @@ Expire Date: ${formData.expireDate || '-'}`;
                 style={{
                   padding: '7px 14px',
                   borderRadius: '10px',
-                  border: '1px solid #cbd5e1',
-                  background: currentPage === totalPages ? '#f1f5f9' : '#ffffff',
-                  color: currentPage === totalPages ? '#94a3b8' : '#334155',
+                  border: '1px solid var(--border-color)',
+                  background: currentPage === totalPages ? 'var(--bg-color)' : 'var(--card-bg)',
+                  color: currentPage === totalPages ? 'var(--border-color)' : 'var(--text-color)',
                   fontWeight: '700',
                   fontSize: '13px',
                   cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
-                  boxShadow: '0 1px 2px rgba(0,0,0,0.02)',
                   transition: 'all 0.2s'
                 }}
               >
@@ -965,10 +1139,11 @@ const inputStyle = {
   width: '100%',
   padding: '10px 14px',
   borderRadius: '10px',
-  border: '1px solid #cbd5e1',
-  backgroundColor: '#f8fafc',
+  border: '1px solid var(--border-color)',
+  backgroundColor: 'var(--bg-color)',
   fontSize: '14px',
-  color: '#0f172a',
+  color: 'var(--text-color)',
   outline: 'none',
-  boxSizing: 'border-box'
+  boxSizing: 'border-box',
+  transition: 'all 0.2s ease'
 };

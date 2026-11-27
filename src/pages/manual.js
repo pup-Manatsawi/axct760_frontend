@@ -66,7 +66,7 @@ const translations = {
     scanStep2Desc: 'เปิดแอปพลิเคชัน QR Reader บนมือถือของคุณ แล้วนำกล้องไปส่องตรงที่รูป QR Code บนป้ายหน้ากล่องเอกสาร ให้ QR Code อยู่ตรงกลางกรอบสแกน แอปจะทำการอ่านข้อมูลให้อัตโนมัติทันทีโดยไม่ต้องกดถ่ายภาพ',
     scanStep3Title: '3. รูปแบบข้อมูลที่แสดงผลหลังการสแกน (Scanned Result Format)',
     scanStep3Desc: 'เมื่อสแกนสำเร็จ ข้อมูลรายละเอียดทั้งหมดของกล่องเอกสารจะแสดงผลในรูปแบบข้อความบนหน้าจอมือถือทันที โดยมีโครงสร้างข้อมูลดังนี้:',
-    
+
     // Scanned Result Box
     resCompany: 'Company: ThaiShinkong',
     resBoxName: 'Box Name: PV 12/2025 (BOX NO.2/2)',
@@ -204,7 +204,7 @@ const translations = {
     tip2: '請將 QR Code 標籤貼在檔案箱正面的明顯位置。',
 
     sec6Title: '6. 支援與協助',
-    supportDesc: '如遇系統使用問題、無法儲存資料或 PDF 生成錯誤，請聯繫泰新興有限公司資訊部 (IT Department) 或系統管理員。',
+    supportDesc: '如遇系統使用問題、無法儲存資料 or PDF 生成錯誤，請聯繫泰新興有限公司資訊部 (IT Department) 或系統管理員。',
     backBtn: '← 返回 QR Code 生成器主頁',
 
     // Tab 2: QR Scanner Manual
@@ -229,28 +229,42 @@ const translations = {
   }
 };
 
-export default function Manual() {
+// 🌟 [แก้ไขใหม่] รับ props theme เข้ามาเพื่อเชื่อมโยงกับ React State เสมอเมื่อมีการกดสวิตช์ที่ Navbar
+export default function Manual({ theme }) {
   const [lang, setLang] = useState('TH');
   const [activeTab, setActiveTab] = useState('system'); // 'system' or 'scanner'
   const t = translations[lang];
 
+  // 🌟 [แก้ไขใหม่] เปลี่ยนมาประเมินสถานะโหมดมืดผ่าน Props React โดยตรง เพื่อบังคับให้คอมโพเนนต์วาดใหม่ (Re-render) ทันทีที่กดสวิตช์
+  const isDark = theme === "dark";
+
   return (
-    <div style={{ fontFamily: "'Inter', 'Segoe UI', Arial, sans-serif", padding: '20px', maxWidth: '1100px', margin: 'auto', color: '#1e293b', background: '#f8fafc', minHeight: '100vh' }}>
+    <div style={{ 
+      fontFamily: "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', 'Prompt', 'Thonburi', sans-serif", 
+      padding: '20px', 
+      maxWidth: '1100px', 
+      margin: 'auto', 
+      color: 'var(--text-color)',      
+      background: 'var(--bg-color)',    
+      minHeight: '100vh',
+      transition: 'all 0.3s ease'
+    }}>
 
       {/* ส่วนหัว: ปุ่มกลับหน้าหลัก และ ปุ่มเปลี่ยนภาษา */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '15px' }}>
         <button 
           onClick={() => window.location.href = '/QRCodeBox'}
           style={{
-            background: '#ffffff',
-            border: '1px solid #cbd5e1',
+            background: 'var(--card-bg)',      
+            border: '1px solid var(--border-color)', 
             padding: '8px 16px',
             borderRadius: '8px',
             cursor: 'pointer',
             fontWeight: '700',
             fontSize: '13px',
-            color: '#2563eb',
-            boxShadow: '0 1px 2px rgba(0,0,0,0.02)'
+            color: '#2563eb',       
+            boxShadow: '0 1px 2px rgba(0,0,0,0.02)',
+            transition: 'all 0.3s ease'
           }}
         >
           {t.backBtn}
@@ -258,9 +272,51 @@ export default function Manual() {
 
         {/* ปุ่มเลือกภาษา */}
         <div style={{ display: 'flex', gap: '6px' }}>
-          <button onClick={() => setLang('TH')} style={{ padding: '6px 12px', borderRadius: '6px', border: lang === 'TH' ? '2px solid #2563eb' : '1px solid #cbd5e1', background: lang === 'TH' ? '#eff6ff' : '#fff', fontWeight: 'bold', cursor: 'pointer' }}>ไทย</button>
-          <button onClick={() => setLang('EN')} style={{ padding: '6px 12px', borderRadius: '6px', border: lang === 'EN' ? '2px solid #2563eb' : '1px solid #cbd5e1', background: lang === 'EN' ? '#eff6ff' : '#fff', fontWeight: 'bold', cursor: 'pointer' }}>EN</button>
-          <button onClick={() => setLang('TW')} style={{ padding: '6px 12px', borderRadius: '6px', border: lang === 'TW' ? '2px solid #2563eb' : '1px solid #cbd5e1', background: lang === 'TW' ? '#eff6ff' : '#fff', fontWeight: 'bold', cursor: 'pointer' }}>中文</button>
+          <button 
+            onClick={() => setLang('TH')} 
+            style={{ 
+              padding: '6px 12px', 
+              borderRadius: '6px', 
+              border: lang === 'TH' ? '2px solid #2563eb' : '1px solid var(--border-color)', 
+              background: lang === 'TH' ? '#2563eb' : 'var(--card-bg)', 
+              color: lang === 'TH' ? '#ffffff' : 'var(--text-color)', 
+              fontWeight: 'bold', 
+              cursor: 'pointer', 
+              transition: 'all 0.3s ease' 
+            }}
+          >
+            ไทย
+          </button>
+          <button 
+            onClick={() => setLang('EN')} 
+            style={{ 
+              padding: '6px 12px', 
+              borderRadius: '6px', 
+              border: lang === 'EN' ? '2px solid #2563eb' : '1px solid var(--border-color)', 
+              background: lang === 'EN' ? '#2563eb' : 'var(--card-bg)', 
+              color: lang === 'EN' ? '#ffffff' : 'var(--text-color)', 
+              fontWeight: 'bold', 
+              cursor: 'pointer', 
+              transition: 'all 0.3s ease' 
+            }}
+          >
+            EN
+          </button>
+          <button 
+            onClick={() => setLang('TW')} 
+            style={{ 
+              padding: '6px 12px', 
+              borderRadius: '6px', 
+              border: lang === 'TW' ? '2px solid #2563eb' : '1px solid var(--border-color)', 
+              background: lang === 'TW' ? '#2563eb' : 'var(--card-bg)', 
+              color: lang === 'TW' ? '#ffffff' : 'var(--text-color)', 
+              fontWeight: 'bold', 
+              cursor: 'pointer', 
+              transition: 'all 0.3s ease' 
+            }}
+          >
+            中文
+          </button>
         </div>
       </div>
 
@@ -272,14 +328,18 @@ export default function Manual() {
             flex: 1,
             padding: '12px 20px',
             borderRadius: '12px',
-            border: 'none',
-            background: activeTab === 'system' ? '#1e3a8a' : '#e2e8f0',
-            color: activeTab === 'system' ? '#ffffff' : '#475569',
+            border: activeTab === 'system' ? 'none' : '1px solid var(--border-color)', 
+            background: activeTab === 'system' 
+              ? 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)' 
+              : (isDark ? '#1e293b' : '#f1f5f9'), 
+            color: activeTab === 'system' 
+              ? '#ffffff' 
+              : (isDark ? '#cbd5e1' : '#475569'), 
             fontWeight: 'bold',
             fontSize: '15px',
             cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            boxShadow: activeTab === 'system' ? '0 4px 12px rgba(30, 58, 138, 0.25)' : 'none'
+            transition: 'all 0.3s ease',
+            boxShadow: activeTab === 'system' ? '0 4px 12px rgba(37, 99, 235, 0.35)' : 'none'
           }}
         >
           {t.tabSystemManual}
@@ -290,14 +350,18 @@ export default function Manual() {
             flex: 1,
             padding: '12px 20px',
             borderRadius: '12px',
-            border: 'none',
-            background: activeTab === 'scanner' ? '#1e3a8a' : '#e2e8f0',
-            color: activeTab === 'scanner' ? '#ffffff' : '#475569',
+            border: activeTab === 'scanner' ? 'none' : '1px solid var(--border-color)', 
+            background: activeTab === 'scanner' 
+              ? 'linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%)' 
+              : (isDark ? '#1e293b' : '#f1f5f9'), 
+            color: activeTab === 'scanner' 
+              ? '#ffffff' 
+              : (isDark ? '#cbd5e1' : '#475569'), 
             fontWeight: 'bold',
             fontSize: '15px',
             cursor: 'pointer',
-            transition: 'all 0.2s ease',
-            boxShadow: activeTab === 'scanner' ? '0 4px 12px rgba(30, 58, 138, 0.25)' : 'none'
+            transition: 'all 0.3s ease',
+            boxShadow: activeTab === 'scanner' ? '0 4px 12px rgba(37, 99, 235, 0.35)' : 'none'
           }}
         >
           {t.tabScanManual}
@@ -305,7 +369,14 @@ export default function Manual() {
       </div>
 
       {/* Main Container */}
-      <div style={{ background: '#ffffff', padding: '40px', borderRadius: '20px', boxShadow: '0 10px 25px -5px rgba(0,0,0,0.05)', border: '1px solid #f1f5f9' }}>
+      <div style={{ 
+        background: 'var(--card-bg)', 
+        padding: '40px', 
+        borderRadius: '20px', 
+        boxShadow: '0 10px 25px -5px rgba(0,0,0,0.05)', 
+        border: '1px solid var(--border-color)', 
+        transition: 'all 0.3s ease'
+      }}>
         
         {/* ================= TAB 1: SYSTEM MANUAL ================= */}
         {activeTab === 'system' && (
@@ -318,34 +389,47 @@ export default function Manual() {
 
             {/* Section 1 */}
             <div>
-              <h2 style={{ fontSize: '18px', color: '#1e3a8a', borderBottom: '2px solid #3b82f6', paddingBottom: '6px', marginBottom: '12px' }}>{t.sec1Title}</h2>
-              <p style={{ fontSize: '14px', lineHeight: '1.6', color: '#334155', marginBottom: '16px' }}>{t.sec1Desc}</p>
+              <h2 style={{ fontSize: '18px', color: '#3b82f6', borderBottom: '2px solid #2563eb', paddingBottom: '6px', marginBottom: '12px' }}>{t.sec1Title}</h2>
+              <p style={{ fontSize: '14px', lineHeight: '1.6', color: 'var(--text-color)', opacity: 0.9, marginBottom: '16px' }}>{t.sec1Desc}</p>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '15px' }}>
-                <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '10px', borderLeft: '4px solid #2563eb', border: '1px solid #e2e8f0' }}>
-                  <h3 style={{ fontSize: '15px', color: '#1e293b', margin: '0 0 6px 0' }}>{t.feat1Title}</h3>
-                  <p style={{ fontSize: '13px', color: '#64748b', margin: 0 }}>{t.feat1Desc}</p>
+                <div style={{ background: 'var(--bg-color)', padding: '16px', borderRadius: '10px', borderLeft: '4px solid #2563eb', border: '1px solid var(--border-color)', transition: 'all 0.3s ease' }}>
+                  <h3 style={{ fontSize: '15px', color: 'var(--text-color)', margin: '0 0 6px 0' }}>{t.feat1Title}</h3>
+                  <p style={{ fontSize: '13px', color: 'var(--text-color)', opacity: 0.7, margin: 0 }}>{t.feat1Desc}</p>
                 </div>
-                <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '10px', borderLeft: '4px solid #2563eb', border: '1px solid #e2e8f0' }}>
-                  <h3 style={{ fontSize: '15px', color: '#1e293b', margin: '0 0 6px 0' }}>{t.feat2Title}</h3>
-                  <p style={{ fontSize: '13px', color: '#64748b', margin: 0 }}>{t.feat2Desc}</p>
+                <div style={{ background: 'var(--bg-color)', padding: '16px', borderRadius: '10px', borderLeft: '4px solid #2563eb', border: '1px solid var(--border-color)', transition: 'all 0.3s ease' }}>
+                  <h3 style={{ fontSize: '15px', color: 'var(--text-color)', margin: '0 0 6px 0' }}>{t.feat2Title}</h3>
+                  <p style={{ fontSize: '13px', color: 'var(--text-color)', opacity: 0.7, margin: 0 }}>{t.feat2Desc}</p>
                 </div>
-                <div style={{ background: '#f8fafc', padding: '16px', borderRadius: '10px', borderLeft: '4px solid #2563eb', border: '1px solid #e2e8f0' }}>
-                  <h3 style={{ fontSize: '15px', color: '#1e293b', margin: '0 0 6px 0' }}>{t.feat3Title}</h3>
-                  <p style={{ fontSize: '13px', color: '#64748b', margin: 0 }}>{t.feat3Desc}</p>
+                <div style={{ background: 'var(--bg-color)', padding: '16px', borderRadius: '10px', borderLeft: '4px solid #2563eb', border: '1px solid var(--border-color)', transition: 'all 0.3s ease' }}>
+                  <h3 style={{ fontSize: '15px', color: 'var(--text-color)', margin: '0 0 6px 0' }}>{t.feat3Title}</h3>
+                  <p style={{ fontSize: '13px', color: 'var(--text-color)', opacity: 0.7, margin: 0 }}>{t.feat3Desc}</p>
                 </div>
               </div>
             </div>
 
             {/* Section 2 */}
             <div>
-              <h2 style={{ fontSize: '18px', color: '#1e3a8a', borderBottom: '2px solid #3b82f6', paddingBottom: '6px', marginBottom: '15px' }}>{t.sec2Title}</h2>
+              <h2 style={{ fontSize: '18px', color: '#3b82f6', borderBottom: '2px solid #2563eb', paddingBottom: '6px', marginBottom: '15px' }}>{t.sec2Title}</h2>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 {[t.step1, t.step2, t.step3, t.step4].map((step, idx) => (
-                  <div key={idx} style={{ display: 'flex', gap: '14px', alignItems: 'center', background: '#f8fafc', padding: '12px 16px', borderRadius: '10px', border: '1px solid #e2e8f0' }}>
-                    <div style={{ background: '#2563eb', color: 'white', fontWeight: 'bold', width: '28px', height: '28px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, fontSize: '13px' }}>
+                  <div key={idx} style={{ display: 'flex', gap: '14px', alignItems: 'center', background: 'var(--bg-color)', padding: '12px 16px', borderRadius: '10px', border: '1px solid var(--border-color)', transition: 'all 0.3s ease' }}>
+                    <div style={{ 
+                      background: '#2563eb', 
+                      color: '#ffffff', 
+                      fontWeight: '800', 
+                      width: '28px', 
+                      height: '28px', 
+                      borderRadius: '50%', 
+                      display: 'flex', 
+                      alignItems: 'center', 
+                      justifyContent: 'center', 
+                      flexShrink: 0, 
+                      fontSize: '13px',
+                      boxShadow: '0 2px 6px rgba(37, 99, 235, 0.4)'
+                    }}>
                       {idx + 1}
                     </div>
-                    <div style={{ fontSize: '14px', color: '#334155' }}>{step}</div>
+                    <div style={{ fontSize: '14px', color: 'var(--text-color)' }}>{step}</div>
                   </div>
                 ))}
               </div>
@@ -353,12 +437,12 @@ export default function Manual() {
 
             {/* Section 3 */}
             <div>
-              <h2 style={{ fontSize: '18px', color: '#1e3a8a', borderBottom: '2px solid #3b82f6', paddingBottom: '6px', marginBottom: '15px' }}>{t.sec3Title}</h2>
-              <div style={{ background: '#ffffff', border: '3px solid #0f172a', padding: '25px', borderRadius: '16px', display: 'flex', alignItems: 'center', gap: '30px', flexWrap: 'wrap' }}>
-                <div style={{ background: '#f1f5f9', border: '2px solid #000', width: '130px', height: '130px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '12px', flexShrink: 0 }}>
+              <h2 style={{ fontSize: '18px', color: '#3b82f6', borderBottom: '2px solid #2563eb', paddingBottom: '6px', marginBottom: '15px' }}>{t.sec3Title}</h2>
+              <div style={{ background: '#ffffff', border: '3px solid #0f172a', padding: '25px', borderRadius: '16px', display: 'flex', alignItems: 'center', gap: '30px', flexWrap: 'wrap', transition: 'all 0.3s ease' }}>
+                <div style={{ background: '#f1f5f9', border: '2px solid #000000', width: '130px', height: '130px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '12px', flexShrink: 0, color: '#000000' }}>
                   [ QR CODE ]<br/>{t.scanMe}
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '14px', color: '#0f172a' }}>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', fontSize: '14px', color: '#000000' }}>
                   <div style={{ background: '#f1f5f9', padding: '4px 12px', borderRadius: '6px', fontWeight: 'bold', width: 'fit-content', border: '1px solid #cbd5e1' }}>{t.sampleCategory}</div>
                   <div style={{ fontWeight: '800', fontSize: '18px' }}>{t.sampleBoxName}</div>
                   <div>{t.sampleCreator}</div>
@@ -372,15 +456,15 @@ export default function Manual() {
 
             {/* Section 4 */}
             <div>
-              <h2 style={{ fontSize: '18px', color: '#1e3a8a', borderBottom: '2px solid #3b82f6', paddingBottom: '6px', marginBottom: '12px' }}>{t.sec4Title}</h2>
-              <p style={{ fontSize: '14px', color: '#334155', marginBottom: '15px' }}>{t.sec4Desc}</p>
+              <h2 style={{ fontSize: '18px', color: '#3b82f6', borderBottom: '2px solid #2563eb', paddingBottom: '6px', marginBottom: '12px' }}>{t.sec4Title}</h2>
+              <p style={{ fontSize: '14px', color: 'var(--text-color)', opacity: 0.9, marginBottom: '15px' }}>{t.sec4Desc}</p>
               <div style={{ overflowX: 'auto' }}>
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
                   <thead>
-                    <tr style={{ background: '#1e3a8a', color: 'white' }}>
-                      <th style={{ padding: '10px', textAlign: 'left' }}>{t.colTool}</th>
-                      <th style={{ padding: '10px', textAlign: 'left' }}>{t.colButton}</th>
-                      <th style={{ padding: '10px', textAlign: 'left' }}>{t.colDesc}</th>
+                    <tr style={{ background: 'linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%)', color: 'white' }}>
+                      <th style={{ padding: '12px 10px', textAlign: 'left' }}>{t.colTool}</th>
+                      <th style={{ padding: '12px 10px', textAlign: 'left' }}>{t.colButton}</th>
+                      <th style={{ padding: '12px 10px', textAlign: 'left' }}>{t.colDesc}</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -392,10 +476,14 @@ export default function Manual() {
                       { name: t.t5Name, btn: t.t5Btn, desc: t.t5Desc },
                       { name: t.t6Name, btn: t.t6Btn, desc: t.t6Desc },
                     ].map((row, i) => (
-                      <tr key={i} style={{ borderBottom: '1px solid #e2e8f0', background: i % 2 === 0 ? '#f8fafc' : '#ffffff' }}>
-                        <td style={{ padding: '10px', fontWeight: 'bold', color: '#0f172a' }}>{row.name}</td>
-                        <td style={{ padding: '10px' }}><code style={{ background: '#eff6ff', color: '#1d4ed8', padding: '2px 6px', borderRadius: '4px', border: '1px solid #bfdbfe' }}>{row.btn}</code></td>
-                        <td style={{ padding: '10px', color: '#475569' }}>{row.desc}</td>
+                      <tr key={i} style={{ borderBottom: '1px solid var(--border-color)', background: i % 2 === 0 ? 'var(--bg-color)' : 'var(--card-bg)', transition: 'all 0.3s ease' }}>
+                        <td style={{ padding: '10px', fontWeight: 'bold', color: 'var(--text-color)' }}>{row.name}</td>
+                        <td style={{ padding: '10px' }}>
+                          <code style={{ background: isDark ? '#1e293b' : '#eff6ff', color: '#3b82f6', padding: '4px 8px', borderRadius: '4px', border: '1px solid var(--border-color)', display: 'inline-block', fontWeight: '600', transition: 'all 0.3s ease' }}>
+                            {row.btn}
+                          </code>
+                        </td>
+                        <td style={{ padding: '10px', color: 'var(--text-color)', opacity: 0.85 }}>{row.desc}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -405,18 +493,18 @@ export default function Manual() {
 
             {/* Section 5 */}
             <div>
-              <h2 style={{ fontSize: '18px', color: '#1e3a8a', borderBottom: '2px solid #3b82f6', paddingBottom: '6px', marginBottom: '15px' }}>{t.sec5Title}</h2>
+              <h2 style={{ fontSize: '18px', color: '#3b82f6', borderBottom: '2px solid #2563eb', paddingBottom: '6px', marginBottom: '15px' }}>{t.sec5Title}</h2>
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '15px' }}>
-                <div style={{ background: '#fffbeb', border: '1px solid #fde68a', borderLeft: '4px solid #d97706', padding: '16px', borderRadius: '10px' }}>
-                  <h3 style={{ fontSize: '15px', color: '#b45309', margin: '0 0 8px 0' }}>{t.warnTitle}</h3>
-                  <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#78350f', lineHeight: '1.5' }}>
+                <div style={{ background: isDark ? '#451a1a' : '#fffbeb', border: `1px solid ${isDark ? '#ef4444' : '#fde68a'}`, borderLeft: `4px solid ${isDark ? '#f87171' : '#d97706'}`, padding: '16px', borderRadius: '10px', transition: 'all 0.3s ease' }}>
+                  <h3 style={{ fontSize: '15px', color: isDark ? '#fca5a5' : '#b45309', margin: '0 0 8px 0', fontWeight: '700' }}>{t.warnTitle}</h3>
+                  <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: isDark ? '#fecaca' : '#78350f', lineHeight: '1.5', fontWeight: '500' }}>
                     <li>{t.warn1}</li>
                     <li>{t.warn2}</li>
                   </ul>
                 </div>
-                <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderLeft: '4px solid #16a34a', padding: '16px', borderRadius: '10px' }}>
-                  <h3 style={{ fontSize: '15px', color: '#15803d', margin: '0 0 8px 0' }}>{t.tipTitle}</h3>
-                  <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: '#166534', lineHeight: '1.5' }}>
+                <div style={{ background: isDark ? '#14532d' : '#f0fdf4', border: `1px solid ${isDark ? '#22c55e' : '#bbf7d0'}`, borderLeft: `4px solid ${isDark ? '#4ade80' : '#16a34a'}`, padding: '16px', borderRadius: '10px', transition: 'all 0.3s ease' }}>
+                  <h3 style={{ fontSize: '15px', color: isDark ? '#86efac' : '#15803d', margin: '0 0 8px 0', fontWeight: '700' }}>{t.tipTitle}</h3>
+                  <ul style={{ margin: 0, paddingLeft: '18px', fontSize: '13px', color: isDark ? '#bbf7d0' : '#166534', lineHeight: '1.5', fontWeight: '500' }}>
                     <li>{t.tip1}</li>
                     <li>{t.tip2}</li>
                   </ul>
@@ -426,9 +514,9 @@ export default function Manual() {
 
             {/* Section 6 */}
             <div>
-              <h2 style={{ fontSize: '18px', color: '#1e3a8a', borderBottom: '2px solid #3b82f6', paddingBottom: '6px', marginBottom: '12px' }}>{t.sec6Title}</h2>
-              <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', padding: '16px', borderRadius: '10px' }}>
-                <p style={{ fontSize: '14px', color: '#1e3a8a', margin: 0, lineHeight: '1.6' }}>{t.supportDesc}</p>
+              <h2 style={{ fontSize: '18px', color: '#3b82f6', borderBottom: '2px solid #2563eb', paddingBottom: '6px', marginBottom: '12px' }}>{t.sec6Title}</h2>
+              <div style={{ background: 'var(--bg-color)', border: '1px solid var(--border-color)', padding: '16px', borderRadius: '10px', transition: 'all 0.3s ease' }}>
+                <p style={{ fontSize: '14px', color: 'var(--text-color)', margin: 0, lineHeight: '1.6' }}>{t.supportDesc}</p>
               </div>
             </div>
           </div>
@@ -448,19 +536,19 @@ export default function Manual() {
               <h2 style={{ fontSize: '18px', color: '#0369a1', borderBottom: '2px solid #0284c7', paddingBottom: '6px', marginBottom: '15px' }}>
                 {t.scanStep1Title}
               </h2>
-              <div style={{ display: 'flex', gap: '20px', alignItems: 'center', background: '#f8fafc', padding: '20px', borderRadius: '12px', border: '1px solid #e2e8f0', flexWrap: 'wrap' }}>
+              <div style={{ display: 'flex', gap: '20px', alignItems: 'center', background: 'var(--bg-color)', padding: '20px', borderRadius: '12px', border: '1px solid var(--border-color)', flexWrap: 'wrap', transition: 'all 0.3s ease' }}>
                 {/* App Icon Mockup */}
-                <div style={{ background: '#ffffff', padding: '12px 16px', borderRadius: '16px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', display: 'flex', alignItems: 'center', gap: '12px', border: '1px solid #cbd5e1' }}>
-                  <div style={{ width: '48px', height: '48px', background: '#e2e8f0', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden' }}>
+                <div style={{ background: 'var(--card-bg)', padding: '12px 16px', borderRadius: '16px', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)', display: 'flex', alignItems: 'center', gap: '12px', border: '1px solid var(--border-color)', transition: 'all 0.3s ease' }}>
+                  <div style={{ width: '48px', height: '48px', background: 'var(--bg-color)', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center', position: 'relative', overflow: 'hidden', transition: 'all 0.3s ease' }}>
                     <div style={{ fontSize: '20px' }}>🔳</div>
                     <div style={{ position: 'absolute', width: '100%', height: '2px', background: '#ef4444', top: '50%' }}></div>
                   </div>
                   <div>
-                    <div style={{ fontWeight: '800', fontSize: '16px', color: '#0f172a' }}>QR Reader</div>
-                    <div style={{ fontSize: '11px', color: '#64748b' }}>Barcode & QR Scanner</div>
+                    <div style={{ fontWeight: '800', fontSize: '16px', color: 'var(--text-color)' }}>QR Reader</div>
+                    <div style={{ fontSize: '11px', color: 'var(--text-color)', opacity: 0.6 }}>Barcode & QR Scanner</div>
                   </div>
                 </div>
-                <p style={{ flex: 1, fontSize: '14px', lineHeight: '1.6', color: '#334155', margin: 0, minWidth: '260px' }}>
+                <p style={{ flex: 1, fontSize: '14px', lineHeight: '1.6', color: 'var(--text-color)', opacity: 0.9, margin: 0, minWidth: '260px' }}>
                   {t.scanStep1Desc}
                 </p>
               </div>
@@ -471,8 +559,8 @@ export default function Manual() {
               <h2 style={{ fontSize: '18px', color: '#0369a1', borderBottom: '2px solid #0284c7', paddingBottom: '6px', marginBottom: '15px' }}>
                 {t.scanStep2Title}
               </h2>
-              <div style={{ background: '#f0f9ff', padding: '20px', borderRadius: '12px', border: '1px solid #bae6fd' }}>
-                <p style={{ fontSize: '14px', lineHeight: '1.6', color: '#0369a1', margin: 0 }}>
+              <div style={{ background: isDark ? '#0c4a6e' : '#f0f9ff', padding: '20px', borderRadius: '12px', border: `1px solid ${isDark ? '#0284c7' : '#bae6fd'}`, transition: 'all 0.3s ease' }}>
+                <p style={{ fontSize: '14px', lineHeight: '1.6', color: isDark ? '#e0f2fe' : '#0369a1', margin: 0 }}>
                   {t.scanStep2Desc}
                 </p>
               </div>
@@ -483,19 +571,19 @@ export default function Manual() {
               <h2 style={{ fontSize: '18px', color: '#0369a1', borderBottom: '2px solid #0284c7', paddingBottom: '6px', marginBottom: '15px' }}>
                 {t.scanStep3Title}
               </h2>
-              <p style={{ fontSize: '14px', color: '#334155', marginBottom: '15px' }}>
+              <p style={{ fontSize: '14px', color: 'var(--text-color)', marginBottom: '15px' }}>
                 {t.scanStep3Desc}
               </p>
 
               {/* Display Result Box Mockup */}
-              <div style={{ background: '#fefce8', border: '1px solid #fef08a', padding: '24px', borderRadius: '16px', fontFamily: 'monospace', fontSize: '14px', color: '#1e293b', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)', maxWidth: '600px', margin: 'auto' }}>
+              <div style={{ background: isDark ? '#2d1804' : '#fefce8', border: `1px solid ${isDark ? '#ca8a04' : '#fef08a'}`, padding: '24px', borderRadius: '16px', fontFamily: 'monospace', fontSize: '14px', color: isDark ? '#fef08a' : '#1e293b', boxShadow: '0 4px 6px -1px rgba(0,0,0,0.05)', maxWidth: '600px', margin: 'auto', transition: 'all 0.3s ease' }}>
                 <div style={{ marginBottom: '4px' }}>{t.resCompany}</div>
                 <div style={{ marginBottom: '4px' }}>{t.resBoxName}</div>
                 <div style={{ marginBottom: '4px' }}>{t.resCategory}</div>
                 <div style={{ marginBottom: '8px' }}>{t.resDescTitle}</div>
                 
                 {/* Internal Items List */}
-                <div style={{ paddingLeft: '16px', color: '#334155', display: 'flex', flexDirection: 'column', gap: '2px', marginBottom: '12px' }}>
+                <div style={{ paddingLeft: '16px', color: isDark ? '#fef3c7' : '#334155', display: 'flex', flexDirection: 'column', gap: '2px', marginBottom: '12px' }}>
                   <div>01 001-002</div>
                   <div>02 001-002</div>
                   <div>03 001-003</div>
@@ -517,15 +605,15 @@ export default function Manual() {
                   <div>30 001-006</div>
                 </div>
 
-                <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px dashed #e2e8f0' }}>
+                <div style={{ marginTop: '12px', paddingTop: '12px', borderTop: '1px dashed var(--border-color)', transition: 'all 0.3s ease' }}>
                   <div>{t.resCreator}</div>
                   <div>{t.resStorageDate}</div>
                   <div>{t.resExpireDate}</div>
                 </div>
               </div>
 
-              <div style={{ background: '#f8fafc', padding: '12px 16px', borderRadius: '8px', border: '1px solid #e2e8f0', marginTop: '15px' }}>
-                <p style={{ fontSize: '13px', color: '#475569', margin: 0, lineHeight: '1.5' }}>
+              <div style={{ background: 'var(--bg-color)', padding: '12px 16px', borderRadius: '8px', border: '1px solid var(--border-color)', marginTop: '15px', transition: 'all 0.3s ease' }}>
+                <p style={{ fontSize: '13px', color: 'var(--text-color)', opacity: 0.8, margin: 0, lineHeight: '1.5' }}>
                   {t.resDetailNotice}
                 </p>
               </div>

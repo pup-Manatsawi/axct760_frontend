@@ -125,11 +125,14 @@ function Aapq360() {
       padding: '32px 24px',
       maxWidth: '1940px',
       margin: '0 auto',
-      backgroundColor: '#f8fafc',
+      backgroundColor: 'var(--bg-color)', 
+      color: 'var(--text-color)',         
       minHeight: '100vh',
-      boxSizing: 'border-box'
+      boxSizing: 'border-box',
+      transition: 'background-color 0.15s ease, color 0.15s ease' /* 🌟 [แก้ไข] สลับเฉดพื้นหลังใหญ่ให้นุ่มนวลเบาๆ แทนการใช้ all */
     }}>
-      {/* Header Section with Modern Icon & Gradient Accent */}
+      
+      {/* Header Section */}
       <div style={{ 
         marginBottom: '28px', 
         display: 'flex', 
@@ -137,11 +140,12 @@ function Aapq360() {
         justifyContent: 'space-between',
         flexWrap: 'wrap',
         gap: '16px',
-        backgroundColor: '#ffffff',
+        backgroundColor: 'var(--card-bg)', 
         padding: '24px 32px',
         borderRadius: '16px',
         boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.05)',
-        border: '1px solid #e2e8f0'
+        border: '1px solid var(--border-color)', 
+        transition: 'background-color 0.15s ease, border-color 0.15s ease' /* 🌟 [แก้ไข] */
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
           <div style={{
@@ -155,7 +159,6 @@ function Aapq360() {
             color: '#ffffff',
             boxShadow: '0 4px 10px rgba(59, 130, 246, 0.3)'
           }}>
-            {/* Modern Document Report SVG Icon */}
             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
               <polyline points="14 2 14 8 20 8"></polyline>
@@ -167,13 +170,13 @@ function Aapq360() {
             <h2 style={{
               fontSize: '22px',
               fontWeight: '700',
-              color: '#0f172a',
+              color: 'var(--text-color)', 
               margin: '0 0 4px 0',
               letterSpacing: '-0.3px'
             }}>
               AAPQ360 REPORT
             </h2>
-            <p style={{ color: '#64748b', fontSize: '13px', margin: 0, fontWeight: '400' }}>
+            <p style={{ color: 'var(--text-color)', opacity: 0.7, fontSize: '13px', margin: 0, fontWeight: '400' }}> 
               ระบบรายงานข้อมูลบัญชีเจ้าหนี้และการจัดการคลังสินค้า (Accounts Payable Report)
             </p>
           </div>
@@ -181,20 +184,21 @@ function Aapq360() {
 
         <div style={{
           fontSize: '13px',
-          color: '#475569',
-          backgroundColor: '#f1f5f9',
+          color: 'var(--text-color)',
+          backgroundColor: 'var(--bg-color)', 
           padding: '8px 16px',
           borderRadius: '20px',
           fontWeight: '500',
-          border: '1px solid #e2e8f0'
+          border: '1px solid var(--border-color)', 
+          transition: 'background-color 0.15s ease, border-color 0.15s ease' /* 🌟 [แก้ไข] */
         }}>
-          รายการทั้งหมด: <strong style={{ color: '#0f172a' }}>{data.length}</strong> รายการ
+          รายการทั้งหมด: <strong style={{ color: 'var(--text-color)' }}>{data.length}</strong> รายการ 
         </div>
       </div>
 
       {/* Filter Card */}
       <div style={{
-        backgroundColor: '#ffffff',
+        backgroundColor: 'var(--card-bg)', 
         padding: '24px',
         borderRadius: '16px',
         boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)',
@@ -203,10 +207,11 @@ function Aapq360() {
         alignItems: 'flex-end',
         gap: '20px',
         marginBottom: '24px',
-        border: '1px solid #e2e8f0'
+        border: '1px solid var(--border-color)', 
+        transition: 'background-color 0.15s ease, border-color 0.15s ease' /* 🌟 [แก้ไข] */
       }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <label style={{ fontSize: '13px', fontWeight: '600', color: '#334155' }}>Start Date</label>
+          <label style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-color)' }}>Start Date</label> 
           <input
             type="date"
             value={startDate}
@@ -214,11 +219,11 @@ function Aapq360() {
             style={{
               padding: '10px 14px',
               borderRadius: '8px',
-              border: '1px solid #cbd5e1',
+              border: '1px solid var(--border-color)', 
               fontSize: '14px',
               outline: 'none',
-              backgroundColor: '#f8fafc',
-              color: '#0f172a',
+              backgroundColor: 'var(--bg-color)', 
+              color: 'var(--text-color)',         
               fontWeight: '500',
               transition: 'all 0.2s'
             }}
@@ -226,7 +231,7 @@ function Aapq360() {
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <label style={{ fontSize: '13px', fontWeight: '600', color: '#334155' }}>End Date</label>
+          <label style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-color)' }}>End Date</label> 
           <input
             type="date"
             value={endDate}
@@ -234,18 +239,19 @@ function Aapq360() {
             style={{
               padding: '10px 14px',
               borderRadius: '8px',
-              border: '1px solid #cbd5e1',
+              border: '1px solid var(--border-color)', 
               fontSize: '14px',
               outline: 'none',
-              backgroundColor: '#f8fafc',
-              color: '#0f172a',
-              fontWeight: '500'
+              backgroundColor: 'var(--bg-color)', 
+              color: 'var(--text-color)',         
+              fontWeight: '500',
+              transition: 'all 0.2s'
             }}
           />
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-          <label style={{ fontSize: '13px', fontWeight: '600', color: '#334155' }}>Vendor</label>
+          <label style={{ fontSize: '13px', fontWeight: '600', color: 'var(--text-color)' }}>Vendor</label> 
           <select
             name="apca004"
             value={apca004}
@@ -253,19 +259,20 @@ function Aapq360() {
             style={{
               padding: '10px 14px',
               borderRadius: '8px',
-              border: '1px solid #cbd5e1',
+              border: '1px solid var(--border-color)', 
               fontSize: '14px',
               outline: 'none',
-              backgroundColor: '#f8fafc',
-              color: '#0f172a',
+              backgroundColor: 'var(--bg-color)', 
+              color: 'var(--text-color)',         
               fontWeight: '500',
               minWidth: '160px',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              transition: 'all 0.2s'
             }}
           >
-            <option value="">-- All Vendors --</option>
-            <option value="IVI10001">IVICT</option>
-            <option value="SHI30001">SSFC</option>
+            <option value="" style={{ backgroundColor: 'var(--card-bg)', color: 'var(--text-color)' }}>-- All Vendors --</option>
+            <option value="IVI10001" style={{ backgroundColor: 'var(--card-bg)', color: 'var(--text-color)' }}>IVICT</option>
+            <option value="SHI30001" style={{ backgroundColor: 'var(--card-bg)', color: 'var(--text-color)' }}>SSFC</option>
           </select>
         </div>
 
@@ -298,7 +305,6 @@ function Aapq360() {
             onMouseDown={(e) => e.currentTarget.style.transform = 'scale(0.97)'}
             onMouseUp={(e) => e.currentTarget.style.transform = 'scale(1)'}
           >
-            {/* Modern Download Excel SVG Icon */}
             <svg 
               xmlns="http://www.w3.org/2000/svg" 
               width="18" 
@@ -321,18 +327,19 @@ function Aapq360() {
 
       {/* Content Section */}
       <div style={{
-        backgroundColor: '#ffffff',
+        backgroundColor: 'var(--card-bg)', 
         borderRadius: '16px',
         boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.02), 0 2px 4px -1px rgba(0, 0, 0, 0.02)',
-        border: '1px solid #e2e8f0',
-        overflow: 'hidden'
+        border: '1px solid var(--border-color)', 
+        overflow: 'hidden',
+        transition: 'background-color 0.15s ease, border-color 0.15s ease' /* 🌟 [แก้ไข] */
       }}>
         {loading ? (
           <div style={{ padding: '80px 20px', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: '16px' }}>
             <div style={{
               width: '40px',
               height: '40px',
-              border: '3px solid #e2e8f0',
+              border: '3px solid var(--border-color)', 
               borderTop: '3px solid #2563eb',
               borderRadius: '50%',
               animation: 'spin 0.8s linear infinite'
@@ -344,8 +351,8 @@ function Aapq360() {
               }
             `}</style>
             <div>
-              <p style={{ margin: '0 0 4px 0', fontSize: '15px', fontWeight: '600', color: '#1e293b' }}>กำลังโหลดข้อมูล...</p>
-              <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>正在載入資料，請稍候...</p>
+              <p style={{ margin: '0 0 4px 0', fontSize: '15px', fontWeight: '600', color: 'var(--text-color)' }}>กำลังโหลดข้อมูล...</p> 
+              <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-color)', opacity: 0.7 }}>正在載入資料，請稍候...</p> 
             </div>
           </div>
         ) : !Array.isArray(data) || data.length === 0 ? (
@@ -354,11 +361,12 @@ function Aapq360() {
               width: '56px',
               height: '56px',
               borderRadius: '16px',
-              backgroundColor: '#f1f5f9',
+              backgroundColor: 'var(--bg-color)', 
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              color: '#64748b',
+              color: 'var(--text-color)', 
+              opacity: 0.8,
               marginBottom: '4px'
             }}>
               <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round">
@@ -368,8 +376,8 @@ function Aapq360() {
               </svg>
             </div>
             <div>
-              <h4 style={{ margin: '0 0 4px 0', fontSize: '16px', fontWeight: '600', color: '#1e293b' }}>ไม่พบข้อมูล กรุณาตรวจสอบช่วงเวลาหรือเงื่อนไขอีกครั้ง</h4>
-              <p style={{ margin: 0, fontSize: '13px', color: '#64748b' }}>未找到資料，請再次檢查日期範圍或條件。</p>
+              <h4 style={{ margin: '0 0 4px 0', fontSize: '16px', fontWeight: '600', color: 'var(--text-color)' }}>ไม่พบข้อมูล กรุณาตรวจสอบช่วงเวลาหรือเงื่อนไขอีกครั้ง</h4> 
+              <p style={{ margin: 0, fontSize: '13px', color: 'var(--text-color)', opacity: 0.7 }}>未找到資料，請再次檢查日期範圍或條件。</p> 
             </div>
           </div>
         ) : (
@@ -381,17 +389,17 @@ function Aapq360() {
             }}>
               <table style={{ width: '100%', borderCollapse: 'collapse', minWidth: 800, textAlign: 'left' }}>
                 <thead>
-                  <tr style={{ backgroundColor: '#f8fafc' }}>
+                  <tr style={{ backgroundColor: 'var(--bg-color)' }}> 
                     {headers.map((h, i) => (
                       <th
                         key={i}
                         style={{
                           position: 'sticky',
                           top: 0,
-                          backgroundColor: '#f8fafc',
-                          color: '#475569',
-                          borderBottom: '2px solid #e2e8f0',
-                          borderRight: '1px solid #f1f5f9',
+                          backgroundColor: 'var(--bg-color)', 
+                          color: 'var(--text-color)',         
+                          borderBottom: '2px solid var(--border-color)', 
+                          borderRight: '1px solid var(--border-color)',  
                           padding: '14px 16px',
                           fontSize: '12px',
                           fontWeight: '700',
@@ -411,22 +419,23 @@ function Aapq360() {
                     <tr
                       key={idx}
                       style={{
-                        backgroundColor: idx % 2 === 0 ? '#ffffff' : '#fcfcfc',
+                        backgroundColor: idx % 2 === 0 ? 'var(--card-bg)' : 'var(--bg-color)', 
                         transition: 'background-color 0.15s'
                       }}
-                      onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#f1f5f9'}
-                      onMouseOut={(e) => e.currentTarget.style.backgroundColor = idx % 2 === 0 ? '#ffffff' : '#fcfcfc'}
+                      onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--border-color)'} 
+                      onMouseOut={(e) => e.currentTarget.style.backgroundColor = idx % 2 === 0 ? 'var(--card-bg)' : 'var(--bg-color)'}
                     >
                       {mapRow(row).map((value, i) => (
                         <td
                           key={i}
                           style={{
-                            borderBottom: '1px solid #f1f5f9',
-                            borderRight: '1px solid #f8fafc',
+                            borderBottom: '1px solid var(--border-color)', 
+                            borderRight: '1px solid var(--border-color)',  
                             padding: '12px 16px',
                             fontSize: '13px',
-                            color: '#334155',
+                            color: 'var(--text-color)',                    
                             whiteSpace: 'nowrap'
+                            /* 🌟 [แก้ไข] ลบ transition: 'all 0.3s ease' ที่หน่วง CPU ออกไปเรียบร้อยเพื่อให้สลับสีได้ทันที */
                           }}
                         >
                           {value !== null && value !== undefined ? String(value) : ''}
@@ -445,13 +454,14 @@ function Aapq360() {
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 padding: '16px 24px',
-                borderTop: '1px solid #e2e8f0',
-                backgroundColor: '#ffffff',
+                borderTop: '1px solid var(--border-color)', 
+                backgroundColor: 'var(--card-bg)',         
                 flexWrap: 'wrap',
-                gap: '12px'
+                gap: '12px',
+                transition: 'background-color 0.15s ease, border-color 0.15s ease' /* 🌟 [แก้ไข] */
               }}>
-                <div style={{ fontSize: '13px', color: '#64748b' }}>
-                  Page <strong style={{ color: '#0f172a' }}>{currentPage}</strong> of <strong style={{ color: '#0f172a' }}>{totalPages}</strong> (Showing {rowsPerPage} rows per page)
+                <div style={{ fontSize: '13px', color: 'var(--text-color)', opacity: 0.8 }}> 
+                  Page <strong style={{ color: 'var(--text-color)' }}>{currentPage}</strong> of <strong style={{ color: 'var(--text-color)' }}>{totalPages}</strong> (Showing {rowsPerPage} rows per page)
                 </div>
                 <div style={{ display: 'flex', gap: '8px' }}>
                   <button
@@ -460,12 +470,13 @@ function Aapq360() {
                     style={{
                       padding: '8px 16px',
                       borderRadius: '8px',
-                      border: '1px solid #cbd5e1',
-                      backgroundColor: currentPage === 1 ? '#f1f5f9' : '#ffffff',
-                      color: currentPage === 1 ? '#94a3b8' : '#334155',
+                      border: '1px solid var(--border-color)', 
+                      backgroundColor: currentPage === 1 ? 'var(--bg-color)' : 'var(--card-bg)',
+                      color: currentPage === 1 ? 'var(--border-color)' : 'var(--text-color)',
                       fontSize: '13px',
                       fontWeight: '600',
-                      cursor: currentPage === 1 ? 'not-allowed' : 'pointer'
+                      cursor: currentPage === 1 ? 'not-allowed' : 'pointer',
+                      transition: 'all 0.2s'
                     }}
                   >
                     Previous
@@ -476,12 +487,13 @@ function Aapq360() {
                     style={{
                       padding: '8px 16px',
                       borderRadius: '8px',
-                      border: '1px solid #cbd5e1',
-                      backgroundColor: currentPage === totalPages ? '#f1f5f9' : '#ffffff',
-                      color: currentPage === totalPages ? '#94a3b8' : '#334155',
+                      border: '1px solid var(--border-color)', 
+                      backgroundColor: currentPage === totalPages ? 'var(--bg-color)' : 'var(--card-bg)',
+                      color: currentPage === totalPages ? 'var(--border-color)' : 'var(--text-color)',
                       fontSize: '13px',
                       fontWeight: '600',
-                      cursor: currentPage === totalPages ? 'not-allowed' : 'pointer'
+                      cursor: currentPage === totalPages ? 'not-allowed' : 'pointer',
+                      transition: 'all 0.2s'
                     }}
                   >
                     Next
